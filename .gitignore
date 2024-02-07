@@ -1,3 +1,8 @@
+.vs/
+Build/
+obj/
+docs/
+
 # Prerequisites
 *.d
 
@@ -10,6 +15,7 @@
 # Precompiled Headers
 *.gch
 *.pch
+*.ipch
 
 # Compiled Dynamic libraries
 *.so
