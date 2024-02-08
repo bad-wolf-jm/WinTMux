@@ -8,7 +8,8 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 find_package(OpenGL REQUIRED)
 add_executable(WinTMux 
-    Main.cpp
+    #Main2.cpp
+    PseudoConsole/EchoCon.cpp
 )
 
 #message(STATUS ${OpenGL_LIBRARIES})
@@ -23,6 +24,6 @@ target_link_libraries(WinTMux PRIVATE
 
 #target_compile_definitions(LTSimulationEngineRuntime PUBLIC LTSimulationEngineRuntime )
 #target_compile_options(LTSimulationEngineRuntime PRIVATE
-#    $<$<COMPILE_LANGUAGE:CUDA>: --expt-relaxed-constexpr -Xcudafe "--display_error_number --diag_suppress=\"20012,20044\"">
+#    $<$<COMPILE_LANGUAGE:CUDA>: --expt-relaxed-constexpr -Xcudafe "--_error_number --diag_suppress=\"20012,20044\"">
 #    $<$<COMPILE_LANGUAGE:CXX>:/bigobj /wd4068>)
 
