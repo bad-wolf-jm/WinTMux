@@ -1,0 +1,28 @@
+cmake_minimum_required(VERSION 3.20)
+
+project(LTSimulationEngine LANGUAGES CXX CUDA C)
+
+message(STATUS ${SHADER_EMBEDDED_FILES})
+
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
+find_package(OpenGL REQUIRED)
+add_executable(WinTMux 
+    Main.cpp
+)
+
+#message(STATUS ${OpenGL_LIBRARIES})
+#set(MONO_PATH "C:/GitLab/SpockEngine/ThirdParty/mono/lib/Debug")
+
+target_link_libraries(WinTMux PRIVATE
+    imgui
+    glfw
+    OpenGL::GL
+    #${OpenGL_LIBRARIES}
+)
+
+#target_compile_definitions(LTSimulationEngineRuntime PUBLIC LTSimulationEngineRuntime )
+#target_compile_options(LTSimulationEngineRuntime PRIVATE
+#    $<$<COMPILE_LANGUAGE:CUDA>: --expt-relaxed-constexpr -Xcudafe "--display_error_number --diag_suppress=\"20012,20044\"">
+#    $<$<COMPILE_LANGUAGE:CXX>:/bigobj /wd4068>)
+
