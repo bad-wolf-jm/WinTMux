@@ -1,4 +1,5 @@
 .vs/
+.cache/
 Build/
 obj/
 docs/

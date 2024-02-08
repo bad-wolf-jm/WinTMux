@@ -1,6 +1,6 @@
 workspace "WinTMux"
     configurations { "Debug", "Release" }
-    location "Build/Solution"
+    -- location ""
 
 
 IMGUI_DIR = "ThirdParty/ImGui"
@@ -8,7 +8,7 @@ IMGUI_DIR = "ThirdParty/ImGui"
 project "WinTMux"
     kind "ConsoleApp"
     language "C++"
-    location "Build/Solution"
+    location "Source"
     architecture "x86_64"
     targetdir "Build/Bin/%{cfg.buildcfg}"
     objdir "Build/Obj/%{cfg.buildcfg}"
@@ -47,7 +47,7 @@ project "ImGui"
     kind "StaticLib"
     language "C++"
     architecture "x86_64"
-    location "Build/Solution"
+    location "ThirdParty/ImGui"
     targetdir "Build/Bin/%{cfg.buildcfg}"
     objdir "Build/Obj/%{cfg.buildcfg}"
 
