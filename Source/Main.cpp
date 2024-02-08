@@ -109,7 +109,7 @@ int main(int, char**)
     // Our state
     bool show_demo_window = true;
     bool show_another_window = false;
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    ImVec4 clear_color = ImVec4(0.0f, 0.0f, 0.0f, 1.00f);
 
     // Main loop
 #ifdef __EMSCRIPTEN__
@@ -133,6 +133,21 @@ int main(int, char**)
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
+        auto& windowSize = ImGui::GetIO().DisplaySize;
+        static bool window_is_open = true;
+
+        ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
+        ImGui::SetNextWindowSize(ImVec2(windowSize.x, 30));
+        ImGui::Begin("##1", &window_is_open, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar);
+        ImGui::Text("THIS WILL BE THE TITLE");
+        ImGui::End();
+
+        ImGui::SetNextWindowPos(ImVec2(0.0f, windowSize.y - 30.0f));
+        ImGui::SetNextWindowSize(ImVec2(windowSize.x, 30.0f));
+        ImGui::Begin("##2", &window_is_open, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar);
+        ImGui::Text("THIS WILL BE THE COMMAND LINE");
+        ImGui::End();
+#if 0
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
         if (show_demo_window)
             ImGui::ShowDemoWindow(&show_demo_window);
@@ -169,7 +184,7 @@ int main(int, char**)
                 show_another_window = false;
             ImGui::End();
         }
-
+#endif
         // Rendering
         ImGui::Render();
         int display_w, display_h;
