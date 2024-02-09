@@ -1,10 +1,5 @@
 #include "PTYProcess.h"
 
-
-
-
-
-
 int main()
 {
     wchar_t szCommand[]{ L"cmd" };

@@ -69,8 +69,6 @@ PTYProcess::~PTYProcess()
 
 void PTYProcess::WaitForCompletion( int32_t timeout )
 {
-    std::cout << "WAIT" << timeout << std::endl;
-
     // Wait up to 10s for ping process to complete
     DWORD result = WaitForSingleObject( _clientProcess.hThread, timeout );
     if( result == WAIT_FAILED )
@@ -90,36 +88,34 @@ void PTYProcess::WaitForCompletion( int32_t timeout )
             errorText = NULL;
         }
     }
-
-    std::cout << "DONE" << std::endl;
     _processIsActive = false;
     _pipeListenerThread.join();
 }
 
 void PTYProcess::CreateConsole( int16_t columns, int16_t lines )
 {
-    HANDLE hPipePTYIn{ INVALID_HANDLE_VALUE };
-    HANDLE hPipePTYOut{ INVALID_HANDLE_VALUE };
-    HANDLE hPipePTYErr{ INVALID_HANDLE_VALUE };
+    HANDLE consoleStdIn{ INVALID_HANDLE_VALUE };
+    HANDLE consoleStdOut{ INVALID_HANDLE_VALUE };
+    HANDLE consoleStdErr{ INVALID_HANDLE_VALUE };
 
-    CreatePipes( hPipePTYIn, hPipePTYOut, hPipePTYErr );
+    CreatePipes( consoleStdIn, consoleStdOut, consoleStdErr );
     COORD consoleSize{ columns, lines };
 
     // Create the Pseudo Console of the required size, attached to the PTY-end
     // of the pipes
-    HRESULT hr = CreatePseudoConsole( consoleSize, hPipePTYIn, hPipePTYOut, 0, &_console );
+    HRESULT hr = CreatePseudoConsole( consoleSize, consoleStdIn, consoleStdOut, 0, &_console );
 
     // Note: We can close the handles to the PTY-end of the pipes here
     // because the handles are dup'ed into the ConHost and will be released
     // when the ConPTY is destroyed.
-    if( INVALID_HANDLE_VALUE != hPipePTYOut )
-        CloseHandle( hPipePTYOut );
+    if( INVALID_HANDLE_VALUE != consoleStdOut )
+        CloseHandle( consoleStdOut );
 
-    if( INVALID_HANDLE_VALUE != hPipePTYIn )
-        CloseHandle( hPipePTYIn );
+    if( INVALID_HANDLE_VALUE != consoleStdIn )
+        CloseHandle( consoleStdIn );
 
-    if( INVALID_HANDLE_VALUE != hPipePTYErr )
-        CloseHandle( hPipePTYErr );
+    if( INVALID_HANDLE_VALUE != consoleStdErr )
+        CloseHandle( consoleStdErr );
 }
 
 void PTYProcess::StartProcess()
