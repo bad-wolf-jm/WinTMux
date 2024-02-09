@@ -10,6 +10,8 @@ find_package(OpenGL REQUIRED)
 add_executable(WinTMux 
     #Main2.cpp
     PseudoConsole/EchoCon.cpp
+    PSeudoConsole/PTYProcess.cpp
+    #LibUV/LibUV.cpp
 )
 
 #message(STATUS ${OpenGL_LIBRARIES})

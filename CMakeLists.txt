@@ -19,22 +19,22 @@ Include(FetchContent)
 #set (test OFF CACHE INTERNAL "Turn off tests")
 #set (benchmark OFF CACHE INTERNAL "Turn off tests")
 #FetchContent_Declare(
-#  uuid_v4
-#  GIT_REPOSITORY https://github.com/crashoz/uuid_v4.git
+#  uv
+#  GIT_REPOSITORY https://github.com/libuv/libuv.git
 #  GIT_TAG        master
 #  GIT_PROGRESS   TRUE )
-#FetchContent_MakeAvailable(uuid_v4)
-#include_directories(${uuid_v4_SOURCE_DIR})
-#set(SE_EXTRA_INCLUDES "${uuid_v4_SOURCE_DIR}")
+#FetchContent_MakeAvailable(uv)
+#include_directories(${uv_SOURCE_DIR}/include)
+#set(SE_EXTRA_INCLUDES "${uv_SOURCE_DIR}/include")
 
-FetchContent_Declare(
-  uvw
-  GIT_REPOSITORY https://github.com/skypjack/uvw.git
-  GIT_TAG        main 
-  GIT_PROGRESS   TRUE )
-FetchContent_MakeAvailable(uvw)
-include_directories(${uvw_SOURCE_DIR}/uvw)
-set(SE_EXTRA_INCLUDES "${uvw_SOURCE_DIR}/src" ${SE_EXTRA_INCLUDES})
+#FetchContent_Declare(
+#  uvw
+#  GIT_REPOSITORY https://github.com/skypjack/uvw.git
+#  GIT_TAG        main 
+#  GIT_PROGRESS   TRUE )
+#FetchContent_MakeAvailable(uvw)
+#include_directories(${uvw_SOURCE_DIR}/src)
+#set(SE_EXTRA_INCLUDES "${uvw_SOURCE_DIR}/src" ${SE_EXTRA_INCLUDES})
 
 #FetchContent_Declare(
 #  entt
