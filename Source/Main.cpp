@@ -16,7 +16,7 @@ int main( int, char ** )
     if( !glfwInit() )
         return 1;
 
-        // Decide GL+GLSL versions
+    // Decide GL+GLSL versions
     // GL 3.0 + GLSL 130
     const char *glsl_version = "#version 130";
     glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 3 );
@@ -58,7 +58,7 @@ int main( int, char ** )
     // io.Fonts->AddFontFromFileTTF( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFont-Bold.ttf", fontSize );
     // io.Fonts->AddFontFromFileTTF( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFont-BoldItalic.ttf", fontSize );
 
-    ImVec4 clear_color         = ImVec4( 0.0f, 0.0f, 0.0f, 1.00f );
+    ImVec4 clear_color = ImVec4( 0.0f, 0.0f, 0.0f, 1.00f );
 
     // Main loop
     while( !glfwWindowShouldClose( window ) )
