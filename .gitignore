@@ -3,6 +3,7 @@
 Build/
 obj/
 docs/
+Resources/
 
 # Prerequisites
 *.d

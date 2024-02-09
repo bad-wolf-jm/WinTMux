@@ -8,9 +8,9 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 find_package(OpenGL REQUIRED)
 add_executable(WinTMux 
-    #Main2.cpp
-    PseudoConsole/EchoCon.cpp
-    PSeudoConsole/PTYProcess.cpp
+    Main.cpp
+    #PseudoConsole/EchoCon.cpp
+    #PSeudoConsole/PTYProcess.cpp
     #LibUV/LibUV.cpp
 )
 
