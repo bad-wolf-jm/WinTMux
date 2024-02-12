@@ -1,7 +1,10 @@
+#include "Core/String.h"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+#include <iostream>
 #include <stdio.h>
+
 #define GL_SILENCE_DEPRECATION
 #include <GLFW/glfw3.h> // Will drag system OpenGL headers
 
@@ -10,8 +13,127 @@ static void glfw_error_callback( int error, const char *description )
     fprintf( stderr, "GLFW Error %d: %s\n", error, description );
 }
 
+static string_t _currentCommand;
+static int      cursorPosition   = 0;
+static bool     commandInputMode = false;
+
+void OnKeyPressed( GLFWwindow *window, int keycode, int scancode, int action, int mods )
+{
+    if( action != GLFW_PRESS && action != GLFW_REPEAT )
+        return;
+
+    if(keycode >= 340 && keycode <= 348)
+        return;
+    
+    std::cout << "KEY"
+              << " " << keycode << " " << scancode << " " << action << std::endl;
+
+
+    if( !commandInputMode )
+    {
+        // build key sequence for processing.
+    }
+    else
+    {
+        // if key is alphanumeric of space, append to the current command
+
+        if( keycode >= GLFW_KEY_A && keycode <= GLFW_KEY_Z )
+        {
+            _currentCommand += keycode + ( ( mods == GLFW_MOD_SHIFT ) ? 0 : 32 );
+        }
+        else
+        {
+            switch( keycode )
+            {
+            case GLFW_KEY_APOSTROPHE:
+                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '"' : '\'';
+                break; /* ' */
+            case GLFW_KEY_COMMA:
+                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '<' : ',';
+                break; /* , */
+            case GLFW_KEY_MINUS:
+                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '+' : '-';
+                break; /* - */
+            case GLFW_KEY_PERIOD:
+                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '>' : '.';
+                break; /* . */
+            case GLFW_KEY_SLASH:
+                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '?' : '/';
+                break; /* / */
+            case GLFW_KEY_0:
+                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? ')' : '0';
+                break;
+            case GLFW_KEY_1:
+                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '!' : '1';
+                break;
+            case GLFW_KEY_2:
+                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '@' : '2';
+                break;
+            case GLFW_KEY_3:
+                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '#' : '3';
+                break;
+            case GLFW_KEY_4:
+                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '$' : '4';
+                break;
+            case GLFW_KEY_5:
+                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '%' : '5';
+                break;
+            case GLFW_KEY_6:
+                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '^' : '6';
+                break;
+            case GLFW_KEY_7:
+                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '&' : '7';
+                break;
+            case GLFW_KEY_8:
+                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '*' : '8';
+                break;
+            case GLFW_KEY_9:
+                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '(' : '9';
+                break;
+            case GLFW_KEY_SEMICOLON:
+                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? ':' : ';';
+                break; /* ; */
+            case GLFW_KEY_EQUAL:
+                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '+' : '=';
+                break; /* = */
+            case GLFW_KEY_LEFT_BRACKET:
+                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '{' : '[';
+                break; /* [ */
+            case GLFW_KEY_BACKSLASH:
+                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '|' : '\\';
+                break; /* \ */
+            case GLFW_KEY_RIGHT_BRACKET:
+                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '}' : ']';
+                break; /* ] */
+            case GLFW_KEY_GRAVE_ACCENT:
+                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '~' : '`';
+                break; /* ` */
+            }
+        }
+    }
+
+    if( ( keycode == GLFW_KEY_SEMICOLON ) && ( mods & GLFW_MOD_SHIFT ) && !commandInputMode )
+    {
+        commandInputMode = true;
+        cursorPosition   = 0;
+
+        _currentCommand = ":";
+    }
+
+    if( keycode == GLFW_KEY_ENTER && commandInputMode )
+    {
+        commandInputMode = false;
+        cursorPosition   = 0;
+
+        _currentCommand.resize( 0 );
+    }
+
+    std::cout << _currentCommand << std::endl;
+}
+
 int main( int, char ** )
 {
+    _currentCommand.reserve( 2048 );
     glfwSetErrorCallback( glfw_error_callback );
     if( !glfwInit() )
         return 1;
@@ -44,6 +166,7 @@ int main( int, char ** )
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL( window, true );
     ImGui_ImplOpenGL3_Init( glsl_version );
+    glfwSetKeyCallback( window, OnKeyPressed );
 
     int fontSize = 16.0f;
     io.Fonts->AddFontFromFileTTF( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFontMono-Regular.ttf", fontSize );
@@ -100,7 +223,7 @@ int main( int, char ** )
             float posX = 5.0;
             float posY = ( footerHeight - fontSize ) * 0.5f;
             ImGui::SetCursorPos( ImVec2{ posX, posY } );
-            ImGui::Text( "THIS WILL BE THE COMMAND LINE" );
+            ImGui::TextUnformatted( _currentCommand.c_str() );
         }
         ImGui::End();
         ImGui::PopStyleVar();

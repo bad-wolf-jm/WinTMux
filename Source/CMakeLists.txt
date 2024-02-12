@@ -8,7 +8,9 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 find_package(OpenGL REQUIRED)
 add_executable(WinTMux 
-    Main.cpp
+    Launch/Main.cpp
+    Workspace/Workspace.cpp
+
     #PseudoConsole/EchoCon.cpp
     #PSeudoConsole/PTYProcess.cpp
     #LibUV/LibUV.cpp
@@ -21,7 +23,6 @@ target_link_libraries(WinTMux PRIVATE
     imgui
     glfw
     OpenGL::GL
-    #${OpenGL_LIBRARIES}
 )
 
 #target_compile_definitions(LTSimulationEngineRuntime PUBLIC LTSimulationEngineRuntime )

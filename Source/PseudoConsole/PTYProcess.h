@@ -1,24 +1,18 @@
 #pragma once
 
-
 #include <SDKDDKVer.h>
 #include <Windows.h>
-#include <cstdio>
 #include <errhandlingapi.h>
-#include <iostream>
-#include <ostream>
 #include <process.h>
 #include <processthreadsapi.h>
 #include <stdint.h>
 #include <tchar.h>
 
-#include <string>
 #include <thread>
 
 #include <winbase.h>
 
-using string_t = std::wstring;
-using char_t   = wchar_t;
+#include "Core/String.h"
 
 class PTYProcess
 {
