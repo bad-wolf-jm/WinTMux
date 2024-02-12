@@ -195,48 +195,6 @@ int main( int, char ** )
         ImGui_ImplGlfw_NewFrame();
         mainWindow.Render();
 
-#if 0
-        ImGui::NewFrame();
-
-        float headerHeight = 25.0f;
-        float footerHeight = 25.0f;
-
-        auto       &windowSize     = ImGui::GetIO().DisplaySize;
-        static bool window_is_open = true;
-        ImGui::PushStyleVar( ImGuiStyleVar_WindowMinSize, ImVec2( fontSize, fontSize ) );
-        ImGui::PushStyleVar( ImGuiStyleVar_WindowPadding, ImVec2( 0, 0 ) );
-
-        ImGui::SetNextWindowPos( ImVec2( 0.0f, 0.0f ) );
-        ImGui::SetNextWindowSize( ImVec2( windowSize.x, headerHeight ) );
-        ImGui::Begin( "##1", &window_is_open,
-                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |
-                          ImGuiWindowFlags_NoScrollbar );
-        {
-            float posX = 5.0;
-            float posY = ( headerHeight - fontSize ) * 0.5f;
-            ImGui::SetCursorPos( ImVec2{ posX, posY } );
-            ImGui::Text( "THIS WILL BE THE TITLE" );
-        }
-        ImGui::End();
-
-        ImGui::SetNextWindowPos( ImVec2( 0.0f, windowSize.y - footerHeight ) );
-        ImGui::SetNextWindowSize( ImVec2( windowSize.x, footerHeight ) );
-        ImGui::Begin( "##2", &window_is_open,
-                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |
-                          ImGuiWindowFlags_NoScrollbar );
-        {
-            float posX = 5.0;
-            float posY = ( footerHeight - fontSize ) * 0.5f;
-            ImGui::SetCursorPos( ImVec2{ posX, posY } );
-            ImGui::TextUnformatted( _currentCommand.c_str() );
-        }
-        ImGui::End();
-        ImGui::PopStyleVar();
-        ImGui::PopStyleVar();
-
-        // Rendering
-        ImGui::Render();
-#endif
         int display_w, display_h;
         glfwGetFramebufferSize( window, &display_w, &display_h );
         glViewport( 0, 0, display_w, display_h );
