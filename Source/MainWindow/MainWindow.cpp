@@ -1,5 +1,10 @@
 #include "MainWindow.h"
 
+MainWindow::MainWindow()
+    : _commandLine{ CommandLine( this ) }
+{
+}
+
 void MainWindow::Render()
 {
     ImGui::NewFrame();
@@ -44,11 +49,9 @@ void MainWindow::RenderCommandLine()
     ImGui::SetNextWindowSize( ImVec2( _windowSize.x, _commandLineHeight ) );
     ImGui::Begin( "##2", &_windowIsOpen,
                   ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar );
-    {
-        float posX = 5.0;
-        float posY = ( _commandLineHeight - _fontSize ) * 0.5f;
-        ImGui::SetCursorPos( ImVec2{ posX, posY } );
-//        ImGui::TextUnformatted( _currentCommand.c_str() );
-    }
+
+    _commandLine.SetHeight( _commandLineHeight );
+    _commandLine.Render();
+    
     ImGui::End();
 }

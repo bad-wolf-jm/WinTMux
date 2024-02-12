@@ -1,12 +1,14 @@
 #pragma once
 
 #include "imgui.h"
+#include "CommandLine.h"
 
 class MainWindow
 {
   public:
-    MainWindow() = default;
+    MainWindow();
 
+    inline float FontSize() { return _fontSize; }
     void Render();
 
   private:
@@ -21,4 +23,7 @@ class MainWindow
 
     ImVec2 _windowSize{};
     float  _fontSize = 16.0f;
+
+  private :
+    CommandLine _commandLine;
 };
