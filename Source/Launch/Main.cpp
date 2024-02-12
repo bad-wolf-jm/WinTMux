@@ -193,6 +193,7 @@ int main( int, char ** )
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
+        
         mainWindow.Render();
 
         int display_w, display_h;
