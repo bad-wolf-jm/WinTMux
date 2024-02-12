@@ -6,4 +6,5 @@ class Workspace
   public:
       Workspace(string_t name);
   private:
+      string_t _name = "";
 };

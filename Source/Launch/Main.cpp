@@ -1,4 +1,5 @@
 #include "Core/String.h"
+#include "MainWindow/MainWindow.h"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -22,12 +23,11 @@ void OnKeyPressed( GLFWwindow *window, int keycode, int scancode, int action, in
     if( action != GLFW_PRESS && action != GLFW_REPEAT )
         return;
 
-    if(keycode >= 340 && keycode <= 348)
+    if( keycode >= 340 && keycode <= 348 )
         return;
-    
+
     std::cout << "KEY"
               << " " << keycode << " " << scancode << " " << action << std::endl;
-
 
     if( !commandInputMode )
     {
@@ -181,8 +181,8 @@ int main( int, char ** )
     // io.Fonts->AddFontFromFileTTF( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFont-Bold.ttf", fontSize );
     // io.Fonts->AddFontFromFileTTF( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFont-BoldItalic.ttf", fontSize );
 
-    ImVec4 clear_color = ImVec4( 0.0f, 0.0f, 0.0f, 1.00f );
-
+    ImVec4     clear_color = ImVec4( 0.0f, 0.0f, 0.0f, 1.00f );
+    MainWindow mainWindow{};
     // Main loop
     while( !glfwWindowShouldClose( window ) )
     {
@@ -191,6 +191,9 @@ int main( int, char ** )
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
+        mainWindow.Render();
+
+#if 0
         ImGui::NewFrame();
 
         float headerHeight = 25.0f;
@@ -231,6 +234,7 @@ int main( int, char ** )
 
         // Rendering
         ImGui::Render();
+#endif
         int display_w, display_h;
         glfwGetFramebufferSize( window, &display_w, &display_h );
         glViewport( 0, 0, display_w, display_h );

@@ -10,6 +10,7 @@ find_package(OpenGL REQUIRED)
 add_executable(WinTMux 
     Launch/Main.cpp
     Workspace/Workspace.cpp
+    MainWindow/MainWindow.cpp
 
     #PseudoConsole/EchoCon.cpp
     #PSeudoConsole/PTYProcess.cpp
