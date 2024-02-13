@@ -1,9 +1,10 @@
 #include "MainWindow.h"
+#include <memory>
 
 MainWindow::MainWindow()
-    : _commandLine{ CommandLine( this ) }
+    : _commandLine{ std::make_shared<CommandLine>( this ) }
 {
-    _workspaces.push_back(Workspace("DEFAULT"));
+    _workspaces.push_back(std::make_shared<Workspace>("DEFAULT"));
     _currentWorkspace = 0;
 }
 
@@ -36,7 +37,7 @@ void MainWindow::RenderHeader()
         float posX = 5.0;
         float posY = ( _headerHeight - _fontSize ) * 0.5f;
         ImGui::SetCursorPos( ImVec2{ posX, posY } );
-        ImGui::Text( "WORKSPACE %d (%s)", _currentWorkspace + 1, _workspaces[_currentWorkspace].Name().c_str() );
+        ImGui::Text( "WORKSPACE %d (%s)", _currentWorkspace + 1, _workspaces[_currentWorkspace]->Name().c_str() );
     }
     ImGui::End();
 }
@@ -44,7 +45,7 @@ void MainWindow::RenderHeader()
 void MainWindow::RenderWorkspace()
 {
     if(_currentWorkspace >= 0 && _currentWorkspace < _workspaces.size())
-        _workspaces[_currentWorkspace].Render();
+        _workspaces[_currentWorkspace]->Render();
 }
 
 void MainWindow::RenderCommandLine()
@@ -54,8 +55,8 @@ void MainWindow::RenderCommandLine()
     ImGui::Begin( "##2", &_windowIsOpen,
                   ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar );
 
-    _commandLine.SetHeight( _commandLineHeight );
-    _commandLine.Render();
+    _commandLine->SetHeight( _commandLineHeight );
+    _commandLine->Render();
 
     ImGui::End();
 }

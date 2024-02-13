@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <vector>
 #include <unordered_map>
 
@@ -33,8 +34,8 @@ class MainWindow
     float  _fontSize = 16.0f;
 
   private :
-    CommandLine _commandLine;
-    std::vector<Workspace> _workspaces;
+    std::shared_ptr<CommandLine> _commandLine;
+    std::vector<std::shared_ptr<Workspace>> _workspaces;
     int _currentWorkspace = -1;
 
 };

@@ -18,8 +18,8 @@ class Tree
     void Render();
 
   private:
-    std::unique_ptr<Terminal>          _terminal = nullptr;
-    std::vector<std::unique_ptr<Tree>> _children;
+    std::shared_ptr<Terminal>          _terminal = nullptr;
+    std::vector<std::shared_ptr<Tree>> _children;
 
   private:
     float _dimension = 0.0f;

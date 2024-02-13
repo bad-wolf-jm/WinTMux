@@ -15,6 +15,6 @@ class Workspace
     void Render();
 
   private:
-    string_t _name = "";
-    Tree _workspaceElements;
+    string_t              _name = "";
+    std::shared_ptr<Tree> _workspaceElements;
 };
