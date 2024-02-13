@@ -3,6 +3,8 @@
 MainWindow::MainWindow()
     : _commandLine{ CommandLine( this ) }
 {
+    _workspaces.push_back(Workspace("DEFAULT"));
+    _currentWorkspace = 0;
 }
 
 void MainWindow::Render()
@@ -34,13 +36,15 @@ void MainWindow::RenderHeader()
         float posX = 5.0;
         float posY = ( _headerHeight - _fontSize ) * 0.5f;
         ImGui::SetCursorPos( ImVec2{ posX, posY } );
-        ImGui::Text( "THIS WILL BE THE TITLE" );
+        ImGui::Text( "WORKSPACE %d (%s)", _currentWorkspace, _workspaces[_currentWorkspace].Name().c_str() );
     }
     ImGui::End();
 }
 
 void MainWindow::RenderWorkspace()
 {
+    if(_currentWorkspace >= 0 && _currentWorkspace < _workspaces.size())
+        _workspaces[_currentWorkspace].Render();
 }
 
 void MainWindow::RenderCommandLine()
@@ -52,6 +56,6 @@ void MainWindow::RenderCommandLine()
 
     _commandLine.SetHeight( _commandLineHeight );
     _commandLine.Render();
-    
+
     ImGui::End();
 }

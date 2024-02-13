@@ -1,7 +1,11 @@
 #pragma once
 
+#include <vector>
+#include <unordered_map>
+
 #include "imgui.h"
 #include "CommandLine.h"
+#include "Workspace/Workspace.h"
 
 class MainWindow
 {
@@ -10,6 +14,10 @@ class MainWindow
 
     inline float FontSize() { return _fontSize; }
     void Render();
+    
+    void OpenWorkspace(string_t name);
+    void CloseWorkspace(string_t name);
+    Workspace &CurrentWorkspace();
 
   private:
     void RenderHeader();
@@ -26,4 +34,7 @@ class MainWindow
 
   private :
     CommandLine _commandLine;
+    std::vector<Workspace> _workspaces;
+    int _currentWorkspace = -1;
+
 };
