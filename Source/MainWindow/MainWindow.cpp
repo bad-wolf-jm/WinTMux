@@ -36,7 +36,7 @@ void MainWindow::RenderHeader()
         float posX = 5.0;
         float posY = ( _headerHeight - _fontSize ) * 0.5f;
         ImGui::SetCursorPos( ImVec2{ posX, posY } );
-        ImGui::Text( "WORKSPACE %d (%s)", _currentWorkspace, _workspaces[_currentWorkspace].Name().c_str() );
+        ImGui::Text( "WORKSPACE %d (%s)", _currentWorkspace + 1, _workspaces[_currentWorkspace].Name().c_str() );
     }
     ImGui::End();
 }

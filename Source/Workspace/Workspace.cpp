@@ -7,4 +7,5 @@ Workspace::Workspace( string_t name )
 
 void Workspace::Render()
 {
+    _workspaceElements.Render();
 }
