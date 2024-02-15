@@ -17,7 +17,7 @@ void CommandLine::Render()
     switch( _window->Mode )
     {
     case eInputMode::Normal:
-        ImGui::TextUnformatted("-- NORMAL--");
+        ImGui::TextUnformatted("-- NORMAL --");
         break;
     case eInputMode::Insert:
         ImGui::TextUnformatted("-- INSERT --");

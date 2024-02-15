@@ -4,7 +4,7 @@
 MainWindow::MainWindow()
     : _commandLine{ std::make_shared<CommandLine>( this ) }
 {
-    _workspaces.push_back(std::make_shared<Workspace>("DEFAULT"));
+    _workspaces.push_back( std::make_shared<Workspace>( "DEFAULT" ) );
     _currentWorkspace = 0;
 }
 
@@ -44,15 +44,23 @@ void MainWindow::RenderHeader()
 
 void MainWindow::RenderWorkspace()
 {
-    if(_currentWorkspace >= 0 && _currentWorkspace < _workspaces.size())
+    if( _currentWorkspace >= 0 && _currentWorkspace < _workspaces.size() )
+    {
+        ImGui::SetNextWindowPos( ImVec2( 0.0f, _headerHeight ) );
+        ImGui::SetNextWindowSize( ImVec2( _windowSize.x, _windowSize.y - _headerHeight - _commandLineHeight ) );
+        ImGui::Begin( "##2", &_windowIsOpen,
+                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |
+                          ImGuiWindowFlags_NoScrollbar );
         _workspaces[_currentWorkspace]->Render();
+        ImGui::End();
+    }
 }
 
 void MainWindow::RenderCommandLine()
 {
     ImGui::SetNextWindowPos( ImVec2( 0.0f, _windowSize.y - _commandLineHeight ) );
     ImGui::SetNextWindowSize( ImVec2( _windowSize.x, _commandLineHeight ) );
-    ImGui::Begin( "##2", &_windowIsOpen,
+    ImGui::Begin( "##3", &_windowIsOpen,
                   ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar );
 
     _commandLine->SetHeight( _commandLineHeight );

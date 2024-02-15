@@ -170,7 +170,7 @@ int main( int, char ** )
     ImGui_ImplOpenGL3_Init( glsl_version );
     glfwSetKeyCallback( window, OnKeyPressed );
 
-    int fontSize = 16.0f;
+    int fontSize = 18.0f;
     io.Fonts->AddFontFromFileTTF( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFontMono-Regular.ttf", fontSize );
     // io.Fonts->AddFontFromFileTTF( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFont-ExtraBold.ttf", fontSize );
     // io.Fonts->AddFontFromFileTTF( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFont-ExtraBoldItalic.ttf", fontSize );

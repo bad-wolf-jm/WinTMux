@@ -3,11 +3,18 @@
 #include <vector>
 
 #include "Terminal.h"
+#include "imgui.h"
+
+enum class eOrientation
+{
+    HORIZONTAL,
+    VERTICAL
+};
 
 class Tree
 {
   public:
-    Tree() = default;
+    Tree();
 
     Tree( const Tree & )            = default;
     Tree( Tree && )                 = default;
@@ -15,12 +22,28 @@ class Tree
     Tree &operator=( Tree && )      = default;
 
   public:
-    void Render();
+    void   Render();
+    void   VSplit();
+    void   HSplit();
+    void   SetSize( ImVec2 newSize );
+    ImVec2 Size()
+    {
+        return _size;
+    }
+    // void AddToDimension(float size);
 
   private:
     std::shared_ptr<Terminal>          _terminal = nullptr;
     std::vector<std::shared_ptr<Tree>> _children;
+    std::vector<float>                 _dimensions;
 
   private:
-    float _dimension = 0.0f;
+    void Layout();
+
+  private:
+    float  _dimension = 0.0f;
+    ImVec2 _size{};
+    ImVec2 _position{};
+
+    eOrientation _orientation = eOrientation::VERTICAL;
 };
