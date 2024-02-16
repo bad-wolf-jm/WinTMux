@@ -3,6 +3,7 @@
 // #include "Hexe/Terminal/ImGuiTerminal.h"
 #include "imgui.h"
 #include <unordered_map>
+#include "Core/KeyCodes.h"
 
 #ifdef HEXE_USING_SDL
 #    include <SDL.h>
@@ -10,7 +11,7 @@
 
 struct Key
 {
-    ImGuiKey      keysym;
+    KeyCodes      keysym;
     ImGuiModFlags mask;
     const char   *string;
     int           appkey;
@@ -23,7 +24,7 @@ enum class ShortcutAction
 
 struct Shortcut
 {
-    ImGuiKey       keysym;
+    KeyCodes       keysym;
     ImGuiModFlags  mask;
     ShortcutAction action;
     int            appkey;
@@ -71,15 +72,16 @@ class ImGuiKeyMap
     }
 };
 
-constexpr int ImGuiKeyModFlags_Any = 0xFFFFFFFF;
+constexpr int MOD_ANY = 0xFFFFFFFF;
 
 extern ImGuiKeyMap ImGuiTerminalKeyMap;
 
-#if defined( HEXE_USING_SDL )
-static const SDL_Scancode asciiScancodeTable[] = {
-    SDL_SCANCODE_A, SDL_SCANCODE_B, SDL_SCANCODE_C,           SDL_SCANCODE_D,     SDL_SCANCODE_E,           SDL_SCANCODE_F,
-    SDL_SCANCODE_G, SDL_SCANCODE_H, SDL_SCANCODE_I,           SDL_SCANCODE_J,     SDL_SCANCODE_K,           SDL_SCANCODE_L,
-    SDL_SCANCODE_M, SDL_SCANCODE_N, SDL_SCANCODE_O,           SDL_SCANCODE_P,     SDL_SCANCODE_Q,           SDL_SCANCODE_R,
-    SDL_SCANCODE_S, SDL_SCANCODE_T, SDL_SCANCODE_U,           SDL_SCANCODE_V,     SDL_SCANCODE_W,           SDL_SCANCODE_X,
-    SDL_SCANCODE_Y, SDL_SCANCODE_Z, SDL_SCANCODE_LEFTBRACKET, SDL_SCANCODE_SLASH, SDL_SCANCODE_RIGHTBRACKET };
-#endif
+//
+// #if defined( HEXE_USING_SDL )
+// static const SDL_Scancode asciiScancodeTable[] = {
+//    SDL_SCANCODE_A, SDL_SCANCODE_B, SDL_SCANCODE_C,           SDL_SCANCODE_D,     SDL_SCANCODE_E,           SDL_SCANCODE_F,
+//    SDL_SCANCODE_G, SDL_SCANCODE_H, SDL_SCANCODE_I,           SDL_SCANCODE_J,     SDL_SCANCODE_K,           SDL_SCANCODE_L,
+//    SDL_SCANCODE_M, SDL_SCANCODE_N, SDL_SCANCODE_O,           SDL_SCANCODE_P,     SDL_SCANCODE_Q,           SDL_SCANCODE_R,
+//    SDL_SCANCODE_S, SDL_SCANCODE_T, SDL_SCANCODE_U,           SDL_SCANCODE_V,     SDL_SCANCODE_W,           SDL_SCANCODE_X,
+//    SDL_SCANCODE_Y, SDL_SCANCODE_Z, SDL_SCANCODE_LEFTBRACKET, SDL_SCANCODE_SLASH, SDL_SCANCODE_RIGHTBRACKET };
+// #endif

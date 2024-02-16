@@ -18,6 +18,7 @@ add_executable(WinTMux
     MainWindow/CommandLine.cpp
 
     #PseudoConsole/EchoCon.cpp
+    PseudoConsole/Keys.cpp
     #PSeudoConsole/PTYProcess.cpp
     #LibUV/LibUV.cpp
 )
