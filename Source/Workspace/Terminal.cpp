@@ -12,6 +12,7 @@ void Terminal::Render()
 
     ImVec2 topLeft     = cursorScreenPosition;
     ImVec2 size        = ImGui::GetWindowSize();
+    ImGui::Text( "%f x %f", size.x, size.y );
     ImVec2 bottomRight = ImVec2{ topLeft.x + size.x, topLeft.y + size.y };
     drawList->AddRect( topLeft, bottomRight, ImColor( 255, 0, 0, 255 ) );
 }
