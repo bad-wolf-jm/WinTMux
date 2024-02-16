@@ -150,9 +150,10 @@ int main( int, char ** )
     // glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 
     // Create window with graphics context
-    GLFWwindow *window = glfwCreateWindow( 1920, 1080, "Dear ImGui GLFW+OpenGL3 example", nullptr, nullptr );
+    GLFWwindow *window = glfwCreateWindow( 2450, 1300, "Dear ImGui GLFW+OpenGL3 example", nullptr, nullptr );
     if( window == nullptr )
         return 1;
+    
     glfwMakeContextCurrent( window );
     glfwSwapInterval( 1 ); // Enable vsync
 

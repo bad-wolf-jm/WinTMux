@@ -4,15 +4,13 @@
 
 void Terminal::Render()
 {
-    auto  *drawList             = ImGui::GetWindowDrawList();
-    ImVec2 cursorScreenPosition = ImGui::GetCursorScreenPos();
+    auto  *drawList    = ImGui::GetWindowDrawList();
+    ImVec2 topLeft     = ImGui::GetCursorScreenPos();
+    ImVec2 windowSize  = ImGui::GetWindowSize();
+    ImVec2 bottomRight = ImVec2{ topLeft.x + windowSize.x, topLeft.y + windowSize.y };
+    drawList->AddRect( topLeft, bottomRight, ImColor( 255, 255, 255, 50 ) );
 
     ImGui::SetCursorPos( ImVec2{ 5.0f, 5.0f } );
     ImGui::Text( "FOOBAR" );
-
-    ImVec2 topLeft     = cursorScreenPosition;
-    ImVec2 size        = ImGui::GetWindowSize();
-    ImGui::Text( "%f x %f", size.x, size.y );
-    ImVec2 bottomRight = ImVec2{ topLeft.x + size.x, topLeft.y + size.y };
-    drawList->AddRect( topLeft, bottomRight, ImColor( 255, 0, 0, 255 ) );
+    ImGui::Text( "%f x %f", windowSize.x, windowSize.y );
 }
