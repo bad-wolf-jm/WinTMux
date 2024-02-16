@@ -15,6 +15,8 @@ class Tree
 {
   public:
     Tree();
+    Tree( std::shared_ptr<Terminal> terminal );
+    Tree( Tree *other );
 
     Tree( const Tree & )            = default;
     Tree( Tree && )                 = default;
@@ -26,6 +28,7 @@ class Tree
     void   VSplit();
     void   HSplit();
     void   SetSize( ImVec2 newSize );
+    void   SetPosition( ImVec2 newPosition );
     ImVec2 Size();
 
   private:
@@ -34,7 +37,8 @@ class Tree
     std::vector<float>                 _dimensions;
 
   private:
-    void Layout();
+    void                  UpdateLayout();
+    std::shared_ptr<Tree> Clone();
 
   private:
     float  _dimension = 0.0f;
