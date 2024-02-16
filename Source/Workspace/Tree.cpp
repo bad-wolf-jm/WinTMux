@@ -6,6 +6,11 @@ Tree::Tree()
     _terminal = std::make_shared<Terminal>();
 }
 
+ImVec2 Tree::Size()
+{
+    return _size;
+}
+
 void Tree::SetSize( ImVec2 newSize )
 {
     _size = newSize;

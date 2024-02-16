@@ -26,11 +26,7 @@ class Tree
     void   VSplit();
     void   HSplit();
     void   SetSize( ImVec2 newSize );
-    ImVec2 Size()
-    {
-        return _size;
-    }
-    // void AddToDimension(float size);
+    ImVec2 Size();
 
   private:
     std::shared_ptr<Terminal>          _terminal = nullptr;
