@@ -1,8 +1,9 @@
 
 #pragma once
+
 #include "GLFW/glfw3.h"
 
-enum class KeyCodes : int32_t
+enum class KeyCodes : size_t
 {
     F1,              // = GLFW_KEY_F1,
     F2,              // = GLFW_KEY_F2,
@@ -122,6 +123,22 @@ enum class KeyCodes : int32_t
     RIGHT_ALT,       // = GLFW_KEY_RIGHT_ALT,
     RIGHT_SUPER,     // = GLFW_KEY_RIGHT_SUPER,
     MENU,            // = GLFW_KEY_MENU,
+    COUNT
+};
+
+enum class Modifiers : size_t
+{
+    NONE,           //= 0;
+    SHIFT,          //= 1 << 0;
+    CTRL,           //= 1 << 1;
+    ALT,            //= 1 << 2;
+    SUPER,          //= 1 << 3;
+    ALT_SHIFT,      //= MOD_SHIFT | MOD_ALT;
+    CTRL_SHIFT,     //= MOD_SHIFT | MOD_CTRL;
+    CTRL_ALT,       //= MOD_ALT | MOD_CTRL;
+    CTRL_ALT_SHIFT, //= MOD_CTRL | MOD_ALT | MOD_SHIFT;
+    COUNT,
+    ANY = COUNT
 };
 
 struct KeyCode
@@ -130,15 +147,20 @@ struct KeyCode
     int      ScanCode;
     char     Symbol;
     char     ShiftedSymbol;
+
+    char GetCharacter(bool isShifted) const;
 };
 
 class KeyboardHandler
 {
   public:
-    bool IsPrintable( KeyCodes key );
-    KeyCode const& GetKeyCode(int keycode);
+    KeyboardHandler();
+
+  public:
+    bool           IsPrintable( KeyCodes key );
+    KeyCode const &GetKeyCode( int keycode );
 
   private:
     KeyCode Keys[GLFW_KEY_LAST];
-    void InitKeyCodes();
+    void    InitKeyCodes();
 };

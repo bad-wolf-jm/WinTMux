@@ -1,15 +1,32 @@
 #include "KeyCodes.h"
 #include "GLFW/glfw3.h"
 
-KeyCode Keys[GLFW_KEY_LAST];
+//KeyCode Keys[GLFW_KEY_LAST];
+char KeyCode::GetCharacter(bool isShifted) const
+{
+    return !isShifted ? Symbol : ShiftedSymbol;
+}
 
-KeyCode const &GetKeyCode( int keycode )
+KeyboardHandler::KeyboardHandler()
+{
+    InitKeyCodes();
+}
+
+KeyCode const &KeyboardHandler::GetKeyCode( int keycode )
 {
     return Keys[keycode];
 }
 
 void KeyboardHandler::InitKeyCodes()
 {
+    int controlKeyID = 0;
+    Keys[GLFW_KEY_DELETE]        = { KeyCodes::DELETE, glfwGetKeyScancode( GLFW_KEY_DELETE ), '\0', '\0' };
+    Keys[GLFW_KEY_ESCAPE]        = { KeyCodes::ESCAPE, glfwGetKeyScancode( GLFW_KEY_ESCAPE ), '\0', '\0' };
+    Keys[GLFW_KEY_INSERT]        = { KeyCodes::INSERT, glfwGetKeyScancode( GLFW_KEY_INSERT ), '\0', '\0' };
+    Keys[GLFW_KEY_PAGE_UP]       = { KeyCodes::PAGE_UP, glfwGetKeyScancode( GLFW_KEY_PAGE_UP ), '\0', '\0' };
+    Keys[GLFW_KEY_PAGE_DOWN]     = { KeyCodes::PAGE_DOWN, glfwGetKeyScancode( GLFW_KEY_PAGE_DOWN ), '\0', '\0' };
+    Keys[GLFW_KEY_HOME]          = { KeyCodes::HOME, glfwGetKeyScancode( GLFW_KEY_HOME ), '\0', '\0' };
+    Keys[GLFW_KEY_END]           = { KeyCodes::END, glfwGetKeyScancode( GLFW_KEY_END ), '\0', '\0' };
     Keys[GLFW_KEY_F1]            = { KeyCodes::F1, glfwGetKeyScancode( GLFW_KEY_F1 ), '\0', '\0' };
     Keys[GLFW_KEY_F2]            = { KeyCodes::F2, glfwGetKeyScancode( GLFW_KEY_F2 ), '\0', '\0' };
     Keys[GLFW_KEY_F3]            = { KeyCodes::F3, glfwGetKeyScancode( GLFW_KEY_F3 ), '\0', '\0' };
@@ -102,17 +119,10 @@ void KeyboardHandler::InitKeyCodes()
     Keys[GLFW_KEY_ENTER]         = { KeyCodes::ENTER, glfwGetKeyScancode( GLFW_KEY_ENTER ), '\n', '\0' };
     Keys[GLFW_KEY_TAB]           = { KeyCodes::TAB, glfwGetKeyScancode( GLFW_KEY_TAB ), '\t', '\0' };
     Keys[GLFW_KEY_BACKSPACE]     = { KeyCodes::BACKSPACE, glfwGetKeyScancode( GLFW_KEY_BACKSPACE ), '\0', '\0' };
-    Keys[GLFW_KEY_DELETE]        = { KeyCodes::DELETE, glfwGetKeyScancode( GLFW_KEY_DELETE ), '\0', '\0' };
-    Keys[GLFW_KEY_ESCAPE]        = { KeyCodes::ESCAPE, glfwGetKeyScancode( GLFW_KEY_ESCAPE ), '\0', '\0' };
-    Keys[GLFW_KEY_INSERT]        = { KeyCodes::INSERT, glfwGetKeyScancode( GLFW_KEY_INSERT ), '\0', '\0' };
     Keys[GLFW_KEY_RIGHT]         = { KeyCodes::RIGHT, glfwGetKeyScancode( GLFW_KEY_RIGHT ), '\0', '\0' };
     Keys[GLFW_KEY_LEFT]          = { KeyCodes::LEFT, glfwGetKeyScancode( GLFW_KEY_LEFT ), '\0', '\0' };
     Keys[GLFW_KEY_DOWN]          = { KeyCodes::DOWN, glfwGetKeyScancode( GLFW_KEY_DOWN ), '\0', '\0' };
     Keys[GLFW_KEY_UP]            = { KeyCodes::UP, glfwGetKeyScancode( GLFW_KEY_UP ), '\0', '\0' };
-    Keys[GLFW_KEY_PAGE_UP]       = { KeyCodes::PAGE_UP, glfwGetKeyScancode( GLFW_KEY_PAGE_UP ), '\0', '\0' };
-    Keys[GLFW_KEY_PAGE_DOWN]     = { KeyCodes::PAGE_DOWN, glfwGetKeyScancode( GLFW_KEY_PAGE_DOWN ), '\0', '\0' };
-    Keys[GLFW_KEY_HOME]          = { KeyCodes::HOME, glfwGetKeyScancode( GLFW_KEY_HOME ), '\0', '\0' };
-    Keys[GLFW_KEY_END]           = { KeyCodes::END, glfwGetKeyScancode( GLFW_KEY_END ), '\0', '\0' };
     Keys[GLFW_KEY_CAPS_LOCK]     = { KeyCodes::CAPS_LOCK, glfwGetKeyScancode( GLFW_KEY_CAPS_LOCK ), '\0', '\0' };
     Keys[GLFW_KEY_SCROLL_LOCK]   = { KeyCodes::SCROLL_LOCK, glfwGetKeyScancode( GLFW_KEY_SCROLL_LOCK ), '\0', '\0' };
     Keys[GLFW_KEY_NUM_LOCK]      = { KeyCodes::NUM_LOCK, glfwGetKeyScancode( GLFW_KEY_NUM_LOCK ), '\0', '\0' };
@@ -130,3 +140,4 @@ void KeyboardHandler::InitKeyCodes()
     Keys[GLFW_KEY_MENU]          = { KeyCodes::MENU, glfwGetKeyScancode( GLFW_KEY_MENU ), '\0', '\0' };
     // clang-format off
 }
+

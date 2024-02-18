@@ -1,9 +1,9 @@
 #pragma once
 
 // #include "Hexe/Terminal/ImGuiTerminal.h"
+#include "Core/KeyCodes.h"
 #include "imgui.h"
 #include <unordered_map>
-#include "Core/KeyCodes.h"
 
 #ifdef HEXE_USING_SDL
 #    include <SDL.h>
@@ -11,11 +11,11 @@
 
 struct Key
 {
-    KeyCodes      keysym;
-    ImGuiModFlags mask;
-    const char   *string;
-    int           appkey;
-    int           appcursor;
+    KeyCodes    keysym;
+    Modifiers   mask;
+    const char *string;
+    int         appkey;
+    int         appcursor;
 };
 enum class ShortcutAction
 {
@@ -25,7 +25,7 @@ enum class ShortcutAction
 struct Shortcut
 {
     KeyCodes       keysym;
-    ImGuiModFlags  mask;
+    Modifiers      mask;
     ShortcutAction action;
     int            appkey;
     int            appcursor;
@@ -47,34 +47,22 @@ struct ImGuiKeyMapShortcut
     int            appcursor;
 };
 
-class ImGuiKeyMap
+class ControlSequences
 {
-  private:
-    std::unordered_map<ImGuiKey, std::vector<ImGuiKeyMapEntry>>    m_keyMap;
-    std::unordered_map<ImGuiKey, std::vector<ImGuiKeyMapEntry>>    m_platformKeyMap;
-    std::unordered_map<ImGuiKey, std::vector<ImGuiKeyMapShortcut>> m_shortcuts;
-
   public:
-    ImGuiKeyMap( const Key keys[], size_t keysLen, const Key platformKeys[], size_t platformKeysLen, const Shortcut shortcuts[],
-                 size_t shortcutsLen );
+    ControlSequences();
 
-    inline const std::unordered_map<ImGuiKey, std::vector<ImGuiKeyMapEntry>> &KeyMap() const
-    {
-        return m_keyMap;
-    }
-    inline const std::unordered_map<ImGuiKey, std::vector<ImGuiKeyMapEntry>> &PlatformKeyMap() const
-    {
-        return m_platformKeyMap;
-    }
-    inline const std::unordered_map<ImGuiKey, std::vector<ImGuiKeyMapShortcut>> &Shortcuts() const
-    {
-        return m_shortcuts;
-    }
+  private:
+    const char *controlSequences[(size_t)KeyCodes::COUNT][(size_t)Modifiers::COUNT] = { 0 };
+
+    // std::unordered_map<ImGuiKey, std::vector<ry   m_keyMap;
+    // std::unordered_map<ImGuiKey, std::vector<ImGuiKeyMapEntry>>    m_platformKeyMap;
+    // std::unordered_map<ImGuiKey, std::vector<ImGuiKeyMapShortcut>> m_shortcuts;
 };
 
-constexpr int MOD_ANY = 0xFFFFFFFF;
+//constexpr int MOD_ANY = 0xFFFFFFFF;
 
-extern ImGuiKeyMap ImGuiTerminalKeyMap;
+// extern ImGuiKeyMap ImGuiTerminalKeyMap;
 
 //
 // #if defined( HEXE_USING_SDL )

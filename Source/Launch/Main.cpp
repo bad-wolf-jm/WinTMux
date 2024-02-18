@@ -1,6 +1,7 @@
+#include "Core/ControlSequences.h"
 #include "Core/String.h"
 #include "MainWindow/MainWindow.h"
-//#include "MainWindow/CommandLine.h"
+// #include "MainWindow/CommandLine.h"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
@@ -17,9 +18,13 @@ static void glfw_error_callback( int error, const char *description )
     fprintf( stderr, "GLFW Error %d: %s\n", error, description );
 }
 
-static string_t _currentCommand;
-static int      cursorPosition   = 0;
-static bool     commandInputMode = false;
+static KeyboardHandler  keyboardHandler;
+static ControlSequences controlSequences;
+static string_t         _currentCommand;
+static int              cursorPosition   = 0;
+static bool             commandInputMode = false;
+
+MainWindow mainWindow{};
 
 void OnKeyPressed( GLFWwindow *window, int keycode, int scancode, int action, int mods )
 {
@@ -39,96 +44,99 @@ void OnKeyPressed( GLFWwindow *window, int keycode, int scancode, int action, in
     else
     {
         // if key is alphanumeric of space, append to the current command
+        auto const &keyCode = keyboardHandler.GetKeyCode( keycode );
+        mainWindow._commandLine->_currentCommand += keyCode.GetCharacter( mods == GLFW_MOD_SHIFT );
 
-        if( keycode >= GLFW_KEY_A && keycode <= GLFW_KEY_Z )
-        {
-            _currentCommand += keycode + ( ( mods == GLFW_MOD_SHIFT ) ? 0 : 32 );
-        }
-        else
-        {
-            switch( keycode )
-            {
-            case GLFW_KEY_APOSTROPHE:
-                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '"' : '\'';
-                break; /* ' */
-            case GLFW_KEY_COMMA:
-                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '<' : ',';
-                break; /* , */
-            case GLFW_KEY_MINUS:
-                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '+' : '-';
-                break; /* - */
-            case GLFW_KEY_PERIOD:
-                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '>' : '.';
-                break; /* . */
-            case GLFW_KEY_SLASH:
-                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '?' : '/';
-                break; /* / */
-            case GLFW_KEY_0:
-                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? ')' : '0';
-                break;
-            case GLFW_KEY_1:
-                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '!' : '1';
-                break;
-            case GLFW_KEY_2:
-                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '@' : '2';
-                break;
-            case GLFW_KEY_3:
-                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '#' : '3';
-                break;
-            case GLFW_KEY_4:
-                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '$' : '4';
-                break;
-            case GLFW_KEY_5:
-                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '%' : '5';
-                break;
-            case GLFW_KEY_6:
-                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '^' : '6';
-                break;
-            case GLFW_KEY_7:
-                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '&' : '7';
-                break;
-            case GLFW_KEY_8:
-                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '*' : '8';
-                break;
-            case GLFW_KEY_9:
-                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '(' : '9';
-                break;
-            case GLFW_KEY_SEMICOLON:
-                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? ':' : ';';
-                break; /* ; */
-            case GLFW_KEY_EQUAL:
-                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '+' : '=';
-                break; /* = */
-            case GLFW_KEY_LEFT_BRACKET:
-                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '{' : '[';
-                break; /* [ */
-            case GLFW_KEY_BACKSLASH:
-                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '|' : '\\';
-                break; /* \ */
-            case GLFW_KEY_RIGHT_BRACKET:
-                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '}' : ']';
-                break; /* ] */
-            case GLFW_KEY_GRAVE_ACCENT:
-                _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '~' : '`';
-                break; /* ` */
-            }
-        }
+        // if( keycode >= GLFW_KEY_A && keycode <= GLFW_KEY_Z )
+        // {
+        //     _currentCommand += keycode + ( ( mods == GLFW_MOD_SHIFT ) ? 0 : 32 );
+        // }
+        // else
+        // {
+        //     switch( keycode )
+        //     {
+        //     case GLFW_KEY_APOSTROPHE:
+        //         _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '"' : '\'';
+        //         break; /* ' */
+        //     case GLFW_KEY_COMMA:
+        //         _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '<' : ',';
+        //         break; /* , */
+        // break
+        // (    case GLFW_KEY_MINUS:
+        //         _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '+' : '-';
+        //         break; /* - */
+        //     case GLFW_KEY_PERIOD:
+        //         _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '>' : '.';
+        //         break; /* . */
+        //     case GLFW_KEY_SLASH:
+        //         _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '?' : '/';
+        //         break; /* / */
+        //     case GLFW_KEY_0:
+        //         _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? ')' : '0';
+        //         break;
+        //     case GLFW_KEY_1:
+        //         _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '!' : '1';
+        //         break;
+        //     case GLFW_KEY_2:
+        //         _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '@' : '2';
+        //         break;
+        //     case GLFW_KEY_3:
+        //         _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '#' : '3';
+        //         break;
+        //     case GLFW_KEY_4:
+        //         _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '$' : '4';
+        //         break;
+        //     case GLFW_KEY_5:
+        //         _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '%' : '5';
+        //         break;
+        //     case GLFW_KEY_6:
+        //         _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '^' : '6';
+        //         break;
+        //     case GLFW_KEY_7:
+        //         _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '&' : '7';
+        //         break;
+        //     case GLFW_KEY_8:
+        //         _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '*' : '8';
+        //         break;
+        //     case GLFW_KEY_9:
+        //         _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '(' : '9';
+        //         break;
+        //     case GLFW_KEY_SEMICOLON:
+        //         _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? ':' : ';';
+        //         break; /* ; */
+        //     case GLFW_KEY_EQUAL:
+        //         _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '+' : '=';
+        //         break; /* = */
+        //     case GLFW_KEY_LEFT_BRACKET:
+        //         _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '{' : '[';
+        //         break; /* [
+        //     case GLFW_KEY_BACKSLASH:
+        //         _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '|' : '\\';
+        //         break; /* \ */
+        //     case GLFW_KEY_RIGHT_BRACKET:
+        //         _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '}' : ']';
+        //         break; /* ] */
+        //     case GLFW_KEY_GRAVE_ACCENT:
+        //         _currentCommand += ( mods == GLFW_MOD_SHIFT ) ? '~' : '`';
+        //         break; /* ` */
+        //     }
+        // }
     }
 
     if( ( keycode == GLFW_KEY_SEMICOLON ) && ( mods & GLFW_MOD_SHIFT ) && !commandInputMode )
     {
+        mainWindow.Mode  = eInputMode::Command;
         commandInputMode = true;
-        cursorPosition   = 0;
-
-        _currentCommand = ":";
+        mainWindow._commandLine->_cursorPosition   = 0;
+        mainWindow._commandLine->_currentCommand = ":";
     }
 
     if( keycode == GLFW_KEY_ENTER && commandInputMode )
     {
+        mainWindow.Mode  = eInputMode::Normal;
         commandInputMode = false;
-        cursorPosition   = 0;
-
-        _currentCommand.resize( 0 );
+        mainWindow._commandLine->_cursorPosition   = 0;
+        mainWindow._commandLine->_currentCommand.resize( 0 );
     }
 
     std::cout << _currentCommand << std::endl;
@@ -153,7 +161,7 @@ int main( int, char ** )
     GLFWwindow *window = glfwCreateWindow( 2450, 1300, "Dear ImGui GLFW+OpenGL3 example", nullptr, nullptr );
     if( window == nullptr )
         return 1;
-    
+
     glfwMakeContextCurrent( window );
     glfwSwapInterval( 1 ); // Enable vsync
 
@@ -185,8 +193,7 @@ int main( int, char ** )
     // io.Fonts->AddFontFromFileTTF( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFont-Bold.ttf", fontSize );
     // io.Fonts->AddFontFromFileTTF( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFont-BoldItalic.ttf", fontSize );
 
-    ImVec4     clear_color = ImVec4( 0.0f, 0.0f, 0.0f, 1.00f );
-    MainWindow mainWindow{};
+    ImVec4 clear_color = ImVec4( 0.0f, 0.0f, 0.0f, 1.00f );
     // Main loop
     while( !glfwWindowShouldClose( window ) )
     {
@@ -195,7 +202,7 @@ int main( int, char ** )
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
-        
+
         mainWindow.Render();
 
         int display_w, display_h;

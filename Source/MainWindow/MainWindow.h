@@ -40,7 +40,7 @@ class MainWindow
     ImVec2 _windowSize{};
     float  _fontSize = 16.0f;
 
-  private:
+  public:
     std::shared_ptr<CommandLine>            _commandLine;
     std::vector<std::shared_ptr<Workspace>> _workspaces;
     int                                     _currentWorkspace = -1;

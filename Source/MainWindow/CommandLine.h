@@ -23,7 +23,7 @@ class CommandLine
     void KeyPress( int keyCode, int mods );
     void Render();
 
-  private:
+  public:
     string_t    _currentCommand = "";
     int         _cursorPosition = 0;
     float       _height         = 25.0f;
