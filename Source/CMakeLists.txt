@@ -8,6 +8,9 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 find_package(OpenGL REQUIRED)
 add_executable(WinTMux 
+    Core/KeyCodes.cpp
+    Core/ControlSequences.cpp
+
     Launch/Main.cpp
     
     Workspace/Workspace.cpp
@@ -18,7 +21,6 @@ add_executable(WinTMux
     MainWindow/CommandLine.cpp
 
     #PseudoConsole/EchoCon.cpp
-    PseudoConsole/Keys.cpp
     #PSeudoConsole/PTYProcess.cpp
     #LibUV/LibUV.cpp
 )
