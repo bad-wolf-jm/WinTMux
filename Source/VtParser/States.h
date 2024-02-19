@@ -128,11 +128,12 @@ enum class VtParserState
     // The only control functions invoked by OSC strings are DECSIN (Set Icon Name) and DECSWT (Set Window Title), present on the
     // multisession VT520 and VT525 terminals. Earlier terminals treat OSC in the same way as PM and APC, ignoring the entire control
     // string.
+    osc_string,
+    
     //
-    // sos/pm/apc string
     // The VT500 doesn’t define any function for these control strings, so this state ignores all received characters until the control
     // function ST is recognised.
-    osc_string,
+    sos_pm_apc_string,
 
     // This isn’t a real state. It is used on the state diagram to show transitions that can occur from any state to some other state.
     // These invariant transitions are:
