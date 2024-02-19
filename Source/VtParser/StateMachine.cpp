@@ -4,52 +4,46 @@
 Vt100StateMachine::Vt100StateMachine()
 {
     // Anywhere transitions
-    // clang-format off
-    OnEvent( 0x18,                Action::execute, VtParserState::ground );
-    OnEvent( 0x1a,                Action::execute, VtParserState::ground );
+    OnEvent( 0x18, Action::execute, VtParserState::ground );
+    OnEvent( 0x1a, Action::execute, VtParserState::ground );
     OnEvent( Range{ 0x80, 0x8f }, Action::execute, VtParserState::ground );
     OnEvent( Range{ 0x91, 0x97 }, Action::execute, VtParserState::ground );
-    OnEvent( 0x99,                Action::execute, VtParserState::ground );
-    OnEvent( 0x9a,                Action::execute, VtParserState::ground );
-    OnEvent( 0x9c,                                 VtParserState::ground );
-    OnEvent( 0x1b,                                 VtParserState::escape );
-    OnEvent( 0x98,                                 VtParserState::sos_pm_apc_string );
-    OnEvent( 0x9e,                                 VtParserState::sos_pm_apc_string );
-    OnEvent( 0x9f,                                 VtParserState::sos_pm_apc_string );
-    OnEvent( 0x90,                                 VtParserState::dcs_entry );
-    OnEvent( 0x9d,                                 VtParserState::osc_string );
-    OnEvent( 0x9b,                                 VtParserState::csi_entry );
-    // clang-format on
+    OnEvent( 0x99, Action::execute, VtParserState::ground );
+    OnEvent( 0x9a, Action::execute, VtParserState::ground );
+    OnEvent( 0x9c, VtParserState::ground );
+    OnEvent( 0x1b, VtParserState::escape );
+    OnEvent( 0x98, VtParserState::sos_pm_apc_string );
+    OnEvent( 0x9e, VtParserState::sos_pm_apc_string );
+    OnEvent( 0x9f, VtParserState::sos_pm_apc_string );
+    OnEvent( 0x90, VtParserState::dcs_entry );
+    OnEvent( 0x9d, VtParserState::osc_string );
+    OnEvent( 0x9b, VtParserState::csi_entry );
 
     // Transitions from ground state
-    // clang-format off
     OnEvent( VtParserState::ground, Range{ 0x00, 0x17 }, Action::execute );
-    OnEvent( VtParserState::ground, 0x19,                Action::execute );
+    OnEvent( VtParserState::ground, 0x19, Action::execute );
     OnEvent( VtParserState::ground, Range{ 0x1c, 0x1f }, Action::execute );
     OnEvent( VtParserState::ground, Range{ 0x20, 0x7f }, Action::print );
-    // clang-format on
 
     //$states[:ESCAPE] = {
     //  OnEvent( VtParserState::escape,  :on_entry , Action::clear);
-    // clang-format off
     OnEvent( VtParserState::escape, Range{ 0x00, 0x17 }, Action::execute );
-    OnEvent( VtParserState::escape, 0x19,                Action::execute );
+    OnEvent( VtParserState::escape, 0x19, Action::execute );
     OnEvent( VtParserState::escape, Range{ 0x1c, 0x1f }, Action::execute );
-    OnEvent( VtParserState::escape, 0x7f,                Action::ignore );
-    OnEvent( VtParserState::escape, Range{ 0x20, 0x2f }, Action::collect,      VtParserState::escape_intermediate );
+    OnEvent( VtParserState::escape, 0x7f, Action::ignore );
+    OnEvent( VtParserState::escape, Range{ 0x20, 0x2f }, Action::collect, VtParserState::escape_intermediate );
     OnEvent( VtParserState::escape, Range{ 0x30, 0x4f }, Action::esc_dispatch, VtParserState::ground );
     OnEvent( VtParserState::escape, Range{ 0x51, 0x57 }, Action::esc_dispatch, VtParserState::ground );
-    OnEvent( VtParserState::escape, 0x59,                Action::esc_dispatch, VtParserState::ground );
-    OnEvent( VtParserState::escape, 0x5a,                Action::esc_dispatch, VtParserState::ground );
-    OnEvent( VtParserState::escape, 0x5c,                Action::esc_dispatch, VtParserState::ground );
+    OnEvent( VtParserState::escape, 0x59, Action::esc_dispatch, VtParserState::ground );
+    OnEvent( VtParserState::escape, 0x5a, Action::esc_dispatch, VtParserState::ground );
+    OnEvent( VtParserState::escape, 0x5c, Action::esc_dispatch, VtParserState::ground );
     OnEvent( VtParserState::escape, Range{ 0x60, 0x7e }, Action::esc_dispatch, VtParserState::ground );
-    OnEvent( VtParserState::escape, 0x5b,                                      VtParserState::csi_entry );
-    OnEvent( VtParserState::escape, 0x5d,                                      VtParserState::osc_string );
-    OnEvent( VtParserState::escape, 0x50,                                      VtParserState::dcs_entry );
-    OnEvent( VtParserState::escape, 0x58,                                      VtParserState::sos_pm_apc_string );
-    OnEvent( VtParserState::escape, 0x5e,                                      VtParserState::sos_pm_apc_string );
-    OnEvent( VtParserState::escape, 0x5f,                                      VtParserState::sos_pm_apc_string );
-    // clang-format on
+    OnEvent( VtParserState::escape, 0x5b, VtParserState::csi_entry );
+    OnEvent( VtParserState::escape, 0x5d, VtParserState::osc_string );
+    OnEvent( VtParserState::escape, 0x50, VtParserState::dcs_entry );
+    OnEvent( VtParserState::escape, 0x58, VtParserState::sos_pm_apc_string );
+    OnEvent( VtParserState::escape, 0x5e, VtParserState::sos_pm_apc_string );
+    OnEvent( VtParserState::escape, 0x5f, VtParserState::sos_pm_apc_string );
     //}
 
     //$states[:ESCAPE_INTERMEDIATE] = {
