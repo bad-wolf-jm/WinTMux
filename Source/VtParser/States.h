@@ -1,10 +1,12 @@
-#pragma once
-
 /*
 from: https://vt100.net/emu/dec_ansi_parser
 */
 
-enum class VtParserState
+#pragma once
+
+#include <cstdint>
+
+enum class VtParserState : uint8_t
 {
     none,
 
@@ -131,7 +133,7 @@ enum class VtParserState
     // multisession VT520 and VT525 terminals. Earlier terminals treat OSC in the same way as PM and APC, ignoring the entire control
     // string.
     osc_string,
-    
+
     //
     // The VT500 doesn’t define any function for these control strings, so this state ignores all received characters until the control
     // function ST is recognised.

@@ -1,8 +1,9 @@
+/* Source: https://vt100.net/emu/dec_ansi_parser*/
 #pragma once
 
-/* Source: https://vt100.net/emu/dec_ansi_parser*/
+#include <cstdint>
 
-enum Action
+enum class Action : uint8_t
 {
     none,
 
@@ -112,6 +113,6 @@ enum Action
 
     // This action is called when the OSC string is terminated by ST, CAN, SUB or ESC, to allow the OSC handler to finish neatly.
     osc_end,
-    
+
     count
 };
