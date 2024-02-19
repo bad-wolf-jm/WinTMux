@@ -6,6 +6,8 @@ from: https://vt100.net/emu/dec_ansi_parser
 
 enum class VtParserState
 {
+    none,
+
     // This is the initial state of the parser, and the state used to consume all characters other than components of escape and
     // control sequences.
     //
@@ -151,6 +153,6 @@ enum class VtParserState
     // to the terminal and would not take part in any processing. Its only purpose was as a time-fill character. However, the VT500
     // defines a control function DECNULM (Null Mode), which allows NUL to be passed to an attached printer. So in this parser, NUL is
     // treated the same as other C0 controls.
-    anywhere
+    count
 
 };

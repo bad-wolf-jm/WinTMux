@@ -4,6 +4,8 @@
 
 enum Action
 {
+    none,
+
     // The character or control is not processed. No observable difference in the terminal’s state would occur if the character that
     // caused this action was not present in the input stream. (Therefore, this action can only occur within a state.)
     ignore,
@@ -109,5 +111,7 @@ enum Action
     osc_put,
 
     // This action is called when the OSC string is terminated by ST, CAN, SUB or ESC, to allow the OSC handler to finish neatly.
-    osc_end
+    osc_end,
+    
+    count
 };

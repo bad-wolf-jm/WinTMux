@@ -172,26 +172,66 @@ Vt100StateMachine::Vt100StateMachine()
     //}
 }
 
+void Vt100StateMachine::OnEvent( Range range, Action action )
+{
+    OnEvent( range, action, VtParserState::none );
+}
+
+void Vt100StateMachine::OnEvent( Range range, VtParserState transitionTo )
+{
+    OnEvent( range, Action::none, transitionTo );
+}
+
+void Vt100StateMachine::OnEvent( Range range, Action action, VtParserState transitionTo )
+{
+    for( int i = 0; i < (int)VtParserState::count; i++ )
+        OnEvent( (VtParserState)i, range, action, transitionTo );
+}
+
 void Vt100StateMachine::OnEvent( VtParserState state, Range range, Action action )
 {
+    OnEvent(state, range, action, VtParserState::none);
 }
 
 void Vt100StateMachine::OnEvent( VtParserState state, Range range, VtParserState transitionTo )
 {
+    OnEvent(state, range, Action::none, transitionTo);
 }
 
 void Vt100StateMachine::OnEvent( VtParserState state, Range range, Action action, VtParserState transitionTo )
 {
+    for(uint8_t c=range.Start; c <= range.End; c++)
+        OnEvent(state, c, action, transitionTo);
+}
+
+void Vt100StateMachine::OnEvent( uint8_t character, Action action )
+{
+    OnEvent( character, action, VtParserState::none );
+}
+
+void Vt100StateMachine::OnEvent( uint8_t character, VtParserState transitionTo )
+{
+    OnEvent( character, Action::none, transitionTo );
+}
+
+void Vt100StateMachine::OnEvent( uint8_t character, Action action, VtParserState transitionTo )
+{
+    for( int i = 0; i < (int)VtParserState::count; i++ )
+        OnEvent( (VtParserState)i, character, action, transitionTo );
 }
 
 void Vt100StateMachine::OnEvent( VtParserState state, uint8_t character, Action action )
 {
+    OnEvent( state, character, action, VtParserState::none );
 }
 
 void Vt100StateMachine::OnEvent( VtParserState state, uint8_t character, VtParserState transitionTo )
 {
+    OnEvent( state, character, Action::none, transitionTo );
 }
 
 void Vt100StateMachine::OnEvent( VtParserState state, uint8_t character, Action action, VtParserState transitionTo )
 {
+    uint16_t transition = ((uint8_t) action << 8) + ((uint8_t) transitionTo);
+    _stateTransitions[(uint8_t) transition][character] = transition;
 }
