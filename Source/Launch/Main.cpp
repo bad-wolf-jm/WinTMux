@@ -34,8 +34,8 @@ void OnKeyPressed( GLFWwindow *window, int keycode, int scancode, int action, in
     if( keycode >= 340 && keycode <= 348 )
         return;
 
-    std::cout << "KEY"
-              << " " << keycode << " " << scancode << " " << action << std::endl;
+    // std::cout << "KEY"
+    //           << " " << keycode << " " << scancode << " " << action << std::endl;
 
     if( !commandInputMode )
     {
@@ -127,7 +127,8 @@ void OnKeyPressed( GLFWwindow *window, int keycode, int scancode, int action, in
     {
         mainWindow.Mode  = eInputMode::Command;
         commandInputMode = true;
-        mainWindow._commandLine->_cursorPosition   = 0;
+
+        mainWindow._commandLine->_cursorPosition = 0;
         mainWindow._commandLine->_currentCommand = ":";
     }
 
@@ -135,11 +136,12 @@ void OnKeyPressed( GLFWwindow *window, int keycode, int scancode, int action, in
     {
         mainWindow.Mode  = eInputMode::Normal;
         commandInputMode = false;
-        mainWindow._commandLine->_cursorPosition   = 0;
+
+        mainWindow._commandLine->_cursorPosition = 0;
         mainWindow._commandLine->_currentCommand.resize( 0 );
     }
 
-    std::cout << _currentCommand << std::endl;
+    //    std::cout << _currentCommand << std::endl;
 }
 
 int main( int, char ** )
