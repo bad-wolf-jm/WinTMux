@@ -28,7 +28,6 @@ Vt100Parser::Vt100Parser()
     OnEvent( VtParserState::ground, Range{ 0x20, 0x7f }, Action::print );
 
     //$states[:ESCAPE] = {
-    //  OnEvent( VtParserState::escape,  :on_entry , Action::clear);
     OnEntry( VtParserState::escape, Action::clear );
     OnEvent( VtParserState::escape, Range{ 0x00, 0x17 }, Action::execute );
     OnEvent( VtParserState::escape, 0x19, Action::execute );
@@ -47,7 +46,6 @@ Vt100Parser::Vt100Parser()
     OnEvent( VtParserState::escape, 0x58, VtParserState::sos_pm_apc_string );
     OnEvent( VtParserState::escape, 0x5e, VtParserState::sos_pm_apc_string );
     OnEvent( VtParserState::escape, 0x5f, VtParserState::sos_pm_apc_string );
-    //}
 
     //$states[:ESCAPE_INTERMEDIATE] = {
     OnEvent( VtParserState::escape_intermediate, Range{ 0x00, 0x17 }, Action::execute );
@@ -56,10 +54,8 @@ Vt100Parser::Vt100Parser()
     OnEvent( VtParserState::escape_intermediate, Range{ 0x20, 0x2f }, Action::collect );
     OnEvent( VtParserState::escape_intermediate, 0x7f, Action::ignore );
     OnEvent( VtParserState::escape_intermediate, Range{ 0x30, 0x7e }, Action::esc_dispatch, VtParserState::ground );
-    //}
 
     //$states[:CSI_ENTRY] = {
-    //   OnEvent( VtParserState::csi_entry, :on_entry , Action::clear);
     OnEntry( VtParserState::csi_entry, Action::clear );
     OnEvent( VtParserState::csi_entry, Range{ 0x00, 0x17 }, Action::execute );
     OnEvent( VtParserState::csi_entry, 0x19, Action::execute );
@@ -71,7 +67,6 @@ Vt100Parser::Vt100Parser()
     OnEvent( VtParserState::csi_entry, 0x3b, Action::param, VtParserState::csi_param );
     OnEvent( VtParserState::csi_entry, Range{ 0x3c, 0x3f }, Action::collect, VtParserState::csi_param );
     OnEvent( VtParserState::csi_entry, Range{ 0x40, 0x7e }, Action::csi_dispatch, VtParserState::ground );
-    //}
 
     //$states[:CSI_IGNORE] = {
     OnEvent( VtParserState::csi_ignore, Range{ 0x00, 0x17 }, Action::execute );
@@ -80,7 +75,6 @@ Vt100Parser::Vt100Parser()
     OnEvent( VtParserState::csi_ignore, Range{ 0x20, 0x3f }, Action::ignore );
     OnEvent( VtParserState::csi_ignore, 0x7f, Action::ignore );
     OnEvent( VtParserState::csi_ignore, Range{ 0x40, 0x7e }, VtParserState::ground );
-    //}
 
     //$states[:CSI_PARAM] = {
     OnEvent( VtParserState::csi_param, Range{ 0x00, 0x17 }, Action::execute );
@@ -93,7 +87,6 @@ Vt100Parser::Vt100Parser()
     OnEvent( VtParserState::csi_param, Range{ 0x3c, 0x3f }, VtParserState::csi_ignore );
     OnEvent( VtParserState::csi_param, Range{ 0x20, 0x2f }, Action::collect, VtParserState::csi_intermediate );
     OnEvent( VtParserState::csi_param, Range{ 0x40, 0x7e }, Action::csi_dispatch, VtParserState::ground );
-    //}
 
     //$states[:CSI_INTERMEDIATE] = {
     OnEvent( VtParserState::csi_intermediate, Range{ 0x00, 0x17 }, Action::execute );
@@ -106,7 +99,6 @@ Vt100Parser::Vt100Parser()
     //}
 
     //$states[:DCS_ENTRY] = {
-    //   OnEvent( VtParserState::dcs_entry, :on_entry , Action::clear);
     OnEntry( VtParserState::dcs_entry, Action::clear );
     OnEvent( VtParserState::dcs_entry, Range{ 0x00, 0x17 }, Action::ignore );
     OnEvent( VtParserState::dcs_entry, 0x19, Action::ignore );
@@ -118,7 +110,6 @@ Vt100Parser::Vt100Parser()
     OnEvent( VtParserState::dcs_entry, 0x3b, Action::param, VtParserState::dcs_param );
     OnEvent( VtParserState::dcs_entry, Range{ 0x3c, 0x3f }, Action::collect, VtParserState::dcs_param );
     OnEvent( VtParserState::dcs_entry, Range{ 0x40, 0x7e }, VtParserState::dcs_passthrough );
-    //}
 
     //$states[:DCS_INTERMEDIATE] = {
     OnEvent( VtParserState::dcs_intermediate, Range{ 0x00, 0x17 }, Action::ignore );
@@ -128,14 +119,12 @@ Vt100Parser::Vt100Parser()
     OnEvent( VtParserState::dcs_intermediate, 0x7f, Action::ignore );
     OnEvent( VtParserState::dcs_intermediate, Range{ 0x30, 0x3f }, VtParserState::dcs_ignore );
     OnEvent( VtParserState::dcs_intermediate, Range{ 0x40, 0x7e }, VtParserState::dcs_passthrough );
-    //}
 
     //$states[:DCS_IGNORE] = {
     OnEvent( VtParserState::dcs_ignore, Range{ 0x00, 0x17 }, Action::ignore );
     OnEvent( VtParserState::dcs_ignore, 0x19, Action::ignore );
     OnEvent( VtParserState::dcs_ignore, Range{ 0x1c, 0x1f }, Action::ignore );
     OnEvent( VtParserState::dcs_ignore, Range{ 0x20, 0x7f }, Action::ignore );
-    //}
 
     //$states[:DCS_PARAM] = {
     OnEvent( VtParserState::dcs_param, Range{ 0x00, 0x17 }, Action::ignore );
@@ -148,7 +137,6 @@ Vt100Parser::Vt100Parser()
     OnEvent( VtParserState::dcs_param, Range{ 0x3c, 0x3f }, VtParserState::dcs_ignore );
     OnEvent( VtParserState::dcs_param, Range{ 0x20, 0x2f }, Action::collect, VtParserState::dcs_intermediate );
     OnEvent( VtParserState::dcs_param, Range{ 0x40, 0x7e }, VtParserState::dcs_passthrough );
-    //}
 
     //$states[:DCS_PASSTHROUGH] = {
     OnEntry( VtParserState::dcs_passthrough, Action::hook );
@@ -158,14 +146,12 @@ Vt100Parser::Vt100Parser()
     OnEvent( VtParserState::dcs_passthrough, Range{ 0x1c, 0x1f }, Action::put );
     OnEvent( VtParserState::dcs_passthrough, Range{ 0x20, 0x7e }, Action::put );
     OnEvent( VtParserState::dcs_passthrough, 0x7f, Action::ignore );
-    //}
 
     //$states[:SOS_PM_APC_STRING] = {
     OnEvent( VtParserState::sos_pm_apc_string, Range{ 0x00, 0x17 }, Action::ignore );
     OnEvent( VtParserState::sos_pm_apc_string, 0x19, Action::ignore );
     OnEvent( VtParserState::sos_pm_apc_string, Range{ 0x1c, 0x1f }, Action::ignore );
     OnEvent( VtParserState::sos_pm_apc_string, Range{ 0x20, 0x7f }, Action::ignore );
-    //}
 
     //$states[:OSC_STRING] = {
     OnEntry( VtParserState::osc_string, Action::osc_start );
@@ -174,7 +160,6 @@ Vt100Parser::Vt100Parser()
     OnEvent( VtParserState::osc_string, 0x19, Action::ignore );
     OnEvent( VtParserState::osc_string, Range{ 0x1c, 0x1f }, Action::ignore );
     OnEvent( VtParserState::osc_string, Range{ 0x20, 0x7f }, Action::osc_put );
-    //}
 }
 
 void Vt100Parser::OnEntry( VtParserState state, Action action )
