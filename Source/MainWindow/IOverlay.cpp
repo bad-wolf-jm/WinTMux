@@ -17,10 +17,18 @@ void IOverlay::Render()
     float titleY    = topLeft.y - titleSize.y * 0.5f;
 
     float cornerRadius = 5.0f;
+
+    // A rectangle for the list
     drawList->AddRectFilled( topLeft, bottomRight, IM_COL32( 0, 0, 0, 255 ), cornerRadius );
+
+    // The border for the list
     drawList->AddRect( topLeft, bottomRight, IM_COL32( 255, 255, 255, 255 ), cornerRadius );
-    drawList->AddRectFilled( ImVec2{ titleX - 5.0f, titleY }, ImVec2{ titleX + titleSize.x + 5.0f, titleY + titleSize.y }, IM_COL32( 0, 0, 0, 255 ),
-                             cornerRadius );
+
+    // Hide part of the line in order to display the title of the overlay
+    drawList->AddRectFilled( ImVec2{ titleX - 5.0f, titleY }, ImVec2{ titleX + titleSize.x + 5.0f, titleY + titleSize.y },
+                             IM_COL32( 0, 0, 0, 255 ), cornerRadius );
+
+    // Display the title of the overlay, centered on the top edge
     ImGui::SetCursorPos( ImVec2{ titleX, titleY } );
     ImGui::TextUnformatted( _frameTitle.c_str() );
 }
