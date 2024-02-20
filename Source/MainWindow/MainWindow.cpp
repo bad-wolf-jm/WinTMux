@@ -6,6 +6,10 @@ MainWindow::MainWindow()
 {
     _workspaces.push_back( std::make_shared<Workspace>( "DEFAULT" ) );
     _currentWorkspace = 0;
+
+    _workspaceSelector = std::make_shared<WorkspaceSelectorOverlay>();
+    _terminalSelector  = std::make_shared<TerminalSelectorOverlay>();
+    _displayedOverlay  = _terminalSelector;
 }
 
 void MainWindow::Render()
@@ -20,6 +24,21 @@ void MainWindow::Render()
     RenderHeader();
     RenderWorkspace();
     RenderCommandLine();
+
+    if( _displayedOverlay != nullptr )
+    {
+        ImGui::SetNextWindowPos( ImVec2( 0.0f, 0.0f ) );
+        ImGui::SetNextWindowSize( ImVec2( _windowSize.x, _windowSize.y ) );
+        ImGui::PushStyleColor( ImGuiCol_WindowBg, IM_COL32( 0, 0, 0, 200 ) );
+        ImGui::Begin( "##4", &_windowIsOpen,
+                      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |
+                          ImGuiWindowFlags_NoScrollbar );
+        {
+            _displayedOverlay->Render();
+        }
+        ImGui::End();
+        ImGui::PopStyleColor();
+    }
 
     ImGui::PopStyleVar();
     ImGui::PopStyleVar();

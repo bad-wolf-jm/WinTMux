@@ -232,6 +232,7 @@ void Vt100Parser::OnEvent( VtParserState state, uint8_t character, VtParserState
 
 void Vt100Parser::OnEvent( VtParserState state, uint8_t character, Action action, VtParserState transitionTo )
 {
-    uint16_t transition                               = ( (uint8_t)action << 8 ) + ( (uint8_t)transitionTo );
+    uint16_t transition = ( (uint8_t)action << 8 ) + ( (uint8_t)transitionTo );
+
     _stateTransitions[(uint8_t)transition][character] = transition;
 }

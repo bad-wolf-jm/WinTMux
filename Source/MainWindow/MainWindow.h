@@ -6,6 +6,9 @@
 
 #include "CommandLine.h"
 #include "Core/Modes.h"
+#include "MainWindow/IOverlay.h"
+#include "MainWindow/TerminalSelectorOverlay.h"
+#include "MainWindow/WorkspaceSelectorOverlay.h"
 #include "Workspace/Workspace.h"
 #include "imgui.h"
 
@@ -43,5 +46,11 @@ class MainWindow
   public:
     std::shared_ptr<CommandLine>            _commandLine;
     std::vector<std::shared_ptr<Workspace>> _workspaces;
-    int                                     _currentWorkspace = -1;
+
+    std::shared_ptr<IOverlay> _workspaceSelector = nullptr;
+    std::shared_ptr<IOverlay> _terminalSelector  = nullptr;
+
+    std::shared_ptr<IOverlay> _displayedOverlay = nullptr;
+
+    int _currentWorkspace = -1;
 };

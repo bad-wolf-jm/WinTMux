@@ -2,6 +2,8 @@
 
 // #include "Hexe/Terminal/ImGuiTerminal.h"
 #include "Core/KeyCodes.h"
+#include "Core/String.h"
+
 #include "imgui.h"
 #include <unordered_map>
 
@@ -11,11 +13,11 @@
 
 struct Key
 {
-    KeyCodes    keysym;
-    Modifiers   mask;
-    const char *string;
-    int         appkey;
-    int         appcursor;
+    KeyCodes      keysym;
+    Modifiers     mask;
+    const char_t *string;
+    int           appkey;
+    int           appcursor;
 };
 enum class ShortcutAction
 {
@@ -60,7 +62,7 @@ class ControlSequences
     // std::unordered_map<ImGuiKey, std::vector<ImGuiKeyMapShortcut>> m_shortcuts;
 };
 
-//constexpr int MOD_ANY = 0xFFFFFFFF;
+// constexpr int MOD_ANY = 0xFFFFFFFF;
 
 // extern ImGuiKeyMap ImGuiTerminalKeyMap;
 

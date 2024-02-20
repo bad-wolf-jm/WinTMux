@@ -8,8 +8,8 @@ class IOverlay
     virtual void Render();
 
   protected:
-    float _frameWidth = 600.0f;
+    float _frameWidth  = 600.0f;
     float _frameHeight = 800.0f;
 
-    string_t _frameTitle = "";
+    string_t _frameTitle = "FRAME TITLE";
 };

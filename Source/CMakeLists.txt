@@ -21,6 +21,9 @@ add_executable(WinTMux
 
     MainWindow/MainWindow.cpp
     MainWindow/CommandLine.cpp
+    MainWindow/IOverlay.cpp
+    MainWindow/TerminalSelectorOverlay.cpp
+    MainWindow/WorkspaceSelectorOverlay.cpp
 
     #PseudoConsole/EchoCon.cpp
     #PSeudoConsole/PTYProcess.cpp
