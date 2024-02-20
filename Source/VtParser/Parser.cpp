@@ -1,7 +1,9 @@
-#include "StateMachine.h"
-#include "VtParser/States.h"
+#include "Parser.h"
+#include "States.h"
 
-Vt100StateMachine::Vt100StateMachine()
+#include <cstdint>
+
+Vt100Parser::Vt100Parser()
 {
     // Anywhere transitions
     OnEvent( 0x18, Action::execute, VtParserState::ground );
@@ -27,6 +29,7 @@ Vt100StateMachine::Vt100StateMachine()
 
     //$states[:ESCAPE] = {
     //  OnEvent( VtParserState::escape,  :on_entry , Action::clear);
+    OnEntry( VtParserState::escape, Action::clear );
     OnEvent( VtParserState::escape, Range{ 0x00, 0x17 }, Action::execute );
     OnEvent( VtParserState::escape, 0x19, Action::execute );
     OnEvent( VtParserState::escape, Range{ 0x1c, 0x1f }, Action::execute );
@@ -57,6 +60,7 @@ Vt100StateMachine::Vt100StateMachine()
 
     //$states[:CSI_ENTRY] = {
     //   OnEvent( VtParserState::csi_entry, :on_entry , Action::clear);
+    OnEntry( VtParserState::csi_entry, Action::clear );
     OnEvent( VtParserState::csi_entry, Range{ 0x00, 0x17 }, Action::execute );
     OnEvent( VtParserState::csi_entry, 0x19, Action::execute );
     OnEvent( VtParserState::csi_entry, Range{ 0x1c, 0x1f }, Action::execute );
@@ -103,6 +107,7 @@ Vt100StateMachine::Vt100StateMachine()
 
     //$states[:DCS_ENTRY] = {
     //   OnEvent( VtParserState::dcs_entry, :on_entry , Action::clear);
+    OnEntry( VtParserState::dcs_entry, Action::clear );
     OnEvent( VtParserState::dcs_entry, Range{ 0x00, 0x17 }, Action::ignore );
     OnEvent( VtParserState::dcs_entry, 0x19, Action::ignore );
     OnEvent( VtParserState::dcs_entry, Range{ 0x1c, 0x1f }, Action::ignore );
@@ -146,13 +151,13 @@ Vt100StateMachine::Vt100StateMachine()
     //}
 
     //$states[:DCS_PASSTHROUGH] = {
-    //   OnEvent( VtParserState::dcs_passthrough, :on_entry , Action::hook);
+    OnEntry( VtParserState::dcs_passthrough, Action::hook );
+    OnExit( VtParserState::dcs_passthrough, Action::unhook );
     OnEvent( VtParserState::dcs_passthrough, Range{ 0x00, 0x17 }, Action::put );
     OnEvent( VtParserState::dcs_passthrough, 0x19, Action::put );
     OnEvent( VtParserState::dcs_passthrough, Range{ 0x1c, 0x1f }, Action::put );
     OnEvent( VtParserState::dcs_passthrough, Range{ 0x20, 0x7e }, Action::put );
     OnEvent( VtParserState::dcs_passthrough, 0x7f, Action::ignore );
-    // OnEvent( VtParserState::dcs_passthrough, :on_exit   => :unhook
     //}
 
     //$states[:SOS_PM_APC_STRING] = {
@@ -163,75 +168,85 @@ Vt100StateMachine::Vt100StateMachine()
     //}
 
     //$states[:OSC_STRING] = {
-    //  OnEvent( VtParserState::osc_string, :on_entry , Action::osc_start);
+    OnEntry( VtParserState::osc_string, Action::osc_start );
+    OnExit( VtParserState::osc_string, Action::osc_end );
     OnEvent( VtParserState::osc_string, Range{ 0x00, 0x17 }, Action::ignore );
     OnEvent( VtParserState::osc_string, 0x19, Action::ignore );
     OnEvent( VtParserState::osc_string, Range{ 0x1c, 0x1f }, Action::ignore );
     OnEvent( VtParserState::osc_string, Range{ 0x20, 0x7f }, Action::osc_put );
-    // OnEvent( VtParserState::osc_string, :on_exit   => :osc_end
     //}
 }
 
-void Vt100StateMachine::OnEvent( Range range, Action action )
+void Vt100Parser::OnEntry( VtParserState state, Action action )
+{
+    _entryActions[(uint8_t)state] = action;
+}
+
+void Vt100Parser::OnExit( VtParserState state, Action action )
+{
+    _exitActions[(uint8_t)state] = action;
+}
+
+void Vt100Parser::OnEvent( Range range, Action action )
 {
     OnEvent( range, action, VtParserState::none );
 }
 
-void Vt100StateMachine::OnEvent( Range range, VtParserState transitionTo )
+void Vt100Parser::OnEvent( Range range, VtParserState transitionTo )
 {
     OnEvent( range, Action::none, transitionTo );
 }
 
-void Vt100StateMachine::OnEvent( Range range, Action action, VtParserState transitionTo )
+void Vt100Parser::OnEvent( Range range, Action action, VtParserState transitionTo )
 {
     for( int i = 0; i < (int)VtParserState::count; i++ )
         OnEvent( (VtParserState)i, range, action, transitionTo );
 }
 
-void Vt100StateMachine::OnEvent( VtParserState state, Range range, Action action )
+void Vt100Parser::OnEvent( VtParserState state, Range range, Action action )
 {
-    OnEvent(state, range, action, VtParserState::none);
+    OnEvent( state, range, action, VtParserState::none );
 }
 
-void Vt100StateMachine::OnEvent( VtParserState state, Range range, VtParserState transitionTo )
+void Vt100Parser::OnEvent( VtParserState state, Range range, VtParserState transitionTo )
 {
-    OnEvent(state, range, Action::none, transitionTo);
+    OnEvent( state, range, Action::none, transitionTo );
 }
 
-void Vt100StateMachine::OnEvent( VtParserState state, Range range, Action action, VtParserState transitionTo )
+void Vt100Parser::OnEvent( VtParserState state, Range range, Action action, VtParserState transitionTo )
 {
-    for(uint8_t c=range.Start; c <= range.End; c++)
-        OnEvent(state, c, action, transitionTo);
+    for( uint8_t c = range.Start; c <= range.End; c++ )
+        OnEvent( state, c, action, transitionTo );
 }
 
-void Vt100StateMachine::OnEvent( uint8_t character, Action action )
+void Vt100Parser::OnEvent( uint8_t character, Action action )
 {
     OnEvent( character, action, VtParserState::none );
 }
 
-void Vt100StateMachine::OnEvent( uint8_t character, VtParserState transitionTo )
+void Vt100Parser::OnEvent( uint8_t character, VtParserState transitionTo )
 {
     OnEvent( character, Action::none, transitionTo );
 }
 
-void Vt100StateMachine::OnEvent( uint8_t character, Action action, VtParserState transitionTo )
+void Vt100Parser::OnEvent( uint8_t character, Action action, VtParserState transitionTo )
 {
     for( int i = 0; i < (int)VtParserState::count; i++ )
         OnEvent( (VtParserState)i, character, action, transitionTo );
 }
 
-void Vt100StateMachine::OnEvent( VtParserState state, uint8_t character, Action action )
+void Vt100Parser::OnEvent( VtParserState state, uint8_t character, Action action )
 {
     OnEvent( state, character, action, VtParserState::none );
 }
 
-void Vt100StateMachine::OnEvent( VtParserState state, uint8_t character, VtParserState transitionTo )
+void Vt100Parser::OnEvent( VtParserState state, uint8_t character, VtParserState transitionTo )
 {
     OnEvent( state, character, Action::none, transitionTo );
 }
 
-void Vt100StateMachine::OnEvent( VtParserState state, uint8_t character, Action action, VtParserState transitionTo )
+void Vt100Parser::OnEvent( VtParserState state, uint8_t character, Action action, VtParserState transitionTo )
 {
-    uint16_t transition = ((uint8_t) action << 8) + ((uint8_t) transitionTo);
-    _stateTransitions[(uint8_t) transition][character] = transition;
+    uint16_t transition                               = ( (uint8_t)action << 8 ) + ( (uint8_t)transitionTo );
+    _stateTransitions[(uint8_t)transition][character] = transition;
 }

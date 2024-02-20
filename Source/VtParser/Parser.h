@@ -12,10 +12,10 @@ struct Range
     uint8_t End;
 };
 
-class Vt100StateMachine
+class Vt100Parser
 {
   public:
-    Vt100StateMachine();
+    Vt100Parser();
 
   private:
     void OnEvent( Range range, Action action );
@@ -34,6 +34,12 @@ class Vt100StateMachine
     void OnEvent( VtParserState state, uint8_t character, VtParserState transitionTo );
     void OnEvent( VtParserState state, uint8_t character, Action action, VtParserState transitionTo );
 
+    void OnEntry( VtParserState state, Action action );
+    void OnExit( VtParserState state, Action action );
+
   private:
     uint16_t _stateTransitions[(size_t)VtParserState::count][std::numeric_limits<uint8_t>::max()];
+
+    Action _entryActions[(size_t)VtParserState::count] = { Action::none };
+    Action _exitActions[(size_t)VtParserState::count]  = { Action::none };
 };

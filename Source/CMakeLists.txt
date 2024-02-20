@@ -11,7 +11,7 @@ add_executable(WinTMux
     Core/KeyCodes.cpp
     Core/ControlSequences.cpp
 
-    VtParser/StateMachine.cpp
+    VtParser/Parser.cpp
 
     Launch/Main.cpp
     
