@@ -7,9 +7,18 @@ MainWindow::MainWindow()
     _workspaces.push_back( std::make_shared<Workspace>( "DEFAULT" ) );
     _currentWorkspace = 0;
 
-    _workspaceSelector = std::make_shared<WorkspaceSelectorOverlay>();
-    _terminalSelector  = std::make_shared<TerminalSelectorOverlay>();
-    _displayedOverlay  = _terminalSelector;
+    //_workspaceSelector = std::make_shared<WorkspaceSelectorOverlay>();
+    //_terminalSelector  = std::make_shared<TerminalSelectorOverlay>();
+    //_displayedOverlay  = _workspaceSelector;
+}
+
+void MainWindow::ExecuteCurrentCommand()
+{
+}
+
+Workspace &MainWindow::CurrentWorkspace()
+{
+    return *_workspaces[_currentWorkspace];
 }
 
 void MainWindow::Render()
@@ -25,7 +34,10 @@ void MainWindow::Render()
     RenderWorkspace();
     RenderCommandLine();
 
-    if( _displayedOverlay != nullptr )
+    //_workspaceSelector->SetWorkspaceList( _workspaces );
+    //_terminalSelector->SetTerminalList( _workspaces[_currentWorkspace]->GetConnectedTerminals() );
+
+    if( _displayedOverlay != eOverlayType::NONE )
     {
         ImGui::SetNextWindowPos( ImVec2( 0.0f, 0.0f ) );
         ImGui::SetNextWindowSize( ImVec2( _windowSize.x, _windowSize.y ) );
@@ -33,9 +45,29 @@ void MainWindow::Render()
         ImGui::Begin( "##4", &_windowIsOpen,
                       ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |
                           ImGuiWindowFlags_NoScrollbar );
-        {
-            _displayedOverlay->Render();
-        }
+    }
+
+    switch( _displayedOverlay )
+    {
+    case eOverlayType::TERMINAL_SELECTOR:
+    {
+        TerminalSelectorOverlay _overlay( CurrentWorkspace() );
+        _overlay.Render();
+        break;
+    }
+    case eOverlayType::WORKSPACE_SELECTOR:
+    {
+        WorkspaceSelectorOverlay _overlay( _workspaces );
+        _overlay.Render();
+        break;
+    }
+    case eOverlayType::NONE:
+    default:
+        break;
+    }
+
+    if( _displayedOverlay != eOverlayType::NONE )
+    {
         ImGui::End();
         ImGui::PopStyleColor();
     }

@@ -137,6 +137,7 @@ void OnKeyPressed( GLFWwindow *window, int keycode, int scancode, int action, in
         mainWindow.Mode  = eInputMode::Normal;
         commandInputMode = false;
 
+        mainWindow.ExecuteCurrentCommand();
         mainWindow._commandLine->_cursorPosition = 0;
         mainWindow._commandLine->_currentCommand.resize( 0 );
     }
