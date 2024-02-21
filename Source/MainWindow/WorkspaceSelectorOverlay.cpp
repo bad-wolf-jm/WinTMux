@@ -6,7 +6,12 @@ WorkspaceSelectorOverlay::WorkspaceSelectorOverlay( std::vector<std::shared_ptr<
     _frameTitle = "WORKSPACES";
 }
 
-void WorkspaceSelectorOverlay::Render()
+void WorkspaceSelectorOverlay::RenderOverlayContent()
 {
-    IOverlay::Render();
+    //Render();
+    for( auto const &ws : _workspaces )
+    {
+       // ImGui::SetCursorPos(ImVec2{})
+        ImGui::Text( "%s", ws->Name().c_str() );
+    }
 }

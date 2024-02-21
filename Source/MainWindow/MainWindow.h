@@ -33,7 +33,7 @@ class MainWindow
     void       ExecuteCurrentCommand();
     void       OpenWorkspace( string_t name );
     void       CloseWorkspace( string_t name );
-    
+
     Workspace &CurrentWorkspace();
 
   public:
@@ -60,6 +60,6 @@ class MainWindow
     // std::shared_ptr<IOverlay> _terminalSelector  = nullptr;
 
     // std::shared_ptr<IOverlay> _displayedOverlay = nullptr;
-    eOverlayType _displayedOverlay = eOverlayType::TERMINAL_SELECTOR;
+    eOverlayType _displayedOverlay = eOverlayType::WORKSPACE_SELECTOR;
     int          _currentWorkspace = -1;
 };

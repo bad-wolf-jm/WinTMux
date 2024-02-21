@@ -11,7 +11,7 @@ class WorkspaceSelectorOverlay : public IOverlay
 
   public:
     virtual void OnKeyPress(){};
-    virtual void Render();
+    virtual void RenderOverlayContent();
 
   private:
     std::vector<std::shared_ptr<Workspace>> &_workspaces;

@@ -5,7 +5,9 @@ class IOverlay
 {
   public:
     virtual void OnKeyPress() = 0;
-    virtual void Render();
+
+    void Render();
+    virtual void RenderOverlayContent() = 0;
 
   protected:
     float _frameWidth  = 600.0f;

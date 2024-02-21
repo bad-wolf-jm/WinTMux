@@ -10,7 +10,7 @@ class TerminalSelectorOverlay : public IOverlay
 
   public:
     virtual void OnKeyPress(){};
-    virtual void Render();
+    virtual void RenderOverlayContent();
 
   private:
     Workspace &_workspace;

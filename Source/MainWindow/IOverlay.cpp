@@ -31,4 +31,10 @@ void IOverlay::Render()
     // Display the title of the overlay, centered on the top edge
     ImGui::SetCursorPos( ImVec2{ titleX, titleY } );
     ImGui::TextUnformatted( _frameTitle.c_str() );
+
+    // Render the contents of the overlay in a child window
+    ImGui::SetCursorPos(ImVec2{topLeft.x + 10.0f, topLeft.y + 15.0f});
+    ImGui::BeginChild( "child", ImVec2{_frameWidth - 15.0f, _frameHeight - 20.0f}, ImGuiChildFlags_None );
+    RenderOverlayContent();
+    ImGui::EndChild();
 }

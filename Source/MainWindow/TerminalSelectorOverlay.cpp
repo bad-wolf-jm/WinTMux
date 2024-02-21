@@ -6,7 +6,7 @@ TerminalSelectorOverlay::TerminalSelectorOverlay( Workspace &workspace )
     _frameTitle = "TERMINALS";
 }
 
-void TerminalSelectorOverlay::Render()
+void TerminalSelectorOverlay::RenderOverlayContent()
 {
-    IOverlay::Render();
+    //    IOverlay::Render();
 }
