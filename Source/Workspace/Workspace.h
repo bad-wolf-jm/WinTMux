@@ -14,6 +14,9 @@ class Workspace
 
     void Render();
 
+    void VSplit();
+    void HSplit();
+
   private:
     string_t              _name = "";
     std::shared_ptr<Tree> _workspaceElements;
