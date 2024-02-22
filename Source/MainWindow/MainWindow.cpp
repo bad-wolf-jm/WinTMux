@@ -9,15 +9,15 @@ MainWindow::MainWindow()
     _workspaces.back()->VSplit();
     _workspaces.back()->HSplit();
     _workspaces.back()->HSplit();
-    
+
     _workspaces.push_back( std::make_shared<Workspace>( "WinTMux Source Code" ) );
     _workspaces.back()->HSplit();
     _workspaces.back()->HSplit();
     _workspaces.back()->VSplit();
-    
+
     _workspaces.push_back( std::make_shared<Workspace>( "LaTex" ) );
     _workspaces.back()->VSplit();
-    
+
     _workspaces.push_back( std::make_shared<Workspace>( "SpockEngine" ) );
     _workspaces.back()->HSplit();
     _currentWorkspace = 0;
@@ -32,6 +32,42 @@ Workspace &MainWindow::CurrentWorkspace()
     return *_workspaces[_currentWorkspace];
 }
 
+void MainWindow::OnKeyPress( KeyCode const &keyCode, uint32_t modifiers )
+{
+    if( !_commandInputMode )
+    {
+        // build key sequence for processing.
+        if( ( keyCode.KeyCode == KeyCodes::SEMICOLON ) && ( modifiers & static_cast<uint32_t>( Modifiers::SHIFT ) ) )
+        {
+            Mode = eInputMode::Command;
+
+            _commandInputMode = true;
+
+            _commandLine->_cursorPosition = 0;
+            _commandLine->_currentCommand = ":";
+        }
+    }
+    else
+    {
+        if( keyCode.KeyCode == KeyCodes::ENTER )
+        {
+            Mode = eInputMode::Normal;
+
+            _commandInputMode = false;
+
+            ExecuteCurrentCommand();
+
+            _commandLine->_cursorPosition = 0;
+            _commandLine->_currentCommand.resize( 0 );
+        }
+        else
+        {
+            // if key is alphanumeric of space, append to the current command
+            _commandLine->_currentCommand += keyCode.GetCharacter( modifiers == static_cast<uint32_t>( Modifiers::SHIFT ) );
+        }
+    }
+}
+
 void MainWindow::Render()
 {
     ImGui::NewFrame();
@@ -44,9 +80,6 @@ void MainWindow::Render()
     RenderHeader();
     RenderWorkspace();
     RenderCommandLine();
-
-    //_workspaceSelector->SetWorkspaceList( _workspaces );
-    //_terminalSelector->SetTerminalList( _workspaces[_currentWorkspace]->GetConnectedTerminals() );
 
     if( _displayedOverlay != eOverlayType::NONE )
     {

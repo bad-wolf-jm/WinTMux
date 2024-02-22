@@ -12,7 +12,7 @@ void IOverlay::Render()
     ImVec2 topLeft{ ( windowSize.x - _frameWidth ) * 0.5f, ( windowSize.y - _frameHeight ) * 0.5f };
     ImVec2 bottomRight{ topLeft.x + _frameWidth, topLeft.y + _frameHeight };
 
-    auto  titleSize = ImGui::CalcTextSize( _frameTitle.c_str() );
+    ImVec2  titleSize = ImGui::CalcTextSize( _frameTitle.c_str() );
     float titleX    = topLeft.x + ( _frameWidth - titleSize.x ) * 0.5f;
     float titleY    = topLeft.y - titleSize.y * 0.5f;
 

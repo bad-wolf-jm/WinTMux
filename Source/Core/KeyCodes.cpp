@@ -141,3 +141,21 @@ void KeyboardHandler::InitKeyCodes()
     // clang-format off
 }
 
+uint32_t KeyboardHandler::GetModifierState(int mods)
+{
+    uint32_t modifiers = 0;
+
+    if(mods & GLFW_MOD_SHIFT)
+        modifiers |= (1 << static_cast<uint32_t>(Modifiers::SHIFT));
+
+    if(mods & GLFW_MOD_CONTROL)
+        modifiers |= (1 << static_cast<uint32_t>(Modifiers::CTRL));
+
+    if(mods & GLFW_MOD_ALT)
+        modifiers |= (1 << static_cast<uint32_t>(Modifiers::ALT));
+
+    if(mods & GLFW_MOD_SUPER)
+        modifiers |= (1 << static_cast<uint32_t>(Modifiers::SUPER));
+
+    return modifiers;
+}

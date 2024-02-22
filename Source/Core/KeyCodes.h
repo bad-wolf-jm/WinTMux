@@ -148,7 +148,7 @@ struct KeyCode
     char     Symbol;
     char     ShiftedSymbol;
 
-    char GetCharacter(bool isShifted) const;
+    char GetCharacter( bool isShifted ) const;
 };
 
 class KeyboardHandler
@@ -158,9 +158,11 @@ class KeyboardHandler
 
   public:
     bool           IsPrintable( KeyCodes key );
+
     KeyCode const &GetKeyCode( int keycode );
+    uint32_t       GetModifierState( int mods );
 
   private:
-    KeyCode Keys[GLFW_KEY_LAST];
+    KeyCode Keys[GLFW_KEY_LAST + 1];
     void    InitKeyCodes();
 };

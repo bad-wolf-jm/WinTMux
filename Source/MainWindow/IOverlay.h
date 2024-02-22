@@ -1,10 +1,12 @@
 #pragma once
 
+#include "Core/KeyCodes.h"
 #include "Core/String.h"
+
 class IOverlay
 {
   public:
-    virtual void OnKeyPress() = 0;
+    virtual void OnKeyPress(KeyCode const &keyCode) = 0;
 
     void Render();
     virtual void RenderOverlayContent() = 0;

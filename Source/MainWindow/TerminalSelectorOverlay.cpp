@@ -10,3 +10,7 @@ void TerminalSelectorOverlay::RenderOverlayContent()
 {
     //    IOverlay::Render();
 }
+
+void TerminalSelectorOverlay::OnKeyPress(KeyCode const &keyCode)
+{
+}

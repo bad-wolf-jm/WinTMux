@@ -30,9 +30,11 @@ class MainWindow
     }
     void Render();
 
-    void       ExecuteCurrentCommand();
-    void       OpenWorkspace( string_t name );
-    void       CloseWorkspace( string_t name );
+    void OnKeyPress( KeyCode const &keyCode, uint32_t modifiers );
+
+    void ExecuteCurrentCommand();
+    void OpenWorkspace( string_t name );
+    void CloseWorkspace( string_t name );
 
     Workspace &CurrentWorkspace();
 
@@ -56,6 +58,7 @@ class MainWindow
     std::shared_ptr<CommandLine>            _commandLine;
     std::vector<std::shared_ptr<Workspace>> _workspaces;
 
+    bool _commandInputMode = false;
     // std::shared_ptr<IOverlay> _workspaceSelector = nullptr;
     // std::shared_ptr<IOverlay> _terminalSelector  = nullptr;
 

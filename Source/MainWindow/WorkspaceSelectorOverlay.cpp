@@ -8,10 +8,13 @@ WorkspaceSelectorOverlay::WorkspaceSelectorOverlay( std::vector<std::shared_ptr<
 
 void WorkspaceSelectorOverlay::RenderOverlayContent()
 {
-    //Render();
+    if( _workspaces.size() == 0 )
+        return;
+
     for( auto const &ws : _workspaces )
-    {
-       // ImGui::SetCursorPos(ImVec2{})
         ImGui::Text( "%s", ws->Name().c_str() );
-    }
+}
+
+void WorkspaceSelectorOverlay::OnKeyPress( KeyCode const &keyCode )
+{
 }
