@@ -6,12 +6,14 @@
 class TerminalSelectorOverlay : public IOverlay
 {
   public:
-    TerminalSelectorOverlay( Workspace &workspace );
+    TerminalSelectorOverlay();
+
+    void SetWorkspace( std::shared_ptr<Workspace> workspace );
 
   public:
-    virtual void OnKeyPress(KeyCode const &keyCode);
+    virtual void OnKeyPress( KeyCode const &keyCode, uint32_t modifiers );
     virtual void RenderOverlayContent();
 
   private:
-    Workspace &_workspace;
+    std::shared_ptr<Workspace> _workspace;
 };

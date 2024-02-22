@@ -157,7 +157,7 @@ class KeyboardHandler
     KeyboardHandler();
 
   public:
-    bool           IsPrintable( KeyCodes key );
+    bool IsPrintable( KeyCodes key );
 
     KeyCode const &GetKeyCode( int keycode );
     uint32_t       GetModifierState( int mods );

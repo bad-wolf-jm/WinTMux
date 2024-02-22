@@ -21,6 +21,9 @@ MainWindow::MainWindow()
     _workspaces.push_back( std::make_shared<Workspace>( "SpockEngine" ) );
     _workspaces.back()->HSplit();
     _currentWorkspace = 0;
+
+    _workspaceSelectorOverlay = std::make_shared<WorkspaceSelectorOverlay>( _workspaces );
+    _terminalSelectorOverlay  = std::make_shared<TerminalSelectorOverlay>();
 }
 
 void MainWindow::ExecuteCurrentCommand()
@@ -34,9 +37,29 @@ Workspace &MainWindow::CurrentWorkspace()
 
 void MainWindow::OnKeyPress( KeyCode const &keyCode, uint32_t modifiers )
 {
+    // If there is an overlay present, the key press event is sent to it, and we can return immediately,
+    // Otherwise, the action to take is determined by the current mode we are in.
+    switch( _displayedOverlay )
+    {
+    case eOverlayType::TERMINAL_SELECTOR:
+    {
+        _terminalSelectorOverlay->OnKeyPress( keyCode, modifiers );
+        return;
+    }
+    case eOverlayType::WORKSPACE_SELECTOR:
+    {
+        _workspaceSelectorOverlay->OnKeyPress( keyCode, modifiers );
+        return;
+    }
+    case eOverlayType::NONE:
+    default:
+        break;
+    }
+
     if( !_commandInputMode )
     {
-        // build key sequence for processing.
+        // Determine whether we should enter command input mode. If so, set the command prompt and return.
+        // Future key presses will be redirected to the command prompt.
         if( ( keyCode.KeyCode == KeyCodes::SEMICOLON ) && ( modifiers & static_cast<uint32_t>( Modifiers::SHIFT ) ) )
         {
             Mode = eInputMode::Command;
@@ -45,7 +68,11 @@ void MainWindow::OnKeyPress( KeyCode const &keyCode, uint32_t modifiers )
 
             _commandLine->_cursorPosition = 0;
             _commandLine->_currentCommand = ":";
+
+            return;
         }
+
+        // Build key sequence for processing.
     }
     else
     {
@@ -95,14 +122,12 @@ void MainWindow::Render()
     {
     case eOverlayType::TERMINAL_SELECTOR:
     {
-        TerminalSelectorOverlay _overlay( CurrentWorkspace() );
-        _overlay.Render();
+        _terminalSelectorOverlay->Render();
         break;
     }
     case eOverlayType::WORKSPACE_SELECTOR:
     {
-        WorkspaceSelectorOverlay _overlay( _workspaces );
-        _overlay.Render();
+        _workspaceSelectorOverlay->Render();
         break;
     }
     case eOverlayType::NONE:

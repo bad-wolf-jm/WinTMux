@@ -8,9 +8,10 @@ class WorkspaceSelectorOverlay : public IOverlay
 {
   public:
     WorkspaceSelectorOverlay( std::vector<std::shared_ptr<Workspace>> &workspaces );
+    void SetWorkspaceList( std::vector<std::shared_ptr<Workspace>> &workspaces );
 
   public:
-    virtual void OnKeyPress(KeyCode const & keyCode);
+    virtual void OnKeyPress( KeyCode const &keyCode, uint32_t modifiers );
     virtual void RenderOverlayContent();
 
   private:

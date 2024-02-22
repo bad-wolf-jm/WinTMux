@@ -6,7 +6,7 @@
 class IOverlay
 {
   public:
-    virtual void OnKeyPress(KeyCode const &keyCode) = 0;
+    virtual void OnKeyPress(KeyCode const &keyCode, uint32_t modifiers) = 0;
 
     void Render();
     virtual void RenderOverlayContent() = 0;

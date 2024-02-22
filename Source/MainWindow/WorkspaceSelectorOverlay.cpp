@@ -15,6 +15,26 @@ void WorkspaceSelectorOverlay::RenderOverlayContent()
         ImGui::Text( "%s", ws->Name().c_str() );
 }
 
-void WorkspaceSelectorOverlay::OnKeyPress( KeyCode const &keyCode )
+void WorkspaceSelectorOverlay::SetWorkspaceList( std::vector<std::shared_ptr<Workspace>> &workspaces )
 {
+    _workspaces = workspaces;
+}
+
+void WorkspaceSelectorOverlay::OnKeyPress( KeyCode const &keyCode, uint32_t modifiers )
+{
+    switch( keyCode.KeyCode )
+    {
+    case KeyCodes::UP:
+        _currentSelection -= 1;
+        _currentSelection = std::min( _currentSelection, 0 );
+        break;
+    case KeyCodes::DOWN:
+        _currentSelection += 1;
+        _currentSelection = std::max( _currentSelection, static_cast<int32_t>( _workspaces.size() - 1 ) );
+        break;
+    case KeyCodes::ENTER:
+        break;
+    default:
+        break;
+    }
 }

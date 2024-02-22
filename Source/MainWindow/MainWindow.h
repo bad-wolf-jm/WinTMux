@@ -58,9 +58,10 @@ class MainWindow
     std::shared_ptr<CommandLine>            _commandLine;
     std::vector<std::shared_ptr<Workspace>> _workspaces;
 
-    bool _commandInputMode = false;
-    // std::shared_ptr<IOverlay> _workspaceSelector = nullptr;
-    // std::shared_ptr<IOverlay> _terminalSelector  = nullptr;
+    bool                                      _commandInputMode         = false;
+    
+    std::shared_ptr<WorkspaceSelectorOverlay> _workspaceSelectorOverlay = nullptr;
+    std::shared_ptr<TerminalSelectorOverlay>  _terminalSelectorOverlay  = nullptr;
 
     // std::shared_ptr<IOverlay> _displayedOverlay = nullptr;
     eOverlayType _displayedOverlay = eOverlayType::WORKSPACE_SELECTOR;
