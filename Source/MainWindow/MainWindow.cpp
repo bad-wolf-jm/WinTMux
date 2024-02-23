@@ -41,7 +41,7 @@ void MainWindow::OnKeyPress( KeyCode const &keyCode, uint32_t modifiers )
     if( _displayedOverlay != eOverlayType::NONE && keyCode.KeyCode == KeyCodes::ENTER )
     {
         _displayedOverlay = eOverlayType::NONE;
-        
+
         return;
     }
 
@@ -52,12 +52,15 @@ void MainWindow::OnKeyPress( KeyCode const &keyCode, uint32_t modifiers )
     case eOverlayType::TERMINAL_SELECTOR:
     {
         _terminalSelectorOverlay->OnKeyPress( keyCode, modifiers );
+        
         return;
     }
     case eOverlayType::WORKSPACE_SELECTOR:
     {
         _workspaceSelectorOverlay->OnKeyPress( keyCode, modifiers );
         _currentWorkspace = _workspaceSelectorOverlay->SelectedIndex();
+        _terminalSelectorOverlay->SetWorkspace(_workspaces[_currentWorkspace]);
+
         return;
     }
     case eOverlayType::NONE:
