@@ -8,6 +8,16 @@ CommandLine::CommandLine( MainWindow *parent )
 {
 }
 
+float CommandLine::Height()
+{
+    return _height;
+}
+
+void CommandLine::SetHeight( float height )
+{
+    _height = height;
+}
+
 void CommandLine::Render()
 {
     float posX = 5.0;
@@ -17,19 +27,19 @@ void CommandLine::Render()
     switch( _window->Mode )
     {
     case eInputMode::Normal:
-        ImGui::TextUnformatted("-- NORMAL --");
+        ImGui::TextUnformatted( "-- NORMAL --" );
         break;
     case eInputMode::Insert:
-        ImGui::TextUnformatted("-- INSERT --");
+        ImGui::TextUnformatted( "-- INSERT --" );
         break;
     case eInputMode::Visual:
-        ImGui::TextUnformatted("-- VISUAL --");
+        ImGui::TextUnformatted( "-- VISUAL --" );
         break;
     case eInputMode::VisualLine:
-        ImGui::TextUnformatted("-- VISUAL LINE --");
+        ImGui::TextUnformatted( "-- VISUAL LINE --" );
         break;
     case eInputMode::VisualBlock:
-        ImGui::TextUnformatted("-- VISUAL BLOCK --");
+        ImGui::TextUnformatted( "-- VISUAL BLOCK --" );
         break;
     case eInputMode::Command:
         ImGui::TextUnformatted( _currentCommand.c_str() );

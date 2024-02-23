@@ -9,15 +9,8 @@ class CommandLine
   public:
     CommandLine( MainWindow *parent );
 
-    inline float Height()
-    {
-        return _height;
-    }
-
-    inline void SetHeight( float height )
-    {
-        _height = height;
-    }
+    float Height();
+    void  SetHeight( float height );
 
     void KeyPress( int keyCode, int mods );
     void Render();
