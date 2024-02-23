@@ -37,6 +37,13 @@ Workspace &MainWindow::CurrentWorkspace()
 
 void MainWindow::OnKeyPress( KeyCode const &keyCode, uint32_t modifiers )
 {
+    // Dismiss the overlay on pressing ENTER, if any
+    if( _displayedOverlay != eOverlayType::NONE && keyCode.KeyCode == KeyCodes::ENTER )
+    {
+        _displayedOverlay = eOverlayType::NONE;
+        return;
+    }
+
     // If there is an overlay present, the key press event is sent to it, and we can return immediately,
     // Otherwise, the action to take is determined by the current mode we are in.
     switch( _displayedOverlay )
@@ -49,6 +56,7 @@ void MainWindow::OnKeyPress( KeyCode const &keyCode, uint32_t modifiers )
     case eOverlayType::WORKSPACE_SELECTOR:
     {
         _workspaceSelectorOverlay->OnKeyPress( keyCode, modifiers );
+        _currentWorkspace = _workspaceSelectorOverlay->SelectedIndex();
         return;
     }
     case eOverlayType::NONE:
