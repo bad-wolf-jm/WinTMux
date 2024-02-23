@@ -28,6 +28,17 @@ MainWindow::MainWindow()
 
 void MainWindow::ExecuteCurrentCommand()
 {
+    if( _commandLine->_currentCommand == ":workspaces" )
+    {
+        _displayedOverlay = eOverlayType::WORKSPACE_SELECTOR;
+        return;
+    }
+
+    if( _commandLine->_currentCommand == ":terminals" )
+    {
+        _displayedOverlay = eOverlayType::TERMINAL_SELECTOR;
+        return;
+    }
 }
 
 Workspace &MainWindow::CurrentWorkspace()
@@ -52,14 +63,14 @@ void MainWindow::OnKeyPress( KeyCode const &keyCode, uint32_t modifiers )
     case eOverlayType::TERMINAL_SELECTOR:
     {
         _terminalSelectorOverlay->OnKeyPress( keyCode, modifiers );
-        
+
         return;
     }
     case eOverlayType::WORKSPACE_SELECTOR:
     {
         _workspaceSelectorOverlay->OnKeyPress( keyCode, modifiers );
         _currentWorkspace = _workspaceSelectorOverlay->SelectedIndex();
-        _terminalSelectorOverlay->SetWorkspace(_workspaces[_currentWorkspace]);
+        _terminalSelectorOverlay->SetWorkspace( _workspaces[_currentWorkspace] );
 
         return;
     }
@@ -72,7 +83,7 @@ void MainWindow::OnKeyPress( KeyCode const &keyCode, uint32_t modifiers )
     {
         // Determine whether we should enter command input mode. If so, set the command prompt and return.
         // Future key presses will be redirected to the command prompt.
-        if( ( keyCode.KeyCode == KeyCodes::SEMICOLON ) && ( modifiers & static_cast<uint32_t>( Modifiers::SHIFT ) ) )
+        if( ( keyCode.KeyCode == KeyCodes::SEMICOLON ) && ( modifiers & ( 1 << static_cast<uint32_t>( Modifiers::SHIFT ) ) ) )
         {
             Mode = eInputMode::Command;
 

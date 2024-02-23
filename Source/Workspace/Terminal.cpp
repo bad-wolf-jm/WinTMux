@@ -1,6 +1,6 @@
 #include "Terminal.h"
 #include "imgui.h"
-#include "imgui_internal.h"
+#include <cstdint>
 
 void Terminal::Render()
 {
@@ -8,7 +8,9 @@ void Terminal::Render()
     ImVec2 topLeft     = ImGui::GetCursorScreenPos();
     ImVec2 windowSize  = ImGui::GetWindowSize();
     ImVec2 bottomRight = ImVec2{ topLeft.x + windowSize.x, topLeft.y + windowSize.y };
-    drawList->AddRect( topLeft, bottomRight, ImColor( 255, 255, 255, 50 ) );
+
+    uint32_t borderColor = IsFocused ? ImColor( 255, 255, 255, 150 ) : ImColor( 255, 255, 255, 50 );
+    drawList->AddRect( topLeft, bottomRight, borderColor );
 
     ImGui::SetCursorPos( ImVec2{ 5.0f, 5.0f } );
     ImGui::Text( "FOOBAR" );

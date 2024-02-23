@@ -12,7 +12,6 @@ void TerminalSelectorOverlay::SetWorkspace( std::shared_ptr<Workspace> workspace
 
 void TerminalSelectorOverlay::RenderOverlayContent()
 {
-    //    IOverlay::Render();
 }
 
 void TerminalSelectorOverlay::OnKeyPress( KeyCode const &keyCode, uint32_t modifiers )

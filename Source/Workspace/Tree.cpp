@@ -1,7 +1,5 @@
 #include "Tree.h"
-#include <iostream>
 #include <memory>
-#include <ostream>
 
 Tree::Tree()
 {
@@ -120,14 +118,9 @@ void Tree::UpdateLayout()
         switch( _orientation )
         {
         case eOrientation::VERTICAL:
-
             x->SetSize( ImVec2{ size.x + averageDifference, _size.y } );
             x->SetPosition( position );
             x->UpdateLayout();
-            //std::cout << "x=" << _position.x << " - "
-            //          << "y=" << _position.y << std::endl;
-            //std::cout << "w=" << _size.x << " - "
-            //          << "h=" << _size.y << std::endl;
             position.x += x->Size().x;
             break;
         case eOrientation::HORIZONTAL:

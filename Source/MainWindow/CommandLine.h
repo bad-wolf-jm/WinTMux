@@ -1,6 +1,5 @@
 #pragma once
 
-// #include "MainWindow.h"
 #include "Core/String.h"
 
 class MainWindow;

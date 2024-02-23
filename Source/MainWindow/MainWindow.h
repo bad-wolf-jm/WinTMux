@@ -1,12 +1,10 @@
 #pragma once
 
 #include <memory>
-#include <unordered_map>
 #include <vector>
 
 #include "CommandLine.h"
 #include "Core/Modes.h"
-#include "MainWindow/IOverlay.h"
 #include "MainWindow/TerminalSelectorOverlay.h"
 #include "MainWindow/WorkspaceSelectorOverlay.h"
 #include "Workspace/Workspace.h"
@@ -58,12 +56,12 @@ class MainWindow
     std::shared_ptr<CommandLine>            _commandLine;
     std::vector<std::shared_ptr<Workspace>> _workspaces;
 
-    bool                                      _commandInputMode         = false;
-    
+    bool _commandInputMode = false;
+
     std::shared_ptr<WorkspaceSelectorOverlay> _workspaceSelectorOverlay = nullptr;
     std::shared_ptr<TerminalSelectorOverlay>  _terminalSelectorOverlay  = nullptr;
 
     // std::shared_ptr<IOverlay> _displayedOverlay = nullptr;
-    eOverlayType _displayedOverlay = eOverlayType::WORKSPACE_SELECTOR;
+    eOverlayType _displayedOverlay = eOverlayType::NONE;
     int          _currentWorkspace = -1;
 };
