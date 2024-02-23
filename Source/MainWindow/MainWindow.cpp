@@ -41,6 +41,7 @@ void MainWindow::OnKeyPress( KeyCode const &keyCode, uint32_t modifiers )
     if( _displayedOverlay != eOverlayType::NONE && keyCode.KeyCode == KeyCodes::ENTER )
     {
         _displayedOverlay = eOverlayType::NONE;
+        
         return;
     }
 
