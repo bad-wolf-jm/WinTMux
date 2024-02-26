@@ -1,13 +1,16 @@
+#ifndef APIENTRY
+#    undef APIENTRY
+#endif
+
+#include <Windows.h>
 #include "Core/ControlSequences.h"
 #include "Core/String.h"
 #include "MainWindow/MainWindow.h"
-// #include "MainWindow/CommandLine.h"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
-#include <iostream>
 #include <stdio.h>
 
 #define GL_SILENCE_DEPRECATION

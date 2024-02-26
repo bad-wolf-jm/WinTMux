@@ -1,5 +1,4 @@
 #pragma once
-
 #include <SDKDDKVer.h>
 #include <Windows.h>
 #include <errhandlingapi.h>
@@ -17,20 +16,19 @@
 class PTYProcess
 {
   public:
-    PTYProcess( string_t command, int16_t columns, int16_t lines );
+    PTYProcess( string_t command, uint32_t columns, uint32_t lines );
     ~PTYProcess();
 
     void WaitForCompletion( int32_t timeout = 0 );
 
   private:
-    string_t _command = L"";
-    int16_t  _columns{ 0 };
-    int16_t  _lines{ 0 };
+    string_t _command = "";
+    uint32_t _columns{ 0 };
+    uint32_t _lines{ 0 };
 
-    HPCON  _console{ INVALID_HANDLE_VALUE };      // Handle to the TTY
+    HPCON  _console{ INVALID_HANDLE_VALUE };       // Handle to the TTY
     HANDLE _consoleStdIn{ INVALID_HANDLE_VALUE };  // Console stdin
     HANDLE _consoleStdOut{ INVALID_HANDLE_VALUE }; // Console stdout
-    HANDLE _consoleStdErr{ INVALID_HANDLE_VALUE }; // Console stderr
 
     PROCESS_INFORMATION          _clientProcess{};
     STARTUPINFOEXW               _startupInfo{};
@@ -42,6 +40,6 @@ class PTYProcess
   private:
     void StartProcess();
     void CreateConsole( int16_t columns, int16_t lines );
-    bool CreatePipes( HANDLE &consoleStdIn, HANDLE &consoleStdOut, HANDLE &consoleStdErr );
+    bool CreatePipes( HANDLE &consoleStdIn, HANDLE &consoleStdOut );
     void PipeListener();
 };

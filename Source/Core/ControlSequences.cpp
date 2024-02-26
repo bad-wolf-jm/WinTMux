@@ -77,12 +77,12 @@ static Key keys[] = {
     // { KeyCodes::INSERT,         Modifiers::   CTRL,           "\x1B[2;5~", +1,  0 },
     { KeyCodes::INSERT,            Modifiers::ANY,            "\x1B[4h",   -1,  0 },
     // { KeyCodes::INSERT,         Modifiers::   ANY,            "\x1B[2~",   +1,  0 },
-    { KeyCodes::DELETE,            Modifiers::CTRL,           "\x1B[M",    -1,  0 },
-    // { KeyCodes::DELETE,         Modifiers::   CTRL,           "\x1B[3;5~", +1,  0 },
-    { KeyCodes::DELETE,            Modifiers::SHIFT,          "\x1B[2K",   -1,  0 },
-    // { KeyCodes::DELETE,         Modifiers::   SHIFT,          "\x1B[3;2~", +1,  0 },
-    { KeyCodes::DELETE,            Modifiers::ANY,            "\x1B[P",    -1,  0 },
-    // { KeyCodes::DELETE,         Modifiers::   ANY,            "\x1B[3~",   +1,  0 },
+    { KeyCodes::DELETE_K,            Modifiers::CTRL,           "\x1B[M",    -1,  0 },
+    // { KeyCodes::DELETE_K,         Modifiers::   CTRL,           "\x1B[3;5~", +1,  0 },
+    { KeyCodes::DELETE_K,            Modifiers::SHIFT,          "\x1B[2K",   -1,  0 },
+    // { KeyCodes::DELETE_K,         Modifiers::   SHIFT,          "\x1B[3;2~", +1,  0 },
+    { KeyCodes::DELETE_K,            Modifiers::ANY,            "\x1B[P",    -1,  0 },
+    // { KeyCodes::DELETE_K,         Modifiers::   ANY,            "\x1B[3~",   +1,  0 },
     { KeyCodes::BACKSPACE,         Modifiers::NONE,           "\177",       0,  0 },
     { KeyCodes::BACKSPACE,         Modifiers::ALT,            "\x1B\177",   0,  0 },
     { KeyCodes::HOME,              Modifiers::SHIFT,          "\x1B[2J",    0, -1 },
@@ -198,12 +198,6 @@ static Key keys[] = {
     // { KeyCodes::KEYPAD_8,       Modifiers::   ANY,            "\x1BOx",    +2, 0 },
     // { KeyCodes::KEYPAD_9,       Modifiers::   ANY,            "\x1BOy",    +2, 0 }
 };
-// clang-format on
-//
-// ImGuiKeyMap ImGuiTerminalKeyMap{ keys,         ( sizeof( keys ) / sizeof( keys[0] ) ),
-//                                  platformKeys, ( sizeof( platformKeys ) / sizeof( platformKeys[0] ) ),
-//
-//                                  shortcuts,    ( sizeof( shortcuts ) / sizeof( shortcuts[0] ) ) };
 
 ControlSequences::ControlSequences()
 {
@@ -220,22 +214,4 @@ ControlSequences::ControlSequences()
             controlSequences[(size_t)keys[i].keysym][(size_t)keys[i].mask] = keys[i].string;
         }
     }
-
-    //    for( size_t i = 0; i < keysLen; i++ )
-    //    {
-    //        auto &e = m_keyMap[keys[i].keysym];
-    //        e.push_back( { keys[i].mask, keys[i].string, keys[i].appkey, keys[i].appcursor } );
-    //    }
-    //
-    //    for( size_t i = 0; i < platformKeysLen; i++ )
-    //    {
-    //        auto &e = m_platformKeyMap[platformKeys[i].keysym];
-    //        e.push_back( { platformKeys[i].mask, platformKeys[i].string, platformKeys[i].appkey, platformKeys[i].appcursor } );
-    //    }
-    //
-    //    for( size_t i = 0; i < shortcutsLen; i++ )
-    //    {
-    //        auto &e = m_shortcuts[shortcuts[i].keysym];
-    //        e.push_back( { shortcuts[i].mask, shortcuts[i].action, shortcuts[i].appkey, shortcuts[i].appcursor } );
-    //    }
 }

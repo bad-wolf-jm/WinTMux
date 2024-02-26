@@ -1,6 +1,8 @@
 #include "PTYProcess.h"
+#include <iostream>
+#include <ostream>
 
-PTYProcess::PTYProcess( string_t command, int16_t columns, int16_t lines )
+PTYProcess::PTYProcess( string_t command, uint32_t columns, uint32_t lines )
     : _columns{ columns }
     , _lines{ lines }
     , _command{ command }
@@ -96,9 +98,8 @@ void PTYProcess::CreateConsole( int16_t columns, int16_t lines )
 {
     HANDLE consoleStdIn{ INVALID_HANDLE_VALUE };
     HANDLE consoleStdOut{ INVALID_HANDLE_VALUE };
-    HANDLE consoleStdErr{ INVALID_HANDLE_VALUE };
 
-    CreatePipes( consoleStdIn, consoleStdOut, consoleStdErr );
+    CreatePipes( consoleStdIn, consoleStdOut);
     COORD consoleSize{ columns, lines };
 
     // Create the Pseudo Console of the required size, attached to the PTY-end
@@ -113,9 +114,6 @@ void PTYProcess::CreateConsole( int16_t columns, int16_t lines )
 
     if( INVALID_HANDLE_VALUE != consoleStdIn )
         CloseHandle( consoleStdIn );
-
-    if( INVALID_HANDLE_VALUE != consoleStdErr )
-        CloseHandle( consoleStdErr );
 }
 
 void PTYProcess::StartProcess()
@@ -132,7 +130,7 @@ void PTYProcess::StartProcess()
                     &_clientProcess );                           // Pointer to PROCESS_INFORMATION
 }
 
-bool PTYProcess::CreatePipes( HANDLE &consoleStdIn, HANDLE &consoleStdOut, HANDLE &consoleStdErr )
+bool PTYProcess::CreatePipes( HANDLE &consoleStdIn, HANDLE &consoleStdOut)
 {
     HRESULT hr{ E_UNEXPECTED };
 
@@ -160,6 +158,7 @@ void __cdecl PTYProcess::PipeListener()
         // printf()/puts() to prevent partially-read VT sequences from corrupting
         // output
         WriteFile( hConsole, szBuffer, dwBytesRead, &dwBytesWritten, NULL );
+        std::cout << dwBytesRead << std::endl;
 
     } while( _processIsActive && fRead && dwBytesRead >= 0 );
 }
