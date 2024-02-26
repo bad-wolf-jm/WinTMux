@@ -20,7 +20,7 @@ KeyCode const &KeyboardHandler::GetKeyCode( int keycode )
 void KeyboardHandler::InitKeyCodes()
 {
     int controlKeyID = 0;
-    Keys[GLFW_KEY_DELETE]        = { KeyCodes::DELETE, glfwGetKeyScancode( GLFW_KEY_DELETE ), '\0', '\0' };
+    Keys[GLFW_KEY_DELETE]        = { KeyCodes::DELETE_K, glfwGetKeyScancode( GLFW_KEY_DELETE ), '\0', '\0' };
     Keys[GLFW_KEY_ESCAPE]        = { KeyCodes::ESCAPE, glfwGetKeyScancode( GLFW_KEY_ESCAPE ), '\0', '\0' };
     Keys[GLFW_KEY_INSERT]        = { KeyCodes::INSERT, glfwGetKeyScancode( GLFW_KEY_INSERT ), '\0', '\0' };
     Keys[GLFW_KEY_PAGE_UP]       = { KeyCodes::PAGE_UP, glfwGetKeyScancode( GLFW_KEY_PAGE_UP ), '\0', '\0' };

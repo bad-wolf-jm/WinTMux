@@ -18,7 +18,7 @@ int main()
         consoleSize.Y = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
     }
 
-    auto terminal = PTYProcess( L"nvim", consoleSize.X, consoleSize.Y );
+    auto terminal = PTYProcess( "nvim", consoleSize.X, consoleSize.Y );
     terminal.WaitForCompletion( 10 * 1000 );
 
     return S_OK == hr ? EXIT_SUCCESS : EXIT_FAILURE;

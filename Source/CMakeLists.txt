@@ -26,7 +26,7 @@ add_executable(WinTMux
     MainWindow/WorkspaceSelectorOverlay.cpp
 
     #PseudoConsole/EchoCon.cpp
-    #PSeudoConsole/PTYProcess.cpp
+    PSeudoConsole/PTYProcess.cpp
     #LibUV/LibUV.cpp
 )
 

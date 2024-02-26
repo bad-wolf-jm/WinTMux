@@ -3,6 +3,7 @@
 
 #include "GLFW/glfw3.h"
 
+#include <cstdint>
 enum class KeyCodes : size_t
 {
     F1,              // = GLFW_KEY_F1,
@@ -94,7 +95,7 @@ enum class KeyCodes : size_t
     KEYPAD_SUBTRACT, // = GLFW_KEY_KP_SUBTRACT,
     KEYPAD_ADD,      // = GLFW_KEY_KP_ADD,
     BACKSPACE,       // = GLFW_KEY_BACKSPACE,
-    DELETE,          // = GLFW_KEY_DELETE,
+    DELETE_K,          // = GLFW_KEY_DELETE,
     ESCAPE,          // = GLFW_KEY_ESCAPE,
     ENTER,           // = GLFW_KEY_ENTER,
     TAB,             // = GLFW_KEY_TAB,
