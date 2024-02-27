@@ -33,13 +33,13 @@ std::shared_ptr<Tree> Tree::Clone()
     return std::make_shared<Tree>( this );
 }
 
-void Tree::VSplit()
+void Tree::VSplit( std::shared_ptr<Terminal> newTerminal )
 {
     if( _children.size() == 0 )
     {
         _orientation = eOrientation::VERTICAL;
         _children.push_back( std::make_shared<Tree>( _terminal ) );
-        _children.push_back( std::make_shared<Tree>() );
+        _children.push_back( std::make_shared<Tree>( newTerminal ) );
         _terminal = nullptr;
 
         UpdateLayout();
@@ -48,7 +48,8 @@ void Tree::VSplit()
 
     if( _orientation == eOrientation::VERTICAL )
     {
-        _children.push_back( std::make_shared<Tree>() );
+        _children.push_back( std::make_shared<Tree>( newTerminal ) );
+
         _terminal = nullptr;
 
         UpdateLayout();
@@ -61,20 +62,20 @@ void Tree::VSplit()
         _orientation = eOrientation::VERTICAL;
         _children.clear();
         _children.push_back( tree );
-        _children.push_back( std::make_shared<Tree>() );
+        _children.push_back( std::make_shared<Tree>( newTerminal ) );
 
         UpdateLayout();
         return;
     }
 }
 
-void Tree::HSplit()
+void Tree::HSplit( std::shared_ptr<Terminal> newTerminal )
 {
     if( _children.size() == 0 )
     {
         _orientation = eOrientation::HORIZONTAL;
         _children.push_back( std::make_shared<Tree>( _terminal ) );
-        _children.push_back( std::make_shared<Tree>() );
+        _children.push_back( std::make_shared<Tree>( newTerminal ) );
         _terminal = nullptr;
 
         UpdateLayout();
@@ -83,7 +84,7 @@ void Tree::HSplit()
 
     if( _orientation == eOrientation::HORIZONTAL )
     {
-        _children.push_back( std::make_shared<Tree>() );
+        _children.push_back( std::make_shared<Tree>( newTerminal ) );
         _terminal = nullptr;
 
         UpdateLayout();
@@ -96,7 +97,7 @@ void Tree::HSplit()
         _orientation = eOrientation::HORIZONTAL;
         _children.clear();
         _children.push_back( tree );
-        _children.push_back( std::make_shared<Tree>() );
+        _children.push_back( std::make_shared<Tree>( newTerminal ) );
 
         UpdateLayout();
         return;
@@ -112,6 +113,14 @@ void Tree::UpdateLayout()
     float  difference        = ( ( _orientation == eOrientation::VERTICAL ) ? _size.x : _size.y ) - _totalChildDimension;
     float  averageDifference = difference / _children.size();
     ImVec2 position          = _position;
+    if( _children.size() == 0 && _terminal != nullptr )
+    {
+        _terminal->Position = position;
+        _terminal->Size     = Size();
+
+        return;
+    }
+
     for( auto const &x : _children )
     {
         auto size = x->Size();
@@ -147,22 +156,22 @@ void Tree::SetSize( ImVec2 newSize )
     UpdateLayout();
 }
 
-void Tree::Render()
-{
-    if( _children.size() == 0 && _terminal != nullptr )
-    {
-        ImGui::SetCursorPos( _position );
-        ImGui::PushID( (void *)_terminal.get() );
-        ImGui::BeginChild( "##ChildItem", _size );
-        {
-            _terminal->Render();
-        }
-        ImGui::EndChild();
-        ImGui::PopID();
-    }
-    else
-    {
-        for( auto const &_child : _children )
-            _child->Render();
-    }
-}
+//void Tree::Render()
+//{
+ //   if( _children.size() == 0 && _terminal != nullptr )
+ //   {
+ //       ImGui::SetCursorPos( _position );
+ //       ImGui::PushID( (void *)_terminal.get() );
+ //       ImGui::BeginChild( "##ChildItem", _size );
+ //       {
+ //           _terminal->Render();
+ //       }
+ //       ImGui::EndChild();
+ //       ImGui::PopID();
+ //   }
+ //   else
+ //   {
+ //       for( auto const &_child : _children )
+ //           _child->Render();
+ //   }
+//}

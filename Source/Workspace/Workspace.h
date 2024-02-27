@@ -18,6 +18,8 @@ class Workspace
     void HSplit();
 
   private:
-    string_t              _name = "";
-    std::shared_ptr<Tree> _workspaceElements;
+    string_t _name = "";
+
+    std::shared_ptr<Tree>                  _terminalTree;
+    std::vector<std::shared_ptr<Terminal>> _terminals;
 };

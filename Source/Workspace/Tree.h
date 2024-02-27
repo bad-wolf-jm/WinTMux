@@ -24,9 +24,8 @@ class Tree
     Tree &operator=( Tree && )      = default;
 
   public:
-    void   Render();
-    void   VSplit();
-    void   HSplit();
+    void   VSplit( std::shared_ptr<Terminal> newTerminal );
+    void   HSplit( std::shared_ptr<Terminal> newTerminal );
     void   SetSize( ImVec2 newSize );
     void   SetPosition( ImVec2 newPosition );
     ImVec2 Size();
