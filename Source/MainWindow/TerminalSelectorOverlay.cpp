@@ -12,9 +12,9 @@ void TerminalSelectorOverlay::SetWorkspace( std::shared_ptr<Workspace> workspace
 
 void TerminalSelectorOverlay::RenderOverlayContent()
 {
-    if (_workspace == nullptr)
+    if( _workspace == nullptr )
         return;
-    
+
     if( _workspace->Terminals().size() == 0 )
         return;
 
@@ -34,4 +34,19 @@ void TerminalSelectorOverlay::RenderOverlayContent()
 
 void TerminalSelectorOverlay::OnKeyPress( KeyCode const &keyCode, uint32_t modifiers )
 {
+    switch( keyCode.KeyCode )
+    {
+    case KeyCodes::UP:
+        _currentSelection -= 1;
+        _currentSelection = std::max( _currentSelection, 0 );
+        break;
+    case KeyCodes::DOWN:
+        _currentSelection += 1;
+        _currentSelection = std::min( _currentSelection, static_cast<int32_t>( _workspace->Terminals().size() - 1 ) );
+        break;
+    case KeyCodes::ENTER:
+        break;
+    default:
+        break;
+    }
 }
