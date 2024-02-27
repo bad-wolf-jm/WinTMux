@@ -36,6 +36,7 @@ void MainWindow::ExecuteCurrentCommand()
 
     if( _commandLine->_currentCommand == ":terminals" )
     {
+        _terminalSelectorOverlay->SetWorkspace( _workspaces[_currentWorkspace] );
         _displayedOverlay = eOverlayType::TERMINAL_SELECTOR;
         return;
     }
@@ -70,7 +71,6 @@ void MainWindow::OnKeyPress( KeyCode const &keyCode, uint32_t modifiers )
     {
         _workspaceSelectorOverlay->OnKeyPress( keyCode, modifiers );
         _currentWorkspace = _workspaceSelectorOverlay->SelectedIndex();
-        _terminalSelectorOverlay->SetWorkspace( _workspaces[_currentWorkspace] );
 
         return;
     }

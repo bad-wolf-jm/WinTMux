@@ -12,6 +12,8 @@ class Workspace
         return _name;
     }
 
+    std::vector<std::shared_ptr<Terminal>> &Terminals();
+
     void Render();
 
     void VSplit();

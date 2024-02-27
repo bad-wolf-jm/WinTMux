@@ -24,6 +24,11 @@ void Workspace::HSplit()
     _terminalTree->HSplit( _terminals.back() );
 }
 
+std::vector<std::shared_ptr<Terminal>> &Workspace::Terminals()
+{
+    return _terminals;
+}
+
 void Workspace::Render()
 {
     _terminalTree->SetSize( ImGui::GetContentRegionAvail() );
@@ -33,7 +38,8 @@ void Workspace::Render()
     {
         ImGui::SetCursorPos( terminal->Position );
         ImGui::PushID( (void *)terminal.get() );
-        ImGui::BeginChild( "##ChildItem", terminal->Size );
+        ImGui::PushStyleVar( ImGuiStyleVar_WindowPadding, ImVec2{ 5.0, 5.0 } );
+        ImGui::BeginChild( "##ChildItem", terminal->Size, ImGuiChildFlags_None, ImGuiWindowFlags_None );
         {
             auto  *drawList       = ImGui::GetWindowDrawList();
             ImVec2 screenPosition = ImGui::GetCursorScreenPos();
@@ -48,15 +54,18 @@ void Workspace::Render()
 
             ImVec2 terminalPosition{ terminal->Position.x + 5.0f, terminal->Position.y + 5.0f };
             ImVec2 terminalSize{ terminal->Size.x - 10.0f, terminal->Size.y - 10.0f };
-            ImGui::SetCursorPos( terminalPosition );
-            ImGui::PushID( terminalIndex );
-            ImGui::BeginChild( "##TerminalDisplay", terminalSize );
-            {
-                ImGui::Text( "FOOBAR %d", terminalIndex++ );
-                ImGui::Text( "%f x %f", terminalSize.x, terminalSize.y );
-            }
-            ImGui::EndChild();
-            ImGui::PopID();
+            // ImGui::SetCursorPos( terminalPosition );
+            // ImGui::PushID( terminalIndex );
+            // ImGui::BeginChild( "##TerminalDisplay", terminalSize );
+            //{
+            //     std::cout << "FOOBAR " << terminalIndex << " "
+            //               << "X =" << terminalPosition.x << " Y=" << terminalPosition.y << std::endl;
+            terminal->Render();
+            // ImGui::Text( "FOOBAR %d", terminalIndex++ );
+            // ImGui::Text( "%f x %f", terminalSize.x, terminalSize.y );
+            // }
+            //  ImGui::EndChild();
+            //  ImGui::PopID();
 
             ImVec2 overlayTopLeft     = ImVec2{ topLeft.x + 1, topLeft.y + 1 };
             ImVec2 overlayBottomRight = ImVec2{ bottomRight.x - 1, bottomRight.y - 1 };
@@ -73,5 +82,6 @@ void Workspace::Render()
         }
         ImGui::EndChild();
         ImGui::PopID();
+        ImGui::PopStyleVar();
     }
 }

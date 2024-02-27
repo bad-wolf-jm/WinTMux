@@ -155,23 +155,3 @@ void Tree::SetSize( ImVec2 newSize )
 
     UpdateLayout();
 }
-
-//void Tree::Render()
-//{
- //   if( _children.size() == 0 && _terminal != nullptr )
- //   {
- //       ImGui::SetCursorPos( _position );
- //       ImGui::PushID( (void *)_terminal.get() );
- //       ImGui::BeginChild( "##ChildItem", _size );
- //       {
- //           _terminal->Render();
- //       }
- //       ImGui::EndChild();
- //       ImGui::PopID();
- //   }
- //   else
- //   {
- //       for( auto const &_child : _children )
- //           _child->Render();
- //   }
-//}

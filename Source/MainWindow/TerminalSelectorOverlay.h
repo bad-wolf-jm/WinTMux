@@ -15,5 +15,6 @@ class TerminalSelectorOverlay : public IOverlay
     virtual void RenderOverlayContent();
 
   private:
+    int                        _currentSelection = 0;
     std::shared_ptr<Workspace> _workspace;
 };
