@@ -10,6 +10,11 @@ void TerminalSelectorOverlay::SetWorkspace( std::shared_ptr<Workspace> workspace
     _workspace = workspace;
 }
 
+int32_t TerminalSelectorOverlay::SelectedIndex()
+{
+    return _currentSelection;
+}
+
 void TerminalSelectorOverlay::RenderOverlayContent()
 {
     if( _workspace == nullptr )

@@ -13,6 +13,7 @@ class TerminalSelectorOverlay : public IOverlay
   public:
     virtual void OnKeyPress( KeyCode const &keyCode, uint32_t modifiers );
     virtual void RenderOverlayContent();
+    int32_t      SelectedIndex();
 
   private:
     int                        _currentSelection = 0;

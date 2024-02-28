@@ -64,7 +64,7 @@ void MainWindow::OnKeyPress( KeyCode const &keyCode, uint32_t modifiers )
     case eOverlayType::TERMINAL_SELECTOR:
     {
         _terminalSelectorOverlay->OnKeyPress( keyCode, modifiers );
-
+        CurrentWorkspace().FocusTerminal( _terminalSelectorOverlay->SelectedIndex() );
         return;
     }
     case eOverlayType::WORKSPACE_SELECTOR:

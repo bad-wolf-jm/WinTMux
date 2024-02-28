@@ -12,7 +12,7 @@ class Terminal
     string_t &Name();
 
   public:
-    bool   IsFocused = false;
+    //bool   IsFocused = false;
     ImVec2 Position{};
     ImVec2 Size{};
 

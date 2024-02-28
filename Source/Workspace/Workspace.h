@@ -13,6 +13,7 @@ class Workspace
     }
 
     std::vector<std::shared_ptr<Terminal>> &Terminals();
+    void                                    FocusTerminal( int32_t index );
 
     void Render();
 
@@ -24,4 +25,6 @@ class Workspace
 
     std::shared_ptr<Tree>                  _terminalTree;
     std::vector<std::shared_ptr<Terminal>> _terminals;
+
+    int32_t                                _focusedTerminal = 0;
 };

@@ -29,11 +29,20 @@ std::vector<std::shared_ptr<Terminal>> &Workspace::Terminals()
     return _terminals;
 }
 
+void Workspace::FocusTerminal( int32_t index )
+{
+    // for( auto const &t : _terminals )
+    //     t->IsFocused = false;
+
+    //_terminals[index]->IsFocused = true;
+    _focusedTerminal = index;
+}
+
 void Workspace::Render()
 {
     _terminalTree->SetSize( ImGui::GetContentRegionAvail() );
 
-    int32_t terminalIndex = 1;
+    int32_t terminalIndex = 0;
     for( auto const &terminal : _terminals )
     {
         ImGui::SetCursorPos( terminal->Position );
@@ -69,7 +78,7 @@ void Workspace::Render()
 
             ImVec2 overlayTopLeft     = ImVec2{ topLeft.x + 1, topLeft.y + 1 };
             ImVec2 overlayBottomRight = ImVec2{ bottomRight.x - 1, bottomRight.y - 1 };
-            if( !terminal->IsFocused )
+            if( _focusedTerminal != terminalIndex )
             {
                 drawList->AddRectFilled( overlayTopLeft, overlayBottomRight, IM_COL32( 0, 0, 0, 200 ) );
             }
@@ -79,6 +88,7 @@ void Workspace::Render()
 
                 drawList->AddRect( overlayTopLeft, overlayBottomRight, borderColor );
             }
+            terminalIndex++;
         }
         ImGui::EndChild();
         ImGui::PopID();
