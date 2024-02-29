@@ -31,10 +31,12 @@ std::vector<std::shared_ptr<Terminal>> &Workspace::Terminals()
 
 void Workspace::FocusTerminal( int32_t index )
 {
-    // for( auto const &t : _terminals )
-    //     t->IsFocused = false;
+    if( index < 0 )
+        index = 0;
 
-    //_terminals[index]->IsFocused = true;
+    if( index >= _terminals.size() )
+        index = _terminals.size() - 1;
+
     _focusedTerminal = index;
 }
 
