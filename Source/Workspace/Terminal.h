@@ -2,7 +2,6 @@
 #include "Core/String.h"
 #include "imgui.h"
 
-#include "PseudoConsole/PTYProcess.h"
 
 class Terminal
 {
@@ -21,5 +20,5 @@ class Terminal
   private:
     string_t _name = "command.exe";
 
-    std::shared_ptr<PTYProcess> _process = nullptr;
+    //std::shared_ptr<PTYProcess> _process = nullptr;
 };
