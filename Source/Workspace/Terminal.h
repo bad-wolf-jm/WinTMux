@@ -2,6 +2,7 @@
 #include "Core/String.h"
 #include "imgui.h"
 
+#include <cstdint>
 
 class Terminal
 {
@@ -21,4 +22,6 @@ class Terminal
     string_t _name = "command.exe";
 
     //std::shared_ptr<PTYProcess> _process = nullptr;
+    uint32_t _columns = 0;
+    uint32_t _rows    = 0;
 };
