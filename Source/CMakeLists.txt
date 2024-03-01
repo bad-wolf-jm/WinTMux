@@ -10,7 +10,8 @@ find_package(OpenGL REQUIRED)
 add_executable(WinTMux 
     Core/KeyCodes.cpp
     Core/ControlSequences.cpp
-
+    Core/utf8.cpp
+    
     VtParser/Parser.cpp
 
     Launch/Main.cpp
