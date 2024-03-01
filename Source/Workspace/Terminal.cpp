@@ -8,6 +8,7 @@ string_t &Terminal::Name()
     //    _process = std::make_shared<PTYProcess>( "powershell", 100, 100 );
 }
 
+
 inline void DrawGlyph( ImVec2 position, uint32_t color, ImFontGlyph *glyph, ImDrawVert *&vtx, ImDrawIdx *&idx, uint32_t &idxStart )
 {
     float u1 = glyph->U0;
@@ -54,6 +55,14 @@ inline void DrawGlyph( ImVec2 position, uint32_t color, ImFontGlyph *glyph, ImDr
     vtx[3].uv.y  = v2;
 
     vtx += 4;
+}
+
+void Terminal::SetFonts( ImFont *normalFont, ImFont *boldFont, ImFont *italicFont, ImFont *boldItalicFont )
+{
+    _normalFont     = normalFont;
+    _boldFont       = boldFont;
+    _italicFont     = italicFont;
+    _boldItalicFont = boldItalicFont;
 }
 
 void Terminal::Render()
