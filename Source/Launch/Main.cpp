@@ -3,6 +3,7 @@
 #endif
 
 #include <Windows.h>
+
 #include "Core/ControlSequences.h"
 #include "Core/String.h"
 #include "MainWindow/MainWindow.h"
@@ -39,6 +40,46 @@ void OnKeyPressed( GLFWwindow *window, int keycode, int scancode, int action, in
 
     auto const &keyCode = keyboardHandler.GetKeyCode( keycode );
     mainWindow.OnKeyPress( keyCode, keyboardHandler.GetModifierState( mods ) );
+}
+
+ImFont *LoadFont( path_t fontName, uint32_t fontSize )
+{
+    // clang-format off
+    static ImWchar charRanges[] = { 
+        0x0020, 0x00FF, // Basic Latin and Latin Supplement
+        0x2070, 0x209F, // Superscripts and subscripts
+        0x2100, 0x214F, // Letter-like symbols
+        0x2200, 0x2300, // Mathematical operators
+        0x2500, 0x257F, // Box drawing
+        0x2A00, 0x2AFF, // Supplemental
+        0x0370, 0x03ff, // Greek characters
+        0x23FB, 0x23FE, // IEC Power Symbol
+        0x2655, 0x2655, // Octicons
+        0x26A1, 0x26A1, // Octicons
+        0xF400, 0xF532, // Octicons
+        0x2B58, 0x2B58, // IEC Power Symbols
+        0xE000, 0xE00A, // Pomicons
+        0xE0A0, 0xE0A2, // Powerline
+        0xE0B0, 0xE0B3, // Powerline
+        0xE0A3, 0xE0A3, // Powerline Extra
+        0xE0B4, 0xE0C8, // Powerline Extra
+        0xE0CA, 0xE0CA, // Powerline Extra
+        0xE0CC, 0xE0D4, // Powerline Extra
+        0xE300, 0xE3E3, // Weather Icons
+        0xE5FA, 0xE6B1, // Seti-UI + Custom
+        0xE600, 0xE700, // Devicons
+        0xEa60, 0xEBEB, // Codicons
+        0xF000, 0xF2E0, // Font Awesome
+        0xE000, 0xE200, // Font Awesome Extension
+        0xF300, 0xF372, // Font Logos
+        0 
+    };
+    // clang-format on
+
+    ImGuiIO &io   = ImGui::GetIO();
+    ImFont  *font = io.Fonts->AddFontFromFileTTF( fontName.string().c_str(), fontSize, nullptr, charRanges );
+
+    return font;
 }
 
 int main( int, char ** )
@@ -79,18 +120,11 @@ int main( int, char ** )
     ImGui_ImplOpenGL3_Init( glsl_version );
     glfwSetKeyCallback( window, OnKeyPressed );
 
-    int fontSize = 18.0f;
-    io.Fonts->AddFontFromFileTTF( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFontMono-Regular.ttf", fontSize );
-    // io.Fonts->AddFontFromFileTTF( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFont-ExtraBold.ttf", fontSize );
-    // io.Fonts->AddFontFromFileTTF( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFont-ExtraBoldItalic.ttf", fontSize );
-    // io.Fonts->AddFontFromFileTTF( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFont-ExtraLight.ttf", fontSize );
-    // io.Fonts->AddFontFromFileTTF( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFont-ExtraLightItalic.ttf", fontSize );
-    // io.Fonts->AddFontFromFileTTF( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFont-Italic.ttf", fontSize );
-    // io.Fonts->AddFontFromFileTTF( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFont-Light.ttf", fontSize );
-    // io.Fonts->AddFontFromFileTTF( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFont-LightItalic.ttf", fontSize );
-    // io.Fonts->AddFontFromFileTTF( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFont-MediumItalic.ttf", fontSize );
-    // io.Fonts->AddFontFromFileTTF( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFont-Bold.ttf", fontSize );
-    // io.Fonts->AddFontFromFileTTF( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFont-BoldItalic.ttf", fontSize );
+    int     fontSize       = 18;
+    ImFont *normalFont     = LoadFont( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFontMono-Regular.ttf", fontSize );
+    ImFont *italicFont     = LoadFont( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFont-Italic.ttf", fontSize );
+    ImFont *boldFont       = LoadFont( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFont-Bold.ttf", fontSize );
+    ImFont *boldItalicFont = LoadFont( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFont-BoldItalic.ttf", fontSize );
 
     ImVec4 clear_color = ImVec4( 0.0f, 0.0f, 0.0f, 1.00f );
     // Main loop
