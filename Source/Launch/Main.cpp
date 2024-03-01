@@ -122,10 +122,12 @@ int main( int, char ** )
 
     int     fontSize       = 18;
     ImFont *normalFont     = LoadFont( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFontMono-Regular.ttf", fontSize );
-    ImFont *italicFont     = LoadFont( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFont-Italic.ttf", fontSize );
     ImFont *boldFont       = LoadFont( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFont-Bold.ttf", fontSize );
+    ImFont *italicFont     = LoadFont( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFont-Italic.ttf", fontSize );
     ImFont *boldItalicFont = LoadFont( "C:\\GitLab\\WinTMux\\Resources\\Fonts\\JetBrainsMonoNLNerdFont-BoldItalic.ttf", fontSize );
 
+    mainWindow.SetFonts(normalFont, boldFont, italicFont, boldItalicFont);
+    
     ImVec4 clear_color = ImVec4( 0.0f, 0.0f, 0.0f, 1.00f );
     // Main loop
     while( !glfwWindowShouldClose( window ) )

@@ -35,6 +35,7 @@ class MainWindow
     void CloseWorkspace( string_t name );
 
     Workspace &CurrentWorkspace();
+    void       SetFonts( ImFont *normalFont, ImFont *boldFont, ImFont *italicFont, ImFont *boldItalicFont );
 
   public:
     eInputMode Mode = eInputMode::Normal;
@@ -51,6 +52,11 @@ class MainWindow
 
     ImVec2 _windowSize{};
     float  _fontSize = 16.0f;
+
+    ImFont *_normalFont     = nullptr;
+    ImFont *_boldFont       = nullptr;
+    ImFont *_italicFont     = nullptr;
+    ImFont *_boldItalicFont = nullptr;
 
   public:
     std::shared_ptr<CommandLine>            _commandLine;

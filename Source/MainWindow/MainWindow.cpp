@@ -5,25 +5,33 @@ MainWindow::MainWindow()
     : _commandLine{ std::make_shared<CommandLine>( this ) }
 {
     _workspaces.push_back( std::make_shared<Workspace>( "DEFAULT" ) );
-//    _workspaces.back()->VSplit();
-//    _workspaces.back()->VSplit();
-//    _workspaces.back()->HSplit();
-//    _workspaces.back()->HSplit();
-//
-//    _workspaces.push_back( std::make_shared<Workspace>( "WinTMux Source Code" ) );
-//    _workspaces.back()->HSplit();
-//    _workspaces.back()->HSplit();
-//    _workspaces.back()->VSplit();
-//
-//    _workspaces.push_back( std::make_shared<Workspace>( "LaTex" ) );
-//    _workspaces.back()->VSplit();
-//
-//    _workspaces.push_back( std::make_shared<Workspace>( "SpockEngine" ) );
-//    _workspaces.back()->HSplit();
+    //    _workspaces.back()->VSplit();
+    //    _workspaces.back()->VSplit();
+    //    _workspaces.back()->HSplit();
+    //    _workspaces.back()->HSplit();
+    //
+    //    _workspaces.push_back( std::make_shared<Workspace>( "WinTMux Source Code" ) );
+    //    _workspaces.back()->HSplit();
+    //    _workspaces.back()->HSplit();
+    //    _workspaces.back()->VSplit();
+    //
+    //    _workspaces.push_back( std::make_shared<Workspace>( "LaTex" ) );
+    //    _workspaces.back()->VSplit();
+    //
+    //    _workspaces.push_back( std::make_shared<Workspace>( "SpockEngine" ) );
+    //    _workspaces.back()->HSplit();
     _currentWorkspace = 0;
 
     _workspaceSelectorOverlay = std::make_shared<WorkspaceSelectorOverlay>( _workspaces );
     _terminalSelectorOverlay  = std::make_shared<TerminalSelectorOverlay>();
+}
+
+void MainWindow::SetFonts( ImFont *normalFont, ImFont *boldFont, ImFont *italicFont, ImFont *boldItalicFont )
+{
+    _normalFont     = normalFont;
+    _boldFont       = boldFont;
+    _italicFont     = italicFont;
+    _boldItalicFont = boldItalicFont;
 }
 
 void MainWindow::ExecuteCurrentCommand()
