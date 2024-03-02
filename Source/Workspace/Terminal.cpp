@@ -77,18 +77,18 @@ inline void DrawBackgroundRectangle( float x, float y, float w, float h, uint32_
     idx_write[5] = (ImDrawIdx)( vtx_current_idx + 3 );
     idx_write += 6;
 
+    vtx_write[0].col = color;
     vtx_write[0].pos = a;
     vtx_write[0].uv  = uv;
-    vtx_write[0].col = color;
+    vtx_write[1].col = color;
     vtx_write[1].pos = b;
     vtx_write[1].uv  = uv;
-    vtx_write[1].col = color;
+    vtx_write[2].col = color;
     vtx_write[2].pos = c;
     vtx_write[2].uv  = uv;
-    vtx_write[2].col = color;
+    vtx_write[3].col = color;
     vtx_write[3].pos = d;
     vtx_write[3].uv  = uv;
-    vtx_write[3].col = color;
     vtx_write += 4;
     vtx_current_idx += 4;
 }
