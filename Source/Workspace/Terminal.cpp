@@ -5,13 +5,18 @@
 #include <cstdint>
 #include <vector>
 
+Terminal::Terminal()
+{
+}
+
 string_t &Terminal::Name()
 {
     return _name;
     //    _process = std::make_shared<PTYProcess>( "powershell", 100, 100 );
 }
 
-inline void DrawGlyph( ImVec2 position, uint32_t color, ImFontGlyph const *glyph, ImDrawVert *&vtx, ImDrawIdx *&idx, uint32_t &idxStart )
+inline void DrawGlyph( ImVec2 position, uint32_t color, ImFontGlyph const *glyph, ImDrawVert *&vtx, ImDrawIdx *&idx,
+                       uint32_t &idxStart )
 {
     float u1 = glyph->U0;
     float v1 = glyph->V0;
@@ -59,6 +64,35 @@ inline void DrawGlyph( ImVec2 position, uint32_t color, ImFontGlyph const *glyph
     vtx += 4;
 }
 
+inline void DrawBackgroundRectangle( float x, float y, float w, float h, uint32_t color, ImDrawVert *&vtx_write, ImDrawIdx *&idx_write,
+                                     uint32_t &vtx_current_idx, ImVec2 whitePixel )
+{
+    ImVec2 a( x, y ), c( x + w, y + h );
+    ImVec2 b( c.x, a.y ), d( a.x, c.y ), uv( whitePixel );
+    idx_write[0] = vtx_current_idx;
+    idx_write[1] = (ImDrawIdx)( vtx_current_idx + 1 );
+    idx_write[2] = (ImDrawIdx)( vtx_current_idx + 2 );
+    idx_write[3] = vtx_current_idx;
+    idx_write[4] = (ImDrawIdx)( vtx_current_idx + 2 );
+    idx_write[5] = (ImDrawIdx)( vtx_current_idx + 3 );
+    idx_write += 6;
+
+    vtx_write[0].pos = a;
+    vtx_write[0].uv  = uv;
+    vtx_write[0].col = color;
+    vtx_write[1].pos = b;
+    vtx_write[1].uv  = uv;
+    vtx_write[1].col = color;
+    vtx_write[2].pos = c;
+    vtx_write[2].uv  = uv;
+    vtx_write[2].col = color;
+    vtx_write[3].pos = d;
+    vtx_write[3].uv  = uv;
+    vtx_write[3].col = color;
+    vtx_write += 4;
+    vtx_current_idx += 4;
+}
+
 void Terminal::SetFonts( ImFont *normalFont, ImFont *boldFont, ImFont *italicFont, ImFont *boldItalicFont )
 {
     _normalFont     = normalFont;
@@ -71,15 +105,15 @@ void Terminal::Render()
 {
     //    auto  *drawList    = ImGui::GetWindowDrawList();
     //    ImVec2 topLeft     = ImGui::GetCursorScreenPos();
-    ImVec2 windowSize = ImGui::GetWindowSize();
+    // ImVec2 windowSize = ImGui::GetWindowSize();
     //    ImVec2 bottomRight = ImVec2{ topLeft.x + windowSize.x, topLeft.y + windowSize.y };
     //
     //    uint32_t borderColor = IsFocused ? ImColor( 255, 255, 255, 150 ) : ImColor( 255, 255, 255, 50 );
     //    drawList->AddRect( topLeft, bottomRight, borderColor );
     //
-    //ImGui::SetCursorPos( ImVec2{ 5.0f, 5.0f } );
-    //ImGui::Text( "FOOBAR" );
-    //ImGui::Text( "%f x %f", windowSize.x, windowSize.y );
+    // ImGui::SetCursorPos( ImVec2{ 5.0f, 5.0f } );
+    // ImGui::Text( "FOOBAR" );
+    // ImGui::Text( "%f x %f", windowSize.x, windowSize.y );
     //    if( !IsFocused )
     //    {
     //        ImVec2 overlayTopLeft     = ImVec2{ topLeft.x + 1, topLeft.y + 1 };
@@ -113,8 +147,8 @@ void Terminal::Render()
 
     ImVec2 bottomRight = ImVec2{ topLeft.x + windowSize.x, topLeft.y + windowSize.y };
 
-    uint32_t borderColor = IsFocused ? ImColor( 255, 255, 255, 200 ) : ImColor( 255, 255, 255, 50 );
-    drawList->AddRect( topLeft, bottomRight, borderColor );
+    //    uint32_t borderColor = IsFocused ? ImColor( 255, 255, 255, 200 ) : ImColor( 255, 255, 255, 50 );
+    //  drawList->AddRect( topLeft, bottomRight, borderColor );
 
     ImGui::SetCursorPos( ImVec2{ 5.0f, 5.0f } );
     ImGui::Text( "FOOBAR" );
@@ -153,9 +187,9 @@ void Terminal::Render()
     //     drawList->AddRect( overlayTopLeft, overlayBottomRight, borderColor );
     // }
 
-    const char        *test_string = "abcdef";
+    const char        *test_string = "abcdefghijklmnopqrstuvwxyz";
     std::vector<Glyph> test_glyphs;
-    for( int x = 0; x < 6; x++ )
+    for( int x = 0; x < 26; x++ )
     {
         Glyph g{};
         g.Character  = test_string[x];
@@ -164,8 +198,10 @@ void Terminal::Render()
         test_glyphs.push_back( g );
     }
 
-    float advanceX   = 20.0f;
-    float lineHeight = 20.0f;
+    ImFontGlyph const *defaultGlyph = _normalFont->FindGlyph( 'A' );
+    float              advanceX     = defaultGlyph->AdvanceX;
+    float              lineHeight   = _normalFont->FontSize;
+
     // 4 vertices per primitive, up to 11 primitives pr char (background, glyph (up to 8 because of boxdraw), strikethrough, underline)
     // and the cursor
     const int vtx_count_max = (int)( _columns * _rows ) * 4 * 11 + 16;
@@ -185,30 +221,33 @@ void Terminal::Render()
     {
         auto const *fontGlyph = _boldItalicFont->FindGlyphNoFallback( gl.Character );
 
-        ImVec2 a( x, y ), c( x + advanceX, y + lineHeight );
-        ImVec2 b( c.x, a.y ), d( a.x, c.y ), uv( drawList->_Data->TexUvWhitePixel );
-        idx_write[0] = vtx_current_idx;
-        idx_write[1] = (ImDrawIdx)( vtx_current_idx + 1 );
-        idx_write[2] = (ImDrawIdx)( vtx_current_idx + 2 );
-        idx_write[3] = vtx_current_idx;
-        idx_write[4] = (ImDrawIdx)( vtx_current_idx + 2 );
-        idx_write[5] = (ImDrawIdx)( vtx_current_idx + 3 );
-        idx_write += 6;
+        DrawBackgroundRectangle( x, y, advanceX, lineHeight, gl.Background, vtx_write, idx_write, vtx_current_idx,
+                                 drawList->_Data->TexUvWhitePixel );
 
-        vtx_write[0].pos = a;
-        vtx_write[0].uv  = uv;
-        vtx_write[0].col = gl.Background;
-        vtx_write[1].pos = b;
-        vtx_write[1].uv  = uv;
-        vtx_write[1].col = gl.Background;
-        vtx_write[2].pos = c;
-        vtx_write[2].uv  = uv;
-        vtx_write[2].col = gl.Background;
-        vtx_write[3].pos = d;
-        vtx_write[3].uv  = uv;
-        vtx_write[3].col = gl.Background;
-        vtx_write += 4;
-        vtx_current_idx += 4;
+        // ImVec2 a( x, y ), c( x + advanceX, y + lineHeight );
+        // ImVec2 b( c.x, a.y ), d( a.x, c.y ), uv( drawList->_Data->TexUvWhitePixel );
+        // idx_write[0] = vtx_current_idx;
+        // idx_write[1] = (ImDrawIdx)( vtx_current_idx + 1 );
+        // idx_write[2] = (ImDrawIdx)( vtx_current_idx + 2 );
+        // idx_write[3] = vtx_current_idx;
+        // idx_write[4] = (ImDrawIdx)( vtx_current_idx + 2 );
+        // idx_write[5] = (ImDrawIdx)( vtx_current_idx + 3 );
+        // idx_write += 6;
+
+        // vtx_write[0].pos = a;
+        // vtx_write[0].uv  = uv;
+        // vtx_write[0].col = gl.Background;
+        // vtx_write[1].pos = b;
+        // vtx_write[1].uv  = uv;
+        // vtx_write[1].col = gl.Background;
+        // vtx_write[2].pos = c;
+        // vtx_write[2].uv  = uv;
+        // vtx_write[2].col = gl.Background;
+        // vtx_write[3].pos = d;
+        // vtx_write[3].uv  = uv;
+        // vtx_write[3].col = gl.Background;
+        // vtx_write += 4;
+        // vtx_current_idx += 4;
 
         DrawGlyph( ImVec2{ x, y }, gl.Foreground, fontGlyph, vtx_write, idx_write, vtx_current_idx );
         x += advanceX;
