@@ -103,32 +103,6 @@ void Terminal::SetFonts( ImFont *normalFont, ImFont *boldFont, ImFont *italicFon
 
 void Terminal::Render()
 {
-    //    auto  *drawList    = ImGui::GetWindowDrawList();
-    //    ImVec2 topLeft     = ImGui::GetCursorScreenPos();
-    // ImVec2 windowSize = ImGui::GetWindowSize();
-    //    ImVec2 bottomRight = ImVec2{ topLeft.x + windowSize.x, topLeft.y + windowSize.y };
-    //
-    //    uint32_t borderColor = IsFocused ? ImColor( 255, 255, 255, 150 ) : ImColor( 255, 255, 255, 50 );
-    //    drawList->AddRect( topLeft, bottomRight, borderColor );
-    //
-    // ImGui::SetCursorPos( ImVec2{ 5.0f, 5.0f } );
-    // ImGui::Text( "FOOBAR" );
-    // ImGui::Text( "%f x %f", windowSize.x, windowSize.y );
-    //    if( !IsFocused )
-    //    {
-    //        ImVec2 overlayTopLeft     = ImVec2{ topLeft.x + 1, topLeft.y + 1 };
-    //        ImVec2 overlayBottomRight = ImVec2{ bottomRight.x - 1, bottomRight.y - 1 };
-    //
-    //        drawList->AddRectFilled( overlayTopLeft, overlayBottomRight, IM_COL32( 0, 0, 0, 200 ) );
-    //    }
-    //    else
-    //    {
-    //        ImVec2   overlayTopLeft     = ImVec2{ topLeft.x + 1, topLeft.y + 1 };
-    //        ImVec2   overlayBottomRight = ImVec2{ bottomRight.x - 1, bottomRight.y - 1 };
-    //        uint32_t borderColor        = ImColor( 255, 55, 255, 200 );
-    //
-    //        drawList->AddRect( overlayTopLeft, overlayBottomRight, borderColor );
-    //    }
     auto  *drawList   = ImGui::GetWindowDrawList();
     ImVec2 topLeft    = ImGui::GetCursorScreenPos();
     ImVec2 windowSize = ImGui::GetWindowSize();
@@ -147,45 +121,11 @@ void Terminal::Render()
 
     ImVec2 bottomRight = ImVec2{ topLeft.x + windowSize.x, topLeft.y + windowSize.y };
 
-    //    uint32_t borderColor = IsFocused ? ImColor( 255, 255, 255, 200 ) : ImColor( 255, 255, 255, 50 );
-    //  drawList->AddRect( topLeft, bottomRight, borderColor );
-
     ImGui::SetCursorPos( ImVec2{ 5.0f, 5.0f } );
     ImGui::Text( "FOOBAR" );
     ImGui::Text( "%f x %f", windowSize.x, windowSize.y );
     ImGui::Text( "%d x %d", _rows, _columns );
     ImGui::Text( "%f x %f", _columns * characterSize.x, _rows * characterSize.y );
-
-    // auto &io = ImGui::GetIO();
-    // static bool use_text_color_for_tint = false;
-    // ImTextureID my_tex_id               = io.Fonts->TexID;
-    // float       my_tex_w                = (float)io.Fonts->TexWidth;
-    // float       my_tex_h                = (float)io.Fonts->TexHeight;
-    // ImGui::Checkbox( "Use Text Color for Tint", &use_text_color_for_tint );
-    // ImGui::Text( "%.0fx%.0f", my_tex_w, my_tex_h );
-    // ImVec2 pos    = ImGui::GetCursorScreenPos();
-    // ImVec2 uv_min = ImVec2( 0.0f, 0.0f ); // Top-left
-    // ImVec2 uv_max = ImVec2( 1.0f, 1.0f ); // Lower-right
-    // ImVec4 tint_col =
-    //     use_text_color_for_tint ? ImGui::GetStyleColorVec4( ImGuiCol_Text ) : ImVec4( 1.0f, 1.0f, 1.0f, 1.0f ); // No tint
-    // ImVec4 border_col = ImGui::GetStyleColorVec4( ImGuiCol_Border );
-    // ImGui::Image( my_tex_id, ImVec2( my_tex_w, my_tex_h ), uv_min, uv_max, tint_col, border_col );
-
-    // if( !IsFocused )
-    // {
-    //     ImVec2 overlayTopLeft     = ImVec2{ topLeft.x + 1, topLeft.y + 1 };
-    //     ImVec2 overlayBottomRight = ImVec2{ bottomRight.x - 1, bottomRight.y - 1 };
-
-    //     drawList->AddRectFilled( overlayTopLeft, overlayBottomRight, IM_COL32( 0, 0, 0, 200 ) );
-    // }
-    // else
-    // {
-    //     ImVec2   overlayTopLeft     = ImVec2{ topLeft.x + 1, topLeft.y + 1 };
-    //     ImVec2   overlayBottomRight = ImVec2{ bottomRight.x - 1, bottomRight.y - 1 };
-    //     uint32_t borderColor        = ImColor( 255, 55, 255, 200 );
-
-    //     drawList->AddRect( overlayTopLeft, overlayBottomRight, borderColor );
-    // }
 
     const char        *test_string = "abcdefghijklmnopqrstuvwxyz";
     std::vector<Glyph> test_glyphs;
@@ -223,32 +163,6 @@ void Terminal::Render()
 
         DrawBackgroundRectangle( x, y, advanceX, lineHeight, gl.Background, vtx_write, idx_write, vtx_current_idx,
                                  drawList->_Data->TexUvWhitePixel );
-
-        // ImVec2 a( x, y ), c( x + advanceX, y + lineHeight );
-        // ImVec2 b( c.x, a.y ), d( a.x, c.y ), uv( drawList->_Data->TexUvWhitePixel );
-        // idx_write[0] = vtx_current_idx;
-        // idx_write[1] = (ImDrawIdx)( vtx_current_idx + 1 );
-        // idx_write[2] = (ImDrawIdx)( vtx_current_idx + 2 );
-        // idx_write[3] = vtx_current_idx;
-        // idx_write[4] = (ImDrawIdx)( vtx_current_idx + 2 );
-        // idx_write[5] = (ImDrawIdx)( vtx_current_idx + 3 );
-        // idx_write += 6;
-
-        // vtx_write[0].pos = a;
-        // vtx_write[0].uv  = uv;
-        // vtx_write[0].col = gl.Background;
-        // vtx_write[1].pos = b;
-        // vtx_write[1].uv  = uv;
-        // vtx_write[1].col = gl.Background;
-        // vtx_write[2].pos = c;
-        // vtx_write[2].uv  = uv;
-        // vtx_write[2].col = gl.Background;
-        // vtx_write[3].pos = d;
-        // vtx_write[3].uv  = uv;
-        // vtx_write[3].col = gl.Background;
-        // vtx_write += 4;
-        // vtx_current_idx += 4;
-
         DrawGlyph( ImVec2{ x, y }, gl.Foreground, fontGlyph, vtx_write, idx_write, vtx_current_idx );
         x += advanceX;
     }
