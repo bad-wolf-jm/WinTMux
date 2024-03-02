@@ -1,6 +1,9 @@
 #include "Terminal.h"
+#include "Core/Glyph.h"
 #include "imgui.h"
+#include "imgui_internal.h"
 #include <cstdint>
+#include <vector>
 
 string_t &Terminal::Name()
 {
@@ -8,8 +11,7 @@ string_t &Terminal::Name()
     //    _process = std::make_shared<PTYProcess>( "powershell", 100, 100 );
 }
 
-
-inline void DrawGlyph( ImVec2 position, uint32_t color, ImFontGlyph *glyph, ImDrawVert *&vtx, ImDrawIdx *&idx, uint32_t &idxStart )
+inline void DrawGlyph( ImVec2 position, uint32_t color, ImFontGlyph const *glyph, ImDrawVert *&vtx, ImDrawIdx *&idx, uint32_t &idxStart )
 {
     float u1 = glyph->U0;
     float v1 = glyph->V0;
@@ -151,10 +153,78 @@ void Terminal::Render()
     //     drawList->AddRect( overlayTopLeft, overlayBottomRight, borderColor );
     // }
 
-    for( int row = 0; row < _rows; row++ )
+    const char        *test_string = "abcdef";
+    std::vector<Glyph> test_glyphs;
+    for( int x = 0; x < 6; x++ )
     {
-        for( int column = 0; column < _columns; column++ )
-        {
-        }
+        Glyph g{};
+        g.Character  = test_string[x];
+        g.Foreground = IM_COL32( 0, 25, 12, 255 );
+        g.Background = IM_COL32( 255, 25, 255, 255 );
+        test_glyphs.push_back( g );
     }
+
+    float advanceX   = 20.0f;
+    float lineHeight = 20.0f;
+    // 4 vertices per primitive, up to 11 primitives pr char (background, glyph (up to 8 because of boxdraw), strikethrough, underline)
+    // and the cursor
+    const int vtx_count_max = (int)( _columns * _rows ) * 4 * 11 + 16;
+    // 6 indices per primitive, up to 4 primitives pr char (background, glyph, strikethrough, underline) and the cursor
+    const int idx_count_max     = (int)( _columns * _rows ) * 6 * 11 + 24;
+    const int idx_expected_size = drawList->IdxBuffer.Size + idx_count_max;
+    drawList->PrimReserve( idx_count_max, vtx_count_max );
+
+    ImDrawVert  *vtx_write       = drawList->_VtxWritePtr;
+    ImDrawIdx   *idx_write       = drawList->_IdxWritePtr;
+    unsigned int vtx_current_idx = drawList->_VtxCurrentIdx;
+
+    auto  pos = ImGui::GetCursorScreenPos();
+    float x   = pos.x + 0.0f;
+    float y   = pos.y + 0.0f;
+    for( auto const &gl : test_glyphs )
+    {
+        auto const *fontGlyph = _boldItalicFont->FindGlyphNoFallback( gl.Character );
+
+        ImVec2 a( x, y ), c( x + advanceX, y + lineHeight );
+        ImVec2 b( c.x, a.y ), d( a.x, c.y ), uv( drawList->_Data->TexUvWhitePixel );
+        idx_write[0] = vtx_current_idx;
+        idx_write[1] = (ImDrawIdx)( vtx_current_idx + 1 );
+        idx_write[2] = (ImDrawIdx)( vtx_current_idx + 2 );
+        idx_write[3] = vtx_current_idx;
+        idx_write[4] = (ImDrawIdx)( vtx_current_idx + 2 );
+        idx_write[5] = (ImDrawIdx)( vtx_current_idx + 3 );
+        idx_write += 6;
+
+        vtx_write[0].pos = a;
+        vtx_write[0].uv  = uv;
+        vtx_write[0].col = gl.Background;
+        vtx_write[1].pos = b;
+        vtx_write[1].uv  = uv;
+        vtx_write[1].col = gl.Background;
+        vtx_write[2].pos = c;
+        vtx_write[2].uv  = uv;
+        vtx_write[2].col = gl.Background;
+        vtx_write[3].pos = d;
+        vtx_write[3].uv  = uv;
+        vtx_write[3].col = gl.Background;
+        vtx_write += 4;
+        vtx_current_idx += 4;
+
+        DrawGlyph( ImVec2{ x, y }, gl.Foreground, fontGlyph, vtx_write, idx_write, vtx_current_idx );
+        x += advanceX;
+    }
+
+    drawList->VtxBuffer.Size = (int)( vtx_write - drawList->VtxBuffer.Data ); // Same as calling shrink()
+    drawList->IdxBuffer.Size = (int)( idx_write - drawList->IdxBuffer.Data );
+    drawList->CmdBuffer[drawList->CmdBuffer.Size - 1].ElemCount -= ( idx_expected_size - drawList->IdxBuffer.Size );
+
+    drawList->_VtxWritePtr   = vtx_write;
+    drawList->_IdxWritePtr   = idx_write;
+    drawList->_VtxCurrentIdx = vtx_current_idx;
+    // for( int row = 0; row < _rows; row++ )
+    //  {
+    //      for( int column = 0; column < _columns; column++ )
+    //      {
+    //      }
+    //  }
 }

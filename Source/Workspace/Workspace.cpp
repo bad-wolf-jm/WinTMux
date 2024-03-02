@@ -12,6 +12,16 @@ Workspace::Workspace( string_t name )
     _terminalTree = std::make_shared<Tree>( _terminals.back() );
 }
 
+void Workspace::SetFonts( ImFont *normalFont, ImFont *boldFont, ImFont *italicFont, ImFont *boldItalicFont )
+{
+    _normalFont     = normalFont;
+    _boldFont       = boldFont;
+    _italicFont     = italicFont;
+    _boldItalicFont = boldItalicFont;
+
+    _workspaceElements->SetFonts( _normalFont, _boldFont, _italicFont, _boldItalicFont );
+}
+
 void Workspace::VSplit()
 {
     _terminals.push_back( std::make_shared<Terminal>() );

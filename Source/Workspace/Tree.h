@@ -29,6 +29,8 @@ class Tree
     void   SetSize( ImVec2 newSize );
     void   SetPosition( ImVec2 newPosition );
     ImVec2 Size();
+    
+    void SetFonts( ImFont *normalFont, ImFont *boldFont, ImFont *italicFont, ImFont *boldItalicFont );
 
   private:
     std::shared_ptr<Terminal>          _terminal = nullptr;
@@ -45,4 +47,9 @@ class Tree
     ImVec2 _position{};
 
     eOrientation _orientation = eOrientation::VERTICAL;
+
+    ImFont *_normalFont     = nullptr;
+    ImFont *_boldFont       = nullptr;
+    ImFont *_italicFont     = nullptr;
+    ImFont *_boldItalicFont = nullptr;
 };

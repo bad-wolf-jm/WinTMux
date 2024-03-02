@@ -32,6 +32,9 @@ void MainWindow::SetFonts( ImFont *normalFont, ImFont *boldFont, ImFont *italicF
     _boldFont       = boldFont;
     _italicFont     = italicFont;
     _boldItalicFont = boldItalicFont;
+
+    for( auto &ws : _workspaces )
+        ws->SetFonts( _normalFont, _boldFont, _italicFont, _boldItalicFont );
 }
 
 void MainWindow::ExecuteCurrentCommand()

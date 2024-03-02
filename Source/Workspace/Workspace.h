@@ -20,6 +20,7 @@ class Workspace
     void VSplit();
     void HSplit();
 
+    void SetFonts( ImFont *normalFont, ImFont *boldFont, ImFont *italicFont, ImFont *boldItalicFont );
   private:
     string_t _name = "";
 
