@@ -30,8 +30,6 @@ class Tree
     void   SetPosition( ImVec2 newPosition );
     ImVec2 Size();
     
-    void SetFonts( ImFont *normalFont, ImFont *boldFont, ImFont *italicFont, ImFont *boldItalicFont );
-
   private:
     std::shared_ptr<Terminal>          _terminal = nullptr;
     std::vector<std::shared_ptr<Tree>> _children;

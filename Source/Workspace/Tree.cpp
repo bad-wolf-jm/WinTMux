@@ -28,16 +28,6 @@ ImVec2 Tree::Size()
     return _size;
 }
 
-void Tree::SetFonts( ImFont *normalFont, ImFont *boldFont, ImFont *italicFont, ImFont *boldItalicFont )
-{
-    _normalFont     = normalFont;
-    _boldFont       = boldFont;
-    _italicFont     = italicFont;
-    _boldItalicFont = boldItalicFont;
-
-    _workspaceElements->SetFonts( _normalFont, _boldFont, _italicFont, _boldItalicFont );
-}
-
 std::shared_ptr<Tree> Tree::Clone()
 {
     return std::make_shared<Tree>( this );

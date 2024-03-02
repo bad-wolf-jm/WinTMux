@@ -21,11 +21,17 @@ class Workspace
     void HSplit();
 
     void SetFonts( ImFont *normalFont, ImFont *boldFont, ImFont *italicFont, ImFont *boldItalicFont );
+
   private:
     string_t _name = "";
 
     std::shared_ptr<Tree>                  _terminalTree;
     std::vector<std::shared_ptr<Terminal>> _terminals;
 
-    int32_t                                _focusedTerminal = 0;
+    int32_t _focusedTerminal = 0;
+
+    ImFont *_normalFont     = nullptr;
+    ImFont *_boldFont       = nullptr;
+    ImFont *_italicFont     = nullptr;
+    ImFont *_boldItalicFont = nullptr;
 };

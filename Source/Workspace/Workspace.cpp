@@ -7,7 +7,7 @@ Workspace::Workspace( string_t name )
     : _name{ name }
 {
     _terminals.push_back( std::make_shared<Terminal>() );
-    _terminals.back()->IsFocused = true;
+    //_terminals.back()->IsFocused = true;
 
     _terminalTree = std::make_shared<Tree>( _terminals.back() );
 }
@@ -19,7 +19,8 @@ void Workspace::SetFonts( ImFont *normalFont, ImFont *boldFont, ImFont *italicFo
     _italicFont     = italicFont;
     _boldItalicFont = boldItalicFont;
 
-    _workspaceElements->SetFonts( _normalFont, _boldFont, _italicFont, _boldItalicFont );
+    for(auto const& terminal : _terminals)
+        terminal->SetFonts( _normalFont, _boldFont, _italicFont, _boldItalicFont );
 }
 
 void Workspace::VSplit()
@@ -70,8 +71,8 @@ void Workspace::Render()
             ImVec2 windowSize{ screenSize.x, screenSize.y };
             ImVec2 bottomRight = ImVec2{ topLeft.x + windowSize.x, topLeft.y + windowSize.y };
 
-            uint32_t borderColor = terminal->IsFocused ? ImColor( 255, 255, 255, 150 ) : ImColor( 255, 255, 255, 50 );
-            drawList->AddRect( topLeft, bottomRight, borderColor );
+            //uint32_t borderColor = terminal->IsFocused ? ImColor( 255, 255, 255, 150 ) : ImColor( 255, 255, 255, 50 );
+            //drawList->AddRect( topLeft, bottomRight, borderColor );
 
             ImVec2 terminalPosition{ terminal->Position.x + 5.0f, terminal->Position.y + 5.0f };
             ImVec2 terminalSize{ terminal->Size.x - 10.0f, terminal->Size.y - 10.0f };
