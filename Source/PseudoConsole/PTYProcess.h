@@ -31,7 +31,7 @@ class PTYProcess
     HANDLE _consoleStdOut{ INVALID_HANDLE_VALUE }; // Console stdout
 
     PROCESS_INFORMATION          _clientProcess{};
-    STARTUPINFOEXW               _startupInfo{};
+    STARTUPINFOEXA               _startupInfo{};
     LPPROC_THREAD_ATTRIBUTE_LIST _startupInfoAttributeList;
 
     bool        _processIsActive = true;

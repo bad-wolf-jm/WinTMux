@@ -7,7 +7,7 @@ PTYProcess::PTYProcess( string_t command, uint32_t columns, uint32_t lines )
     , _lines{ lines }
     , _command{ command }
 {
-    _startupInfo.StartupInfo.cb = sizeof( STARTUPINFOEXW );
+    _startupInfo.StartupInfo.cb = sizeof( STARTUPINFOEXA );
 
     CreateConsole( _columns, _lines );
     _processIsActive    = true;
@@ -35,7 +35,7 @@ PTYProcess::PTYProcess( string_t command, uint32_t columns, uint32_t lines )
             if( NULL != errorText )
             {
                 // ... do something with the string `errorText` - log it, display it to the user, etc.
-                std::cout << errorText << std::endl;
+                std::cout << "XXX" << " " << errorText << std::endl;
                 // release memory allocated by FormatMessage()
                 LocalFree( errorText );
                 errorText = NULL;
@@ -85,7 +85,7 @@ void PTYProcess::WaitForCompletion( int32_t timeout )
 
         if( NULL != errorText )
         {
-            std::cout << errorText << std::endl;
+            std::cout << "TTT " << errorText << std::endl;
             LocalFree( errorText );
             errorText = NULL;
         }
@@ -118,8 +118,8 @@ void PTYProcess::CreateConsole( int16_t columns, int16_t lines )
 
 void PTYProcess::StartProcess()
 {
-    CreateProcessW( NULL,                                        // No module name - use Command Line
-                    reinterpret_cast<LPWSTR>( _command.data() ), // Command Line
+    CreateProcessA( NULL,                                        // No module name - use Command Line
+                    reinterpret_cast<LPSTR>( _command.data() ), // Command Line
                     NULL,                                        // Process handle not inheritable
                     NULL,                                        // Thread handle not inheritable
                     FALSE,                                       // Inherit handles

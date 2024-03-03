@@ -14,21 +14,21 @@ add_executable(WinTMux
     
     VtParser/Parser.cpp
 
-    Launch/Main.cpp
+    # Launch/Main.cpp
     
-    Workspace/Workspace.cpp
-    Workspace/Tree.cpp
-    Workspace/Terminal.cpp
+    # Workspace/Workspace.cpp
+    # Workspace/Tree.cpp
+    # Workspace/Terminal.cpp
 
-    MainWindow/MainWindow.cpp
-    MainWindow/CommandLine.cpp
-    MainWindow/IOverlay.cpp
-    MainWindow/TerminalSelectorOverlay.cpp
-    MainWindow/WorkspaceSelectorOverlay.cpp
+    # MainWindow/MainWindow.cpp
+    # MainWindow/CommandLine.cpp
+    # MainWindow/IOverlay.cpp
+    # MainWindow/TerminalSelectorOverlay.cpp
+    # MainWindow/WorkspaceSelectorOverlay.cpp
 
-    #PseudoConsole/EchoCon.cpp
-    #PSeudoConsole/PTYProcess.cpp
-    #LibUV/LibUV.cpp
+    Launch/ConsoleMain.cpp
+    PseudoConsole/PTYProcess.cpp
+    Console/TerminalWindow.cpp
 )
 
 #message(STATUS ${OpenGL_LIBRARIES})
