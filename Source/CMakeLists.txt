@@ -37,6 +37,7 @@ add_executable(WinTMux
 target_link_libraries(WinTMux PRIVATE
     imgui
     glfw
+    fmt
     OpenGL::GL
 )
 

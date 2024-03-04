@@ -45,14 +45,14 @@ Include(FetchContent)
 #include_directories(${entt_SOURCE_DIR}/src)
 #set(SE_EXTRA_INCLUDES ${entt_SOURCE_DIR}/single_include ${entt_SOURCE_DIR}/src ${SE_EXTRA_INCLUDES})
 
-#FetchContent_Declare(
-#  fmt
-#  GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-#  GIT_TAG        8.1.1
-#  GIT_PROGRESS   TRUE )
-#FetchContent_MakeAvailable(fmt)
-#include_directories(${fmt_SOURCE_DIR}/include)
-#set(SE_EXTRA_INCLUDES ${fmt_SOURCE_DIR}/include ${SE_EXTRA_INCLUDES})
+FetchContent_Declare(
+ fmt
+ GIT_REPOSITORY https://github.com/fmtlib/fmt.git
+ GIT_TAG        8.1.1
+ GIT_PROGRESS   TRUE )
+FetchContent_MakeAvailable(fmt)
+include_directories(${fmt_SOURCE_DIR}/include)
+set(SE_EXTRA_INCLUDES ${fmt_SOURCE_DIR}/include ${SE_EXTRA_INCLUDES})
 
 FetchContent_Declare(
   glfw
