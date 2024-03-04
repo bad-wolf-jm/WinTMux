@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <stdint.h>
 
+#include "Console/Buffer.h"
 #include "Core/String.h"
 
 class terminal_window_t
@@ -21,9 +22,13 @@ class terminal_window_t
     void ResetColors();
     void HideCursor();
 
+    void BeginFrame();
+    void EndFrame();
+
   private:
     int16_t _columns{ 0 };
     int16_t _rows{ 0 };
 
+    buffer_t _backBuffer{};
     HANDLE _terminal{ INVALID_HANDLE_VALUE };
 };

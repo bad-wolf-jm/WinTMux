@@ -29,6 +29,7 @@ add_executable(WinTMux
     Launch/ConsoleMain.cpp
     PseudoConsole/PTYProcess.cpp
     Console/TerminalWindow.cpp
+    Console/Buffer.cpp
 )
 
 #message(STATUS ${OpenGL_LIBRARIES})

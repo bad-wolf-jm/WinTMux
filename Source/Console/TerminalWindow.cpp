@@ -19,6 +19,8 @@ terminal_window_t::terminal_window_t()
     {
         _columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
         _rows    = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+
+        _backBuffer.Resize( _rows, _columns );
     }
 }
 
@@ -64,7 +66,7 @@ void terminal_window_t::Render()
     Write( lineFill );
     for( int i = 1; i < _rows - 1; i++ )
     {
-        SetBackground( 50,50,50 );
+        SetBackground( 50, 50, 50 );
         string_t fill( _columns, ' ' );
         Write( fill );
     }
@@ -74,6 +76,45 @@ void terminal_window_t::Render()
     Write( footer );
 
     Write( "\x1b[0m" );
+}
+
+void terminal_window_t::BeginFrame()
+{
+    _backBuffer.Clear();
+}
+
+void terminal_window_t::EndFrame()
+{
+    string_t data;
+    data.resize( _backBuffer.ByteSize() );
+
+    HideCursor();
+    Write( "\x1b[H" );
+
+    string_t line;
+    line.resize(_columns);
+    auto const& buffer = _backBuffer.Data();
+    for(int r = 0; r < _rows; r++)
+    {
+        int start = r * _columns;
+        
+        for(int c=0; c < _columns; c++)
+        {
+            line[c] = static_cast<char>( buffer[c + start] & 0xff );
+        }
+
+        Write(line);
+    }
+
+//    uint32_t i = 0;
+//    for( auto const &c : _backBuffer.Data() )
+//    {
+//        data[i] = static_cast<char>( c & 0xff );
+//        i++;
+//    }
+
+//    Write( data );
+    //Render();
 }
 
 int16_t terminal_window_t::Columns()

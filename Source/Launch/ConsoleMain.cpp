@@ -22,7 +22,9 @@ int main()
     _window.Write( "\x1b[?1049h" );
     while( running )
     {
-        _window.Render();
+        _window.BeginFrame();
+        _window.EndFrame();
+
         std::this_thread::sleep_for( std::chrono::seconds( 1 ) );
     }
 

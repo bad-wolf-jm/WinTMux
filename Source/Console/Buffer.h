@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include <vector> 
+#include <vector>
 
 class buffer_t
 {
@@ -10,6 +10,10 @@ class buffer_t
 
   public:
     void Resize( uint32_t rows, uint32_t columns );
+    void Clear();
+
+    size_t                       ByteSize();
+    std::vector<uint32_t> const &Data();
 
   private:
     uint32_t _rows{ 0 };
