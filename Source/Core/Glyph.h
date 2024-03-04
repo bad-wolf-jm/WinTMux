@@ -13,8 +13,11 @@ enum CharacterAttribute : uint32_t
 
 struct Glyph
 {
-    uint32_t Character  = 0;
-    uint32_t Attributes = 0;
-    uint32_t Foreground = 0;
-    uint32_t Background = 0;
+    uint32_t Character = 0;
+
+    // The attributes member encodes the glyph's character attributes,
+    // as well as the foreground and background color:
+    //   | CharacterAttributes | Foreground  | Background |
+    //   |       16 bits       |   24 bits   |   24 bits  |
+    uint64_t Attributes = 0;
 };

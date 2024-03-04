@@ -85,25 +85,32 @@ void terminal_window_t::BeginFrame()
 
 void terminal_window_t::EndFrame()
 {
-    string_t data;
-    data.resize( _backBuffer.ByteSize() );
+    _backBuffer.Update();
+
+    //string_t data;
+    //data.resize( _backBuffer.ByteSize() );
 
     HideCursor();
     Write( "\x1b[H" );
 
-    string_t line;
-    line.resize(_columns);
+    string_t renderedLine;
+    renderedLine.resize(_columns);
+    auto const& lines = _backBuffer.Lines();
     auto const& buffer = _backBuffer.Data();
     for(int r = 0; r < _rows; r++)
     {
         int start = r * _columns;
-        
-        for(int c=0; c < _columns; c++)
+        auto const& line = lines[r];
+        for(auto const& range : line)
         {
-            line[c] = static_cast<char>( buffer[c + start] & 0xff );
+            int j;
+            for(int i=range.Start, j=0; i < range.End; i++, j++)
+            {
+                renderedLine[j] = static_cast<char>( buffer[i].Character & 0xff );
+            }
         }
 
-        Write(line);
+        Write(renderedLine);
     }
 
 //    uint32_t i = 0;
