@@ -5,10 +5,13 @@
 enum CharacterAttribute : uint32_t
 {
     NORMAL        = 0,
-    BOLD          = 1,
-    ITALIC        = 2,
-    UNDERLINE     = 3,
-    STRIKETHROUGH = 4
+    FAINT         = 1,
+    BOLD          = 2,
+    ITALIC        = 3,
+    UNDERLINE     = 4,
+    STRIKETHROUGH = 5,
+    DEFAULT_BG    = 6,
+    DEFAULT_FG    = 7
 };
 
 struct Glyph

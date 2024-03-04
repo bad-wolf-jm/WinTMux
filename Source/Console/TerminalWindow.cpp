@@ -1,7 +1,10 @@
 #include "TerminalWindow.h"
+#include "Core/Glyph.h"
 
 #include <Windows.h>
+#include <chrono>
 #include <fmt/printf.h>
+#include <thread>
 
 terminal_window_t::terminal_window_t()
 {
@@ -87,41 +90,79 @@ void terminal_window_t::EndFrame()
 {
     _backBuffer.Update();
 
-    //string_t data;
-    //data.resize( _backBuffer.ByteSize() );
+    // string_t data;
+    // data.resize( _backBuffer.ByteSize() );
 
     HideCursor();
     Write( "\x1b[H" );
 
-    string_t renderedLine;
-    renderedLine.resize(_columns);
-    auto const& lines = _backBuffer.Lines();
-    auto const& buffer = _backBuffer.Data();
-    for(int r = 0; r < _rows; r++)
+    auto const &lines  = _backBuffer.Lines();
+    auto const &buffer = _backBuffer.Data();
+    for( int r = 0; r < _rows; r++ )
     {
-        int start = r * _columns;
-        auto const& line = lines[r];
-        for(auto const& range : line)
+        auto const &line = lines[r];
+
+        ResetColors();
+
+        for( auto const &range : line )
         {
+            uint8_t r, g, b;
+            range.Bg( r, g, b );
+            SetBackground( r, g, b );
+
+            range.Fg( r, g, b );
+            SetForeground( r, g, b );
+
+            uint32_t renderingAttributes = range.Rendering();
+
+            if( renderingAttributes & ( 1 << CharacterAttribute::BOLD ) )
+            {
+            }
+
+            if( renderingAttributes & ( 1 << CharacterAttribute::FAINT ) )
+            {
+            }
+
+            if( renderingAttributes & ( 1 << CharacterAttribute::ITALIC ) )
+            {
+            }
+
+            if( renderingAttributes & ( 1 << CharacterAttribute::STRIKETHROUGH ) )
+            {
+            }
+
+            if( renderingAttributes & ( 1 << CharacterAttribute::BOLD ) )
+            {
+            }
+
+            if( !( renderingAttributes & ( 1 << CharacterAttribute::DEFAULT_BG ) ) )
+            {
+                uint8_t r, g, b;
+
+                range.Bg( r, g, b );
+                SetBackground( r, g, b );
+            }
+
+            if( !( renderingAttributes & ( 1 << CharacterAttribute::DEFAULT_FG ) ) )
+            {
+                uint8_t r, g, b;
+
+                range.Fg( r, g, b );
+                SetForeground( r, g, b );
+            }
+
+            string_t renderedLine;
+            renderedLine.resize( range.End - range.Start + 1 );
+
             int j;
-            for(int i=range.Start, j=0; i < range.End; i++, j++)
+            for( int i = range.Start, j = 0; i < range.End; i++, j++ )
             {
                 renderedLine[j] = static_cast<char>( buffer[i].Character & 0xff );
             }
+
+            Write( renderedLine );
         }
-
-        Write(renderedLine);
     }
-
-//    uint32_t i = 0;
-//    for( auto const &c : _backBuffer.Data() )
-//    {
-//        data[i] = static_cast<char>( c & 0xff );
-//        i++;
-//    }
-
-//    Write( data );
-    //Render();
 }
 
 int16_t terminal_window_t::Columns()

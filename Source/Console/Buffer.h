@@ -9,6 +9,9 @@ struct character_range_t
     uint64_t Attributes;
     uint32_t Start;
     uint32_t End;
+    uint32_t Rendering() const;
+    void     Fg( uint8_t &r, uint8_t &g, uint8_t &b ) const;
+    void     Bg( uint8_t &r, uint8_t &g, uint8_t &b ) const;
 };
 
 using line_t = std::vector<character_range_t>;
