@@ -1,23 +1,23 @@
 #pragma once
 
-#include <cstdint>
+#include "Core/String.h"
 
 enum CharacterAttribute : uint32_t
 {
     NORMAL        = 0,
-    FAINT         = 1,
-    BOLD          = 2,
-    ITALIC        = 3,
-    UNDERLINE     = 4,
-    STRIKETHROUGH = 5,
-    DEFAULT_BG    = 6,
-    DEFAULT_FG    = 7
+    FAINT         = ( 1 << 0 ),
+    BOLD          = ( 1 << 1 ),
+    ITALIC        = ( 1 << 2 ),
+    UNDERLINE     = ( 1 << 3 ),
+    STRIKETHROUGH = ( 1 << 4 ),
+    DEFAULT_BG    = ( 1 << 5 ),
+    DEFAULT_FG    = ( 1 << 6 )
 };
 
 struct Glyph
 {
-    uint32_t Character = 0;
-
+    char_t   Character[4];
+    uint32_t CharacterSize;
     // The attributes member encodes the glyph's character attributes,
     // as well as the foreground and background color:
     //   | CharacterAttributes | Foreground  | Background |

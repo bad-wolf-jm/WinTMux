@@ -8,11 +8,11 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 find_package(OpenGL REQUIRED)
 add_executable(WinTMux 
-    Core/KeyCodes.cpp
-    Core/ControlSequences.cpp
-    Core/utf8.cpp
+    #Core/KeyCodes.cpp
+    #Core/ControlSequences.cpp
+    #Core/utf8.cpp
     
-    VtParser/Parser.cpp
+    #VtParser/Parser.cpp
 
     # Launch/Main.cpp
     
@@ -28,8 +28,9 @@ add_executable(WinTMux
 
     Launch/ConsoleMain.cpp
     PseudoConsole/PTYProcess.cpp
+
     Console/TerminalWindow.cpp
-    Console/Buffer.cpp
+    Console/FrameBuffer.cpp
 )
 
 #message(STATUS ${OpenGL_LIBRARIES})

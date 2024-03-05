@@ -3,7 +3,7 @@
 #include <Windows.h>
 #include <stdint.h>
 
-#include "Console/Buffer.h"
+#include "Console/FrameBuffer.h"
 #include "Core/String.h"
 
 class terminal_window_t
@@ -15,6 +15,8 @@ class terminal_window_t
     int16_t Rows();
 
     void Write( string_t buffer );
+    void Write( const char* buffer);
+
     void Render();
 
     void SetForeground( uint8_t r, uint8_t g, uint8_t b );
@@ -25,10 +27,11 @@ class terminal_window_t
     void BeginFrame();
     void EndFrame();
 
+    framebuffer_t &FrameBuffer();
   private:
     int16_t _columns{ 0 };
     int16_t _rows{ 0 };
 
-    buffer_t _backBuffer{};
+    framebuffer_t _backBuffer{};
     HANDLE _terminal{ INVALID_HANDLE_VALUE };
 };
