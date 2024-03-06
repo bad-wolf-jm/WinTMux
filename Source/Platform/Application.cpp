@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <windows.h>
+
 Application::Application()
 {
     _stdin.OnKeyPress = []( keycode_t const &keycode, uint32_t modifiers )
