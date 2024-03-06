@@ -21,8 +21,12 @@ int main()
     // terminal_window_t _window{};
 
     Application::Initialize();
-    while(Application::Instance()->Tick())
-    {}
+    for(int i=0; i < 10; i++)
+    {
+        Application::Instance()->Tick();
+    }
+    // while(Application::Instance()->Tick())
+    // {}
 
 #if 0
     // Push the current state of the terminal so we can restore
