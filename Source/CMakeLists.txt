@@ -34,6 +34,7 @@ add_executable(WinTMux
     Console/FrameBuffer.cpp
 
     Platform/Application.cpp
+    Platform/IOStream.cpp
 )
 
 #message(STATUS ${OpenGL_LIBRARIES})
