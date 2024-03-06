@@ -28,7 +28,7 @@ class MainWindow
     }
     void Render();
 
-    void OnKeyPress( KeyCode const &keyCode, uint32_t modifiers );
+    void OnKeyPress( keycode_t const &keyCode, uint32_t modifiers );
 
     void ExecuteCurrentCommand();
     void OpenWorkspace( string_t name );

@@ -11,8 +11,8 @@
 
 struct Key
 {
-    KeyCodes      keysym;
-    Modifiers     mask;
+    key_codes      keysym;
+    modifiers     mask;
     const char_t *string;
     int           appkey;
     int           appcursor;
@@ -24,8 +24,8 @@ enum class ShortcutAction
 
 struct Shortcut
 {
-    KeyCodes       keysym;
-    Modifiers      mask;
+    key_codes       keysym;
+    modifiers      mask;
     ShortcutAction action;
     int            appkey;
     int            appcursor;
@@ -53,6 +53,6 @@ class ControlSequences
     ControlSequences();
 
   private:
-    const char *controlSequences[(size_t)KeyCodes::COUNT][(size_t)Modifiers::COUNT] = { 0 };
+    const char *controlSequences[(size_t)key_codes::COUNT][(size_t)modifiers::COUNT] = { 0 };
 };
 

@@ -23,6 +23,68 @@ stdin_t::~stdin_t()
     SetConsoleMode( _stream, _consoleMode );
 }
 
+void stdin_t::ProcessEvents()
+{
+    DWORD               _numInputEvents;
+    static INPUT_RECORD inputEvents[128];
+
+    if( !ReadConsoleInput( _stream, inputEvents, 128, &_numInputEvents ) )
+    {
+    }
+
+    for( int i = 0; i < _numInputEvents; i++ )
+    {
+        switch( inputEvents[i].EventType )
+        {
+        case KEY_EVENT:
+        {
+            auto const &event     = inputEvents[i].Event.KeyEvent;
+            auto const &keyCode   = _keyCodes.GetKeyCode( event.wVirtualKeyCode );
+            auto const &modifiers = event.dwControlKeyState;
+            switch( keyCode.KeyCode )
+            {
+            case key_codes::LEFT_SHIFT:
+            case key_codes::LEFT_CONTROL:
+            case key_codes::LEFT_ALT:
+            case key_codes::LEFT_SUPER:
+            case key_codes::RIGHT_SHIFT:
+            case key_codes::RIGHT_CONTROL:
+            case key_codes::RIGHT_ALT:
+            case key_codes::RIGHT_SUPER:
+                continue;
+            default:
+            {
+                if( OnKeyPress && inputEvents[i].Event.KeyEvent.bKeyDown )
+                    OnKeyPress( keyCode, modifiers );
+            }
+            }
+        }
+        break;
+        case MOUSE_EVENT:
+        {
+            auto const &event = inputEvents[i].Event.MouseEvent;
+        }
+        break;
+        case WINDOW_BUFFER_SIZE_EVENT:
+        {
+            auto const &event = inputEvents[i].Event.WindowBufferSizeEvent;
+
+            auto const columns = event.dwSize.X;
+            auto const rows    = event.dwSize.Y;
+
+            if( OnConsoleResize )
+                OnConsoleResize( columns, rows );
+        }
+        break;
+        case FOCUS_EVENT:
+        case MENU_EVENT:
+        default:
+            break;
+        }
+    }
+    // }
+}
+
 stdout_t::stdout_t()
 {
     _codePage = GetConsoleOutputCP();
@@ -46,47 +108,4 @@ stdout_t::~stdout_t()
 {
     SetConsoleOutputCP( _codePage );
     SetConsoleMode( _stream, _consoleMode );
-}
-
-void stdout_t::ProcessEvents()
-{
-    DWORD               _numInputEvents;
-    static INPUT_RECORD inputEvents[128];
-
-    if( !ReadConsoleInput( _stream, inputEvents, 128, &_numInputEvents ) )
-    {
-    }
-
-    for( int i = 0; i < _numInputEvents; i++ )
-    {
-        switch( inputEvents[i].EventType )
-        {
-        case KEY_EVENT:
-        {
-            auto const &event     = inputEvents[i].Event.KeyEvent;
-            auto const &keyCode   = event.wVirtualKeyCode;
-            auto const &modifiers = event.dwControlKeyState;
-        }
-        break;
-        case MOUSE_EVENT:
-        {
-            auto const &event = inputEvents[i].Event.MouseEvent;
-        }
-        break;
-        case WINDOW_BUFFER_SIZE_EVENT:
-        {
-            auto const &event = inputEvents[i].Event.WindowBufferSizeEvent;
-
-            _columns = event.dwSize.X;
-            _rows    = event.dwSize.Y;
-        }
-        break;
-        case FOCUS_EVENT: // disregard focus events
-        case MENU_EVENT:  // disregard menu events
-        default:
-            // ErrorExit( "Unknown event type" );
-            break;
-        }
-    }
-    // }
 }
