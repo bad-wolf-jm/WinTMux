@@ -145,7 +145,6 @@ enum class Modifiers : size_t
 struct KeyCode
 {
     KeyCodes KeyCode;
-    int      ScanCode;
     char     Symbol;
     char     ShiftedSymbol;
 

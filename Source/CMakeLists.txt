@@ -9,6 +9,7 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 find_package(OpenGL REQUIRED)
 add_executable(WinTMux 
     #Core/KeyCodes.cpp
+    Core/KeyCodes.Console.cpp
     #Core/ControlSequences.cpp
     #Core/utf8.cpp
     
