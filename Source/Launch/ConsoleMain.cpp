@@ -1,23 +1,30 @@
 #include "Console/TerminalWindow.h"
+
+#include "Platform/Application.h"
 #include <chrono>
 #include <thread>
 
-bool running = true;
-bool consoleHandler( int signal )
-{
-    if( signal == CTRL_C_EVENT )
-    {
-        running = false;
-    }
+// bool running = true;
+// bool consoleHandler( int signal )
+// {
+//     if( signal == CTRL_C_EVENT )
+//     {
+//         running = false;
+//     }
 
-    return true;
-}
+//     return true;
+// }
 
 int main()
 {
-    SetConsoleCtrlHandler( (PHANDLER_ROUTINE)consoleHandler, TRUE );
-    terminal_window_t _window{};
+    // SetConsoleCtrlHandler( (PHANDLER_ROUTINE)consoleHandler, TRUE );
+    // terminal_window_t _window{};
 
+    Application::Initialize();
+    while(Application::Instance()->Tick())
+    {}
+
+#if 0
     // Push the current state of the terminal so we can restore
     // after the program is done.
     _window.Write( "\x1b[?1049h" );
@@ -35,5 +42,6 @@ int main()
 
     // Restore the contents of the terminal.
     _window.Write( "\x1b[?1049l" );
+#endif
     return EXIT_SUCCESS;
 }
