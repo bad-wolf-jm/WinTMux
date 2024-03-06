@@ -101,9 +101,6 @@ void terminal_window_t::EndFrame()
 {
     _backBuffer.EndFrame();
 
-    // string_t data;
-    // data.resize( _backBuffer.ByteSize() );
-
     HideCursor();
     Write( "\x1b[H" );
 
@@ -169,7 +166,6 @@ void terminal_window_t::EndFrame()
             {
                 memcpy( renderedLine.data() + position, buffer[i].Character, buffer[i].CharacterSize );
                 position += buffer[i].CharacterSize;
-                //                renderedLine[j] = ( buffer[i].Character[0] );
             }
 
             Write( renderedLine );
