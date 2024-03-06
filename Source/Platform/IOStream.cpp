@@ -38,9 +38,9 @@ void stdin_t::ProcessEvents()
         {
         case KEY_EVENT:
         {
-            auto const &event     = inputEvents[i].Event.KeyEvent;
-            auto const &keyCode   = _keyCodes.GetKeyCode( event.wVirtualKeyCode );
-            auto const &modifiers = event.dwControlKeyState;
+            auto const &event             = inputEvents[i].Event.KeyEvent;
+            auto const &keyCode           = _keyCodes.GetKeyCode( event.wVirtualKeyCode );
+            auto const &platformModifiers = event.dwControlKeyState;
             switch( keyCode.KeyCode )
             {
             case key_codes::LEFT_SHIFT:
@@ -54,6 +54,16 @@ void stdin_t::ProcessEvents()
                 continue;
             default:
             {
+                uint32_t modifiers = 0;
+                if( platformModifiers & ( RIGHT_ALT_PRESSED | LEFT_ALT_PRESSED ) )
+                    modifiers |= (1 << static_cast<uint32_t>(modifiers::ALT));
+
+                if( platformModifiers & ( RIGHT_CTRL_PRESSED | LEFT_CTRL_PRESSED ) )
+                    modifiers |= (1 << static_cast<uint32_t>(modifiers::CTRL));
+
+                if( platformModifiers & ( SHIFT_PRESSED ) )
+                    modifiers |= (1 << static_cast<uint32_t>(modifiers::SHIFT));
+
                 if( OnKeyPress && inputEvents[i].Event.KeyEvent.bKeyDown )
                     OnKeyPress( keyCode, modifiers );
             }
