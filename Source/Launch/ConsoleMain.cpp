@@ -27,7 +27,7 @@ int main()
         _window.FrameBuffer().SetForeground( 200, 200, 200 );
         _window.FrameBuffer().SetBackground( 75, 75, 75 );
         _window.FrameBuffer().TextLine( 0, 0, "WORKSPACE 1 (DEFAULT)" );
-        _window.FrameBuffer().DrawRect( 10, 20, 30, 5, u8"\u256D", u8"\u2500", u8"\u256E", u8"\u2502", u8"\u256F", u8"\u2500", u8"\u2570", u8"\u2502" );
+        _window.FrameBuffer().DrawRect( 10, 20, 50, 25, u8"\u256D", u8"\u2500", u8"\u256E", u8"\u2502", u8"\u256F", u8"\u2500", u8"\u2570", u8"\u2502" );
         _window.EndFrame();
 
         std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
