@@ -7,8 +7,8 @@ Application::Application()
 {
     _stdin.OnKeyPress = []( keycode_t const &keycode, uint32_t modifiers )
     {
-        printf( "KeyPress" );
         //
+        printf( "KeyPress" );
     };
 }
 
