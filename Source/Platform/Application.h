@@ -8,8 +8,9 @@ class Application
     Application();
 
   public:
-    static void                          Initialize();
-    static void                          Shutdown();
+    static void Initialize();
+    static void Shutdown();
+
     static std::unique_ptr<Application> &Instance();
 
   public:

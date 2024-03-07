@@ -61,7 +61,7 @@ Workspace &MainWindow::CurrentWorkspace()
 void MainWindow::OnKeyPress( keycode_t const &keyCode, uint32_t modifiers )
 {
     // Dismiss the overlay on pressing ENTER, if any
-    if( _displayedOverlay != eOverlayType::NONE && keyCode.KeyCode == key_codes::ENTER )
+    if( _displayedOverlay != eOverlayType::NONE && keyCode.KeyCode == keycode::ENTER )
     {
         _displayedOverlay = eOverlayType::NONE;
 
@@ -94,7 +94,7 @@ void MainWindow::OnKeyPress( keycode_t const &keyCode, uint32_t modifiers )
     {
         // Determine whether we should enter command input mode. If so, set the command prompt and return.
         // Future key presses will be redirected to the command prompt.
-        if( ( keyCode.KeyCode == key_codes::SEMICOLON ) && ( modifiers & ( 1 << static_cast<uint32_t>( Modifiers::SHIFT ) ) ) )
+        if( ( keyCode.KeyCode == keycode::SEMICOLON ) && ( modifiers & ( 1 << static_cast<uint32_t>( Modifiers::SHIFT ) ) ) )
         {
             Mode = eInputMode::Command;
 
@@ -110,7 +110,7 @@ void MainWindow::OnKeyPress( keycode_t const &keyCode, uint32_t modifiers )
     }
     else
     {
-        if( keyCode.KeyCode == key_codes::ENTER )
+        if( keyCode.KeyCode == keycode::ENTER )
         {
             Mode = eInputMode::Normal;
 

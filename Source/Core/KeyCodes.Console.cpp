@@ -18,10 +18,10 @@ keycode_t const &KeyboardHandler::GetKeyCode( int keycode )
 }
 
 // #if 0
-namespace Platform
+namespace platform::windows
 {
     // Source: https://learn.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
-    enum KeyCodes
+    enum keycode
     {
         KEY_LBUTTON          = 0x01, // Left mouse button
         KEY_RBUTTON          = 0x02, // Right mouse button
@@ -154,146 +154,131 @@ namespace Platform
         KEY_BACKSLASH        = 0xDC, // Used for miscellaneous characters; For the US standard keyboard, the \\| key
         KEY_RIGHT_BRACKET    = 0xDD, // Used for miscellaneous characters; For the US standard keyboard, the ]} key
         KEY_APOSTROPHE       = 0xDE, // Used for miscellaneous characters; For the US standard keyboard, the '" key
+        COUNT
     };
-} // namespace Platform
+} // namespace platform
 // #endif
 
 void KeyboardHandler::InitKeyCodes()
 {
-    int controlKeyID                              = 0;
-    Keys[Platform::KeyCodes::KEY_DELETE]          = { key_codes::DELETE_K, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_ESCAPE]          = { key_codes::ESCAPE, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_INSERT]          = { key_codes::INSERT, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_PAGE_UP]         = { key_codes::PAGE_UP, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_PAGE_DOWN]       = { key_codes::PAGE_DOWN, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_HOME]            = { key_codes::HOME, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_END]             = { key_codes::END, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_F1]              = { key_codes::F1, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_F2]              = { key_codes::F2, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_F3]              = { key_codes::F3, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_F4]              = { key_codes::F4, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_F5]              = { key_codes::F5, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_F6]              = { key_codes::F6, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_F7]              = { key_codes::F7, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_F8]              = { key_codes::F8, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_F9]              = { key_codes::F9, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_F10]             = { key_codes::F10, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_F11]             = { key_codes::F11, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_F12]             = { key_codes::F12, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_F13]             = { key_codes::F13, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_F14]             = { key_codes::F14, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_F15]             = { key_codes::F15, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_F16]             = { key_codes::F16, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_F17]             = { key_codes::F17, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_F18]             = { key_codes::F18, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_F19]             = { key_codes::F19, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_F20]             = { key_codes::F20, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_F21]             = { key_codes::F21, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_F22]             = { key_codes::F22, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_F23]             = { key_codes::F23, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_F24]             = { key_codes::F24, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_SPACE]           = { key_codes::SPACE, ' ', ' ' };
-    Keys[Platform::KeyCodes::KEY_APOSTROPHE]      = { key_codes::APOSTROPHE, '\'', '"' };
-    Keys[Platform::KeyCodes::KEY_COMMA]           = { key_codes::COMMA, ',', '<' };
-    Keys[Platform::KeyCodes::KEY_MINUS]           = { key_codes::MINUS, '-', '_' };
-    Keys[Platform::KeyCodes::KEY_PERIOD]          = { key_codes::PERIOD, '.', '>' };
-    Keys[Platform::KeyCodes::KEY_SLASH]           = { key_codes::SLASH, '/', '?' };
-    Keys[Platform::KeyCodes::KEY_SEMICOLON]       = { key_codes::SEMICOLON, ';', ':' };
-    Keys[Platform::KeyCodes::KEY_EQUAL]           = { key_codes::EQUAL, '=', '+' };
-    Keys[Platform::KeyCodes::KEY_LEFT_BRACKET]    = { key_codes::LEFT_BRACKET, '[', '{' };
-    Keys[Platform::KeyCodes::KEY_BACKSLASH]       = { key_codes::BACKSLASH, '\\', '|' };
-    Keys[Platform::KeyCodes::KEY_RIGHT_BRACKET]   = { key_codes::RIGHT_BRACKET, ']', '}' };
-    Keys[Platform::KeyCodes::KEY_GRAVE_ACCENT]    = { key_codes::GRAVE_ACCENT, '`', '~' };
-    Keys[Platform::KeyCodes::KEY_A]               = { key_codes::A, 'a', 'A' };
-    Keys[Platform::KeyCodes::KEY_B]               = { key_codes::B, 'b', 'B' };
-    Keys[Platform::KeyCodes::KEY_C]               = { key_codes::C, 'c', 'C' };
-    Keys[Platform::KeyCodes::KEY_D]               = { key_codes::D, 'd', 'D' };
-    Keys[Platform::KeyCodes::KEY_E]               = { key_codes::E, 'e', 'E' };
-    Keys[Platform::KeyCodes::KEY_F]               = { key_codes::F, 'f', 'F' };
-    Keys[Platform::KeyCodes::KEY_G]               = { key_codes::G, 'g', 'G' };
-    Keys[Platform::KeyCodes::KEY_H]               = { key_codes::H, 'h', 'H' };
-    Keys[Platform::KeyCodes::KEY_I]               = { key_codes::I, 'i', 'I' };
-    Keys[Platform::KeyCodes::KEY_J]               = { key_codes::J, 'j', 'J' };
-    Keys[Platform::KeyCodes::KEY_K]               = { key_codes::K, 'k', 'K' };
-    Keys[Platform::KeyCodes::KEY_L]               = { key_codes::L, 'l', 'L' };
-    Keys[Platform::KeyCodes::KEY_M]               = { key_codes::M, 'm', 'M' };
-    Keys[Platform::KeyCodes::KEY_N]               = { key_codes::N, 'n', 'N' };
-    Keys[Platform::KeyCodes::KEY_O]               = { key_codes::O, 'o', 'O' };
-    Keys[Platform::KeyCodes::KEY_P]               = { key_codes::P, 'p', 'P' };
-    Keys[Platform::KeyCodes::KEY_Q]               = { key_codes::Q, 'q', 'Q' };
-    Keys[Platform::KeyCodes::KEY_R]               = { key_codes::R, 'r', 'R' };
-    Keys[Platform::KeyCodes::KEY_S]               = { key_codes::S, 's', 'S' };
-    Keys[Platform::KeyCodes::KEY_T]               = { key_codes::T, 't', 'T' };
-    Keys[Platform::KeyCodes::KEY_U]               = { key_codes::U, 'u', 'U' };
-    Keys[Platform::KeyCodes::KEY_V]               = { key_codes::V, 'v', 'V' };
-    Keys[Platform::KeyCodes::KEY_W]               = { key_codes::W, 'w', 'W' };
-    Keys[Platform::KeyCodes::KEY_X]               = { key_codes::X, 'x', 'X' };
-    Keys[Platform::KeyCodes::KEY_Y]               = { key_codes::Y, 'y', 'Y' };
-    Keys[Platform::KeyCodes::KEY_Z]               = { key_codes::Z, 'z', 'Z' };
-    Keys[Platform::KeyCodes::KEY_0]               = { key_codes::KEY_0, '0', ')' };
-    Keys[Platform::KeyCodes::KEY_1]               = { key_codes::KEY_1, '1', '!' };
-    Keys[Platform::KeyCodes::KEY_2]               = { key_codes::KEY_2, '2', '@' };
-    Keys[Platform::KeyCodes::KEY_3]               = { key_codes::KEY_3, '3', '#' };
-    Keys[Platform::KeyCodes::KEY_4]               = { key_codes::KEY_4, '4', '$' };
-    Keys[Platform::KeyCodes::KEY_5]               = { key_codes::KEY_5, '5', '%' };
-    Keys[Platform::KeyCodes::KEY_6]               = { key_codes::KEY_6, '6', '^' };
-    Keys[Platform::KeyCodes::KEY_7]               = { key_codes::KEY_7, '7', '&' };
-    Keys[Platform::KeyCodes::KEY_8]               = { key_codes::KEY_8, '8', '*' };
-    Keys[Platform::KeyCodes::KEY_9]               = { key_codes::KEY_9, '9', '(' };
-    Keys[Platform::KeyCodes::KEY_NUMPAD_0]        = { key_codes::KEYPAD_0, '0', '0' };
-    Keys[Platform::KeyCodes::KEY_NUMPAD_1]        = { key_codes::KEYPAD_1, '1', '1' };
-    Keys[Platform::KeyCodes::KEY_NUMPAD_2]        = { key_codes::KEYPAD_2, '2', '2' };
-    Keys[Platform::KeyCodes::KEY_NUMPAD_3]        = { key_codes::KEYPAD_3, '3', '3' };
-    Keys[Platform::KeyCodes::KEY_NUMPAD_4]        = { key_codes::KEYPAD_4, '4', '4' };
-    Keys[Platform::KeyCodes::KEY_NUMPAD_5]        = { key_codes::KEYPAD_5, '5', '5' };
-    Keys[Platform::KeyCodes::KEY_NUMPAD_6]        = { key_codes::KEYPAD_6, '6', '6' };
-    Keys[Platform::KeyCodes::KEY_NUMPAD_7]        = { key_codes::KEYPAD_7, '7', '7' };
-    Keys[Platform::KeyCodes::KEY_NUMPAD_8]        = { key_codes::KEYPAD_8, '8', '8' };
-    Keys[Platform::KeyCodes::KEY_NUMPAD_9]        = { key_codes::KEYPAD_9, '9', '9' };
-    Keys[Platform::KeyCodes::KEY_NUMPAD_DECIMAL]  = { key_codes::KEYPAD_DECIMAL, '.', '.' };
-    Keys[Platform::KeyCodes::KEY_NUMPAD_DIVIDE]   = { key_codes::KEYPAD_DIVIDE, '/', '/' };
-    Keys[Platform::KeyCodes::KEY_NUMPAD_MULTIPLY] = { key_codes::KEYPAD_MULTIPLY, '*', '*' };
-    Keys[Platform::KeyCodes::KEY_NUMPAD_SUBTRACT] = { key_codes::KEYPAD_SUBTRACT, '-', '-' };
-    Keys[Platform::KeyCodes::KEY_NUMPAD_ADD]      = { key_codes::KEYPAD_ADD, '+', '+' };
-    Keys[Platform::KeyCodes::KEY_ENTER]           = { key_codes::ENTER, '\n', '\0' };
-    Keys[Platform::KeyCodes::KEY_TAB]             = { key_codes::TAB, '\t', '\0' };
-    Keys[Platform::KeyCodes::KEY_BACKSPACE]       = { key_codes::BACKSPACE, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_RIGHT]           = { key_codes::RIGHT, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_LEFT]            = { key_codes::LEFT, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_DOWN]            = { key_codes::DOWN, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_UP]              = { key_codes::UP, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_CAPS_LOCK]       = { key_codes::CAPS_LOCK, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_SCROLL_LOCK]     = { key_codes::SCROLL_LOCK, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_NUM_LOCK]        = { key_codes::NUM_LOCK, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_PRINT_SCREEN]    = { key_codes::PRINT_SCREEN, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_PAUSE]           = { key_codes::PAUSE, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_LEFT_SHIFT]      = { key_codes::LEFT_SHIFT, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_LEFT_CONTROL]    = { key_codes::LEFT_CONTROL, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_LEFT_ALT]        = { key_codes::LEFT_ALT, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_LEFT_SUPER]      = { key_codes::LEFT_SUPER, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_RIGHT_SHIFT]     = { key_codes::RIGHT_SHIFT, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_RIGHT_CONTROL]   = { key_codes::RIGHT_CONTROL, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_RIGHT_ALT]       = { key_codes::RIGHT_ALT, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_RIGHT_SUPER]     = { key_codes::RIGHT_SUPER, '\0', '\0' };
-    Keys[Platform::KeyCodes::KEY_MENU]            = { key_codes::MENU, '\0', '\0' };
+    int controlKeyID = 0;
+
+    using platform_keycode = platform::windows::keycode;
+
+    _keys[platform_keycode::KEY_DELETE]          = { keycode::DELETE_K, '\0', '\0' };
+    _keys[platform_keycode::KEY_ESCAPE]          = { keycode::ESCAPE, '\0', '\0' };
+    _keys[platform_keycode::KEY_INSERT]          = { keycode::INSERT, '\0', '\0' };
+    _keys[platform_keycode::KEY_PAGE_UP]         = { keycode::PAGE_UP, '\0', '\0' };
+    _keys[platform_keycode::KEY_PAGE_DOWN]       = { keycode::PAGE_DOWN, '\0', '\0' };
+    _keys[platform_keycode::KEY_HOME]            = { keycode::HOME, '\0', '\0' };
+    _keys[platform_keycode::KEY_END]             = { keycode::END, '\0', '\0' };
+    _keys[platform_keycode::KEY_F1]              = { keycode::F1, '\0', '\0' };
+    _keys[platform_keycode::KEY_F2]              = { keycode::F2, '\0', '\0' };
+    _keys[platform_keycode::KEY_F3]              = { keycode::F3, '\0', '\0' };
+    _keys[platform_keycode::KEY_F4]              = { keycode::F4, '\0', '\0' };
+    _keys[platform_keycode::KEY_F5]              = { keycode::F5, '\0', '\0' };
+    _keys[platform_keycode::KEY_F6]              = { keycode::F6, '\0', '\0' };
+    _keys[platform_keycode::KEY_F7]              = { keycode::F7, '\0', '\0' };
+    _keys[platform_keycode::KEY_F8]              = { keycode::F8, '\0', '\0' };
+    _keys[platform_keycode::KEY_F9]              = { keycode::F9, '\0', '\0' };
+    _keys[platform_keycode::KEY_F10]             = { keycode::F10, '\0', '\0' };
+    _keys[platform_keycode::KEY_F11]             = { keycode::F11, '\0', '\0' };
+    _keys[platform_keycode::KEY_F12]             = { keycode::F12, '\0', '\0' };
+    _keys[platform_keycode::KEY_F13]             = { keycode::F13, '\0', '\0' };
+    _keys[platform_keycode::KEY_F14]             = { keycode::F14, '\0', '\0' };
+    _keys[platform_keycode::KEY_F15]             = { keycode::F15, '\0', '\0' };
+    _keys[platform_keycode::KEY_F16]             = { keycode::F16, '\0', '\0' };
+    _keys[platform_keycode::KEY_F17]             = { keycode::F17, '\0', '\0' };
+    _keys[platform_keycode::KEY_F18]             = { keycode::F18, '\0', '\0' };
+    _keys[platform_keycode::KEY_F19]             = { keycode::F19, '\0', '\0' };
+    _keys[platform_keycode::KEY_F20]             = { keycode::F20, '\0', '\0' };
+    _keys[platform_keycode::KEY_F21]             = { keycode::F21, '\0', '\0' };
+    _keys[platform_keycode::KEY_F22]             = { keycode::F22, '\0', '\0' };
+    _keys[platform_keycode::KEY_F23]             = { keycode::F23, '\0', '\0' };
+    _keys[platform_keycode::KEY_F24]             = { keycode::F24, '\0', '\0' };
+    _keys[platform_keycode::KEY_SPACE]           = { keycode::SPACE, ' ', ' ' };
+    _keys[platform_keycode::KEY_APOSTROPHE]      = { keycode::APOSTROPHE, '\'', '"' };
+    _keys[platform_keycode::KEY_COMMA]           = { keycode::COMMA, ',', '<' };
+    _keys[platform_keycode::KEY_MINUS]           = { keycode::MINUS, '-', '_' };
+    _keys[platform_keycode::KEY_PERIOD]          = { keycode::PERIOD, '.', '>' };
+    _keys[platform_keycode::KEY_SLASH]           = { keycode::SLASH, '/', '?' };
+    _keys[platform_keycode::KEY_SEMICOLON]       = { keycode::SEMICOLON, ';', ':' };
+    _keys[platform_keycode::KEY_EQUAL]           = { keycode::EQUAL, '=', '+' };
+    _keys[platform_keycode::KEY_LEFT_BRACKET]    = { keycode::LEFT_BRACKET, '[', '{' };
+    _keys[platform_keycode::KEY_BACKSLASH]       = { keycode::BACKSLASH, '\\', '|' };
+    _keys[platform_keycode::KEY_RIGHT_BRACKET]   = { keycode::RIGHT_BRACKET, ']', '}' };
+    _keys[platform_keycode::KEY_GRAVE_ACCENT]    = { keycode::GRAVE_ACCENT, '`', '~' };
+    _keys[platform_keycode::KEY_A]               = { keycode::A, 'a', 'A' };
+    _keys[platform_keycode::KEY_B]               = { keycode::B, 'b', 'B' };
+    _keys[platform_keycode::KEY_C]               = { keycode::C, 'c', 'C' };
+    _keys[platform_keycode::KEY_D]               = { keycode::D, 'd', 'D' };
+    _keys[platform_keycode::KEY_E]               = { keycode::E, 'e', 'E' };
+    _keys[platform_keycode::KEY_F]               = { keycode::F, 'f', 'F' };
+    _keys[platform_keycode::KEY_G]               = { keycode::G, 'g', 'G' };
+    _keys[platform_keycode::KEY_H]               = { keycode::H, 'h', 'H' };
+    _keys[platform_keycode::KEY_I]               = { keycode::I, 'i', 'I' };
+    _keys[platform_keycode::KEY_J]               = { keycode::J, 'j', 'J' };
+    _keys[platform_keycode::KEY_K]               = { keycode::K, 'k', 'K' };
+    _keys[platform_keycode::KEY_L]               = { keycode::L, 'l', 'L' };
+    _keys[platform_keycode::KEY_M]               = { keycode::M, 'm', 'M' };
+    _keys[platform_keycode::KEY_N]               = { keycode::N, 'n', 'N' };
+    _keys[platform_keycode::KEY_O]               = { keycode::O, 'o', 'O' };
+    _keys[platform_keycode::KEY_P]               = { keycode::P, 'p', 'P' };
+    _keys[platform_keycode::KEY_Q]               = { keycode::Q, 'q', 'Q' };
+    _keys[platform_keycode::KEY_R]               = { keycode::R, 'r', 'R' };
+    _keys[platform_keycode::KEY_S]               = { keycode::S, 's', 'S' };
+    _keys[platform_keycode::KEY_T]               = { keycode::T, 't', 'T' };
+    _keys[platform_keycode::KEY_U]               = { keycode::U, 'u', 'U' };
+    _keys[platform_keycode::KEY_V]               = { keycode::V, 'v', 'V' };
+    _keys[platform_keycode::KEY_W]               = { keycode::W, 'w', 'W' };
+    _keys[platform_keycode::KEY_X]               = { keycode::X, 'x', 'X' };
+    _keys[platform_keycode::KEY_Y]               = { keycode::Y, 'y', 'Y' };
+    _keys[platform_keycode::KEY_Z]               = { keycode::Z, 'z', 'Z' };
+    _keys[platform_keycode::KEY_0]               = { keycode::KEY_0, '0', ')' };
+    _keys[platform_keycode::KEY_1]               = { keycode::KEY_1, '1', '!' };
+    _keys[platform_keycode::KEY_2]               = { keycode::KEY_2, '2', '@' };
+    _keys[platform_keycode::KEY_3]               = { keycode::KEY_3, '3', '#' };
+    _keys[platform_keycode::KEY_4]               = { keycode::KEY_4, '4', '$' };
+    _keys[platform_keycode::KEY_5]               = { keycode::KEY_5, '5', '%' };
+    _keys[platform_keycode::KEY_6]               = { keycode::KEY_6, '6', '^' };
+    _keys[platform_keycode::KEY_7]               = { keycode::KEY_7, '7', '&' };
+    _keys[platform_keycode::KEY_8]               = { keycode::KEY_8, '8', '*' };
+    _keys[platform_keycode::KEY_9]               = { keycode::KEY_9, '9', '(' };
+    _keys[platform_keycode::KEY_NUMPAD_0]        = { keycode::KEYPAD_0, '0', '0' };
+    _keys[platform_keycode::KEY_NUMPAD_1]        = { keycode::KEYPAD_1, '1', '1' };
+    _keys[platform_keycode::KEY_NUMPAD_2]        = { keycode::KEYPAD_2, '2', '2' };
+    _keys[platform_keycode::KEY_NUMPAD_3]        = { keycode::KEYPAD_3, '3', '3' };
+    _keys[platform_keycode::KEY_NUMPAD_4]        = { keycode::KEYPAD_4, '4', '4' };
+    _keys[platform_keycode::KEY_NUMPAD_5]        = { keycode::KEYPAD_5, '5', '5' };
+    _keys[platform_keycode::KEY_NUMPAD_6]        = { keycode::KEYPAD_6, '6', '6' };
+    _keys[platform_keycode::KEY_NUMPAD_7]        = { keycode::KEYPAD_7, '7', '7' };
+    _keys[platform_keycode::KEY_NUMPAD_8]        = { keycode::KEYPAD_8, '8', '8' };
+    _keys[platform_keycode::KEY_NUMPAD_9]        = { keycode::KEYPAD_9, '9', '9' };
+    _keys[platform_keycode::KEY_NUMPAD_DECIMAL]  = { keycode::KEYPAD_DECIMAL, '.', '.' };
+    _keys[platform_keycode::KEY_NUMPAD_DIVIDE]   = { keycode::KEYPAD_DIVIDE, '/', '/' };
+    _keys[platform_keycode::KEY_NUMPAD_MULTIPLY] = { keycode::KEYPAD_MULTIPLY, '*', '*' };
+    _keys[platform_keycode::KEY_NUMPAD_SUBTRACT] = { keycode::KEYPAD_SUBTRACT, '-', '-' };
+    _keys[platform_keycode::KEY_NUMPAD_ADD]      = { keycode::KEYPAD_ADD, '+', '+' };
+    _keys[platform_keycode::KEY_ENTER]           = { keycode::ENTER, '\n', '\0' };
+    _keys[platform_keycode::KEY_TAB]             = { keycode::TAB, '\t', '\0' };
+    _keys[platform_keycode::KEY_BACKSPACE]       = { keycode::BACKSPACE, '\0', '\0' };
+    _keys[platform_keycode::KEY_RIGHT]           = { keycode::RIGHT, '\0', '\0' };
+    _keys[platform_keycode::KEY_LEFT]            = { keycode::LEFT, '\0', '\0' };
+    _keys[platform_keycode::KEY_DOWN]            = { keycode::DOWN, '\0', '\0' };
+    _keys[platform_keycode::KEY_UP]              = { keycode::UP, '\0', '\0' };
+    _keys[platform_keycode::KEY_CAPS_LOCK]       = { keycode::CAPS_LOCK, '\0', '\0' };
+    _keys[platform_keycode::KEY_SCROLL_LOCK]     = { keycode::SCROLL_LOCK, '\0', '\0' };
+    _keys[platform_keycode::KEY_NUM_LOCK]        = { keycode::NUM_LOCK, '\0', '\0' };
+    _keys[platform_keycode::KEY_PRINT_SCREEN]    = { keycode::PRINT_SCREEN, '\0', '\0' };
+    _keys[platform_keycode::KEY_PAUSE]           = { keycode::PAUSE, '\0', '\0' };
+    _keys[platform_keycode::KEY_LEFT_SHIFT]      = { keycode::LEFT_SHIFT, '\0', '\0' };
+    _keys[platform_keycode::KEY_LEFT_CONTROL]    = { keycode::LEFT_CONTROL, '\0', '\0' };
+    _keys[platform_keycode::KEY_LEFT_ALT]        = { keycode::LEFT_ALT, '\0', '\0' };
+    _keys[platform_keycode::KEY_LEFT_SUPER]      = { keycode::LEFT_SUPER, '\0', '\0' };
+    _keys[platform_keycode::KEY_RIGHT_SHIFT]     = { keycode::RIGHT_SHIFT, '\0', '\0' };
+    _keys[platform_keycode::KEY_RIGHT_CONTROL]   = { keycode::RIGHT_CONTROL, '\0', '\0' };
+    _keys[platform_keycode::KEY_RIGHT_ALT]       = { keycode::RIGHT_ALT, '\0', '\0' };
+    _keys[platform_keycode::KEY_RIGHT_SUPER]     = { keycode::RIGHT_SUPER, '\0', '\0' };
+    _keys[platform_keycode::KEY_MENU]            = { keycode::MENU, '\0', '\0' };
     // clang-format off
-}
-
-uint32_t KeyboardHandler::GetModifierState(int mods)
-{
-    uint32_t modifiers = 0;
-
-    if(mods & GLFW_MOD_SHIFT)
-        modifiers |= (1 << static_cast<uint32_t>(modifiers::SHIFT));
-
-    if(mods & GLFW_MOD_CONTROL)
-        modifiers |= (1 << static_cast<uint32_t>(modifiers::CTRL));
-
-    if(mods & GLFW_MOD_ALT)
-        modifiers |= (1 << static_cast<uint32_t>(modifiers::ALT));
-
-    if(mods & GLFW_MOD_SUPER)
-        modifiers |= (1 << static_cast<uint32_t>(modifiers::SUPER));
-
-    return modifiers;
 }

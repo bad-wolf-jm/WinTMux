@@ -4,29 +4,17 @@
 #include <chrono>
 #include <thread>
 
-// bool running = true;
-// bool consoleHandler( int signal )
-// {
-//     if( signal == CTRL_C_EVENT )
-//     {
-//         running = false;
-//     }
-
-//     return true;
-// }
-
 int main()
 {
-    // SetConsoleCtrlHandler( (PHANDLER_ROUTINE)consoleHandler, TRUE );
-    // terminal_window_t _window{};
-
     Application::Initialize();
+
     for(int i=0; i < 10; i++)
     {
         Application::Instance()->Tick();
     }
     // while(Application::Instance()->Tick())
     // {}
+    Application::Shutdown();
 
 #if 0
     // Push the current state of the terminal so we can restore

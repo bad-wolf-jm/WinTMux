@@ -29,6 +29,8 @@ void stdin_t::ProcessEvents()
     DWORD               _numInputEvents;
     static INPUT_RECORD inputEvents[128];
 
+    // TODO: Check if there are events pending
+
     if( !ReadConsoleInput( _stream, inputEvents, 128, &_numInputEvents ) )
     {
     }
@@ -44,14 +46,14 @@ void stdin_t::ProcessEvents()
             auto const &platformModifiers = event.dwControlKeyState;
             switch( keyCode.KeyCode )
             {
-            case key_codes::LEFT_SHIFT:
-            case key_codes::LEFT_CONTROL:
-            case key_codes::LEFT_ALT:
-            case key_codes::LEFT_SUPER:
-            case key_codes::RIGHT_SHIFT:
-            case key_codes::RIGHT_CONTROL:
-            case key_codes::RIGHT_ALT:
-            case key_codes::RIGHT_SUPER:
+            case keycode::LEFT_SHIFT:
+            case keycode::LEFT_CONTROL:
+            case keycode::LEFT_ALT:
+            case keycode::LEFT_SUPER:
+            case keycode::RIGHT_SHIFT:
+            case keycode::RIGHT_CONTROL:
+            case keycode::RIGHT_ALT:
+            case keycode::RIGHT_SUPER:
                 continue;
             default:
             {
@@ -93,7 +95,6 @@ void stdin_t::ProcessEvents()
             break;
         }
     }
-    // }
 }
 
 stdout_t::stdout_t()

@@ -5,10 +5,12 @@
 
 Application::Application()
 {
-    _stdin.OnKeyPress = []( keycode_t const &keycode, uint32_t modifiers )
-    {
-        //
-        printf( "KeyPress" );
+    _stdin.OnKeyPress = []( keycode_t const &keycode, uint32_t modifiers ) {
+
+    };
+
+    _stdin.OnConsoleResize = []( uint32_t columns, uint32_t rows ) {
+
     };
 }
 

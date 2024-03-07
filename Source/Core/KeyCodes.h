@@ -4,7 +4,7 @@
 #include "GLFW/glfw3.h"
 
 #include <cstdint>
-enum class key_codes : size_t
+enum class keycode : size_t
 {
     F1,              // = GLFW_KEY_F1,
     F2,              // = GLFW_KEY_F2,
@@ -144,7 +144,7 @@ enum class modifiers : size_t
 
 struct keycode_t
 {
-    key_codes KeyCode;
+    keycode KeyCode;
     int      ScanCode;
     char     Symbol;
     char     ShiftedSymbol;
@@ -158,7 +158,7 @@ class KeyboardHandler
     KeyboardHandler();
 
   public:
-    bool IsPrintable( key_codes key );
+    bool IsPrintable( keycode key );
 
     keycode_t const &GetKeyCode( int keycode );
     uint32_t       GetModifierState( int mods );
