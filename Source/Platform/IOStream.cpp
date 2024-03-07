@@ -119,10 +119,17 @@ stdout_t::stdout_t()
         _columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
         _rows    = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
     }
+
+    // Push the current state of the terminal so we can restore
+    // after the program is done.
+    write( "\x1b[?1049h" );
 }
 
 stdout_t::~stdout_t()
 {
+    // Restore the contents of the terminal.
+    write( "\x1b[?1049l" );
+
     SetConsoleOutputCP( _codePage );
     SetConsoleMode( _stream, _consoleMode );
 }
@@ -165,7 +172,7 @@ void stdout_t::write( uint32_t attributes, uint32_t bg, uint32_t fg, std::vector
         uint8_t g = ( bg >> 8 ) & 0xFF;
         uint8_t b = ( bg >> 0 ) & 0xFF;
 
-        write( fmt::sprintf( "\x1b[38;2;%d;%d;%dm", r, g, b ) );
+        write( fmt::sprintf( "\x1b[48;2;%d;%d;%dm", r, g, b ) );
     }
 
     if( !( attributes & CharacterAttribute::DEFAULT_FG ) )

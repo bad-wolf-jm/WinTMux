@@ -15,8 +15,8 @@ struct character_range_t
     void     Fg( uint8_t &r, uint8_t &g, uint8_t &b ) const;
     void     Bg( uint8_t &r, uint8_t &g, uint8_t &b ) const;
 
-    uint32_t     Foreground() const;
-    uint32_t     Background() const;
+    uint32_t Foreground() const;
+    uint32_t Background() const;
 };
 
 using line_t = std::vector<character_range_t>;
@@ -35,8 +35,8 @@ class framebuffer_t
     void SetBackground( uint8_t r, uint8_t g, uint8_t b );
     void SetForeground( uint8_t r, uint8_t g, uint8_t b );
 
-    void HLine(uint32_t y, uint32_t x0, uint32_t x1, string_t c0, string_t c1, string_t cFill );
-    void VLine(uint32_t x, uint32_t y0, uint32_t y1, string_t c0, string_t c1, string_t cFill );
+    void HLine( uint32_t y, uint32_t x0, uint32_t x1, string_t c0, string_t c1, string_t cFill );
+    void VLine( uint32_t x, uint32_t y0, uint32_t y1, string_t c0, string_t c1, string_t cFill );
     void DrawRect( uint32_t x, uint32_t y, uint32_t w, uint32_t h, string_t tl, string_t t, string_t tr, string_t r, string_t br,
                    string_t b, string_t bl, string_t l );
 
@@ -47,9 +47,9 @@ class framebuffer_t
     std::vector<Glyph> const  &Data() const;
 
   private:
-    uint32_t _background;
-    uint32_t _foreground;
-    uint16_t _attributes;
+    uint32_t _background{0};
+    uint32_t _foreground{0};
+    uint16_t _attributes{0};
 
   private:
     uint32_t _rows{ 0 };
