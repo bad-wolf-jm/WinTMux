@@ -35,7 +35,8 @@ PTYProcess::PTYProcess( string_t command, uint32_t columns, uint32_t lines )
             if( NULL != errorText )
             {
                 // ... do something with the string `errorText` - log it, display it to the user, etc.
-                std::cout << "XXX" << " " << errorText << std::endl;
+                std::cout << "XXX"
+                          << " " << errorText << std::endl;
                 // release memory allocated by FormatMessage()
                 LocalFree( errorText );
                 errorText = NULL;
@@ -99,7 +100,7 @@ void PTYProcess::CreateConsole( int16_t columns, int16_t lines )
     HANDLE consoleStdIn{ INVALID_HANDLE_VALUE };
     HANDLE consoleStdOut{ INVALID_HANDLE_VALUE };
 
-    CreatePipes( consoleStdIn, consoleStdOut);
+    CreatePipes( consoleStdIn, consoleStdOut );
     COORD consoleSize{ columns, lines };
 
     // Create the Pseudo Console of the required size, attached to the PTY-end
@@ -118,19 +119,19 @@ void PTYProcess::CreateConsole( int16_t columns, int16_t lines )
 
 void PTYProcess::StartProcess()
 {
-    CreateProcessA( NULL,                                        // No module name - use Command Line
+    CreateProcessA( NULL,                                       // No module name - use Command Line
                     reinterpret_cast<LPSTR>( _command.data() ), // Command Line
-                    NULL,                                        // Process handle not inheritable
-                    NULL,                                        // Thread handle not inheritable
-                    FALSE,                                       // Inherit handles
-                    EXTENDED_STARTUPINFO_PRESENT,                // Creation flags
-                    NULL,                                        // Use parent's environment block
-                    NULL,                                        // Use parent's starting directory
-                    &_startupInfo.StartupInfo,                   // Pointer to STARTUPINFO
-                    &_clientProcess );                           // Pointer to PROCESS_INFORMATION
+                    NULL,                                       // Process handle not inheritable
+                    NULL,                                       // Thread handle not inheritable
+                    FALSE,                                      // Inherit handles
+                    EXTENDED_STARTUPINFO_PRESENT,               // Creation flags
+                    NULL,                                       // Use parent's environment block
+                    NULL,                                       // Use parent's starting directory
+                    &_startupInfo.StartupInfo,                  // Pointer to STARTUPINFO
+                    &_clientProcess );                          // Pointer to PROCESS_INFORMATION
 }
 
-bool PTYProcess::CreatePipes( HANDLE &consoleStdIn, HANDLE &consoleStdOut)
+bool PTYProcess::CreatePipes( HANDLE &consoleStdIn, HANDLE &consoleStdOut )
 {
     HRESULT hr{ E_UNEXPECTED };
 

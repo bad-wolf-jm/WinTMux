@@ -46,6 +46,9 @@ class framebuffer_t
     std::vector<line_t> const &Lines() const;
     std::vector<Glyph> const  &Data() const;
 
+    uint32_t Rows() { return _rows; }
+    uint32_t Columns() {return _columns; }
+
   private:
     uint32_t _background{0};
     uint32_t _foreground{0};

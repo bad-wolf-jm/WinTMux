@@ -66,17 +66,9 @@ void framebuffer_t::BeginFrame()
     uint64_t characterAttributes = CharacterAttribute::DEFAULT_BG | CharacterAttribute::DEFAULT_FG;
     for( auto &g : _data )
     {
-        g.Character[0]  = '.';
+        g.Character[0]  = ' ';
         g.CharacterSize = 1;
         g.Attributes    = characterAttributes << 48;
-    }
-
-    if( _data.size() > 0 )
-    {
-        _data[0].Character[0]                 = '#';
-        _data[0].CharacterSize                = 1;
-        _data[_data.size() - 1].Character[0]  = '@';
-        _data[_data.size() - 1].CharacterSize = 1;
     }
 }
 

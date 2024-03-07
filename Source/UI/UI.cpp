@@ -1,7 +1,7 @@
 #include "UI.h"
 
-#include <memory>
 #include <fmt/printf.h>
+#include <memory>
 
 UI::UI()
 //: _commandLine{ std::make_shared<CommandLine>( this ) }
@@ -127,7 +127,7 @@ void UI::Render()
     _framebuffer.BeginFrame();
     RenderHeader();
     RenderWorkspace();
-    RenderCommandLine();
+    // RenderCommandLine();
     _framebuffer.EndFrame();
     // if( _displayedOverlay != eOverlayType::NONE )
     // {
@@ -173,7 +173,7 @@ void UI::RenderHeader()
     _framebuffer.SetForeground( 200, 200, 200 );
     _framebuffer.SetBackground( 75, 75, 75 );
 
-    auto line = fmt::sprintf("WORKSPACE %d (%s)", _currentWorkspace + 1, _workspaces[_currentWorkspace]->Name().c_str());
+    auto line = fmt::sprintf( " WORKSPACE %d (%s)", _currentWorkspace + 1, _workspaces[_currentWorkspace]->Name().c_str() );
     _framebuffer.TextLine( 0, 0, line );
 
     // ImGui::SetNextWindowPos( ImVec2( 0.0f, 0.0f ) );
@@ -192,8 +192,8 @@ void UI::RenderHeader()
 
 void UI::RenderWorkspace()
 {
-    _framebuffer.DrawRect( 10, 20, 50, 25, u8"\u256D", u8"\u2500", u8"\u256E", u8"\u2502", u8"\u256F", u8"\u2500", u8"\u2570",
-                           u8"\u2502" );
+    //_framebuffer.DrawRect( 10, 20, 50, 25, u8"\u256D", u8"\u2500", u8"\u256E", u8"\u2502", u8"\u256F", u8"\u2500", u8"\u2570",
+    //                       u8"\u2502" );
     // if( _currentWorkspace >= 0 && _currentWorkspace < _workspaces.size() )
     // {
     //     ImGui::SetNextWindowPos( ImVec2( 0.0f, _headerHeight ) );
@@ -208,6 +208,8 @@ void UI::RenderWorkspace()
 
 void UI::RenderCommandLine()
 {
+    auto line = fmt::sprintf( " WORKSPACE %d (%s)", _currentWorkspace + 1, _workspaces[_currentWorkspace]->Name().c_str() );
+    _framebuffer.TextLine( 0, _framebuffer.Rows() - 1, line );
     // ImGui::SetNextWindowPos( ImVec2( 0.0f, _windowSize.y - _commandLineHeight ) );
     // ImGui::SetNextWindowSize( ImVec2( _windowSize.x, _commandLineHeight ) );
     // ImGui::Begin( "##3", &_windowIsOpen,
