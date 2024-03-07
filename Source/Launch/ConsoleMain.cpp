@@ -8,12 +8,12 @@ int main()
 {
     Application::Initialize();
 
-    for(int i=0; i < 10; i++)
-    {
-        Application::Instance()->Tick();
-    }
-    // while(Application::Instance()->Tick())
-    // {}
+    // for(int i=0; i < 10; i++)
+    // {
+    //     Application::Instance()->Tick();
+    // }
+    while(Application::Instance()->Tick())
+    {}
     Application::Shutdown();
 
 #if 0

@@ -1,5 +1,6 @@
 #pragma once
 #include "Platform/IOStream.h"
+#include "UI/UI.h"
 #include <memory>
 
 class Application
@@ -21,4 +22,6 @@ class Application
 
     stdin_t  _stdin;
     stdout_t _stdout;
+
+    UI _ui;
 };

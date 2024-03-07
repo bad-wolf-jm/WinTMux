@@ -5,13 +5,17 @@
 
 Application::Application()
 {
-    _stdin.OnKeyPress = []( keycode_t const &keycode, uint32_t modifiers ) {
+    _stdin.OnKeyPress = [&]( keycode_t const &keycode, uint32_t modifiers ) {
 
     };
 
-    _stdin.OnConsoleResize = []( uint32_t columns, uint32_t rows ) {
-
+    _stdin.OnConsoleResize = [&]( uint32_t columns, uint32_t rows )
+    {
+        // Resize the UI
+        _ui.Resize( rows, columns );
     };
+
+    _ui.Resize( _stdout.Rows(), _stdout.Columns() );
 }
 
 std::unique_ptr<Application> Application::_uniqueInstance;
@@ -32,6 +36,11 @@ std::unique_ptr<Application> &Application::Instance()
 bool Application::Tick()
 {
     _stdin.ProcessEvents();
+
+    _ui.Render();
+
+    _stdout.write( _ui.FrameBuffer() );
+
     return true;
 }
 

@@ -35,6 +35,9 @@ add_executable(WinTMux
 
     Platform/Application.cpp
     Platform/IOStream.cpp
+
+    UI/UI.cpp
+    UI/Workspace.cpp
 )
 
 #message(STATUS ${OpenGL_LIBRARIES})

@@ -48,7 +48,7 @@ void framebuffer_t::Resize( uint32_t rows, uint32_t columns )
 
 size_t framebuffer_t::ByteSize()
 {
-    return _data.size() * sizeof( uint32_t );
+    return _data.size() * sizeof( Glyph );
 }
 
 std::vector<line_t> const &framebuffer_t::Lines() const

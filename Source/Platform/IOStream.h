@@ -47,6 +47,9 @@ class stdout_t
     void write( character_range_t const &range, std::vector<Glyph> const &buffer );
     void write( framebuffer_t const &frameBuffer );
 
+    uint32_t Columns() {return _columns;}
+    uint32_t Rows() {return _rows;}
+    
   private:
     handle_t _stream;
 

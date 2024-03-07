@@ -1,6 +1,7 @@
 #include "IOStream.h"
-#include <fmt/printf.h>
 #include <windows.h>
+#include <consoleapi.h>
+#include <fmt/printf.h>
 
 stdin_t::stdin_t()
 {
@@ -30,6 +31,10 @@ void stdin_t::ProcessEvents()
     static INPUT_RECORD inputEvents[128];
 
     // TODO: Check if there are events pending
+
+    GetNumberOfConsoleInputEvents( _stream, &_numInputEvents );
+    if( _numInputEvents == 0 )
+        return;
 
     if( !ReadConsoleInput( _stream, inputEvents, 128, &_numInputEvents ) )
     {
@@ -211,6 +216,6 @@ void stdout_t::write( framebuffer_t const &frameBuffer )
         write( "\x1b[0m" ); // reset colors for this line
 
         for( auto const &range : line )
-            write(range, buffer);
+            write( range, buffer );
     }
 }

@@ -1,4 +1,4 @@
-#include "KeyCodes.h"
+#include "KeyCodes.Console.h"
 #include "GLFW/glfw3.h"
 
 // KeyCode Keys[KEY_LAST];
@@ -14,7 +14,7 @@ KeyboardHandler::KeyboardHandler()
 
 keycode_t const &KeyboardHandler::GetKeyCode( int keycode )
 {
-    return Keys[keycode];
+    return _keys[keycode];
 }
 
 // #if 0
