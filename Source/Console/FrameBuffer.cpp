@@ -1,6 +1,16 @@
 #include "FrameBuffer.h"
 #include "Core/Glyph.h"
 
+uint32_t character_range_t::Foreground() const
+{
+    return static_cast<uint32_t>( ( Attributes >> 24 ) & 0xFFFFFF );
+}
+
+uint32_t character_range_t::Background() const
+{
+    return static_cast<uint32_t>( Attributes & 0xFFFFFF );
+}
+
 void character_range_t::Fg( uint8_t &r, uint8_t &g, uint8_t &b ) const
 {
     uint32_t color = static_cast<uint32_t>( ( Attributes >> 24 ) & 0xFFFFFF );
@@ -41,12 +51,12 @@ size_t framebuffer_t::ByteSize()
     return _data.size() * sizeof( uint32_t );
 }
 
-std::vector<line_t> const &framebuffer_t::Lines()
+std::vector<line_t> const &framebuffer_t::Lines() const
 {
     return _lines;
 }
 
-std::vector<Glyph> const &framebuffer_t::Data()
+std::vector<Glyph> const &framebuffer_t::Data() const
 {
     return _data;
 }
@@ -158,7 +168,7 @@ void framebuffer_t::VLine( uint32_t x, uint32_t y0, uint32_t y1, string_t c0, st
         _data[position].CharacterSize = cFill.size();
     }
 
-    position = (y1 - 1) * _columns + x;
+    position = ( y1 - 1 ) * _columns + x;
     memcpy( _data[position].Character, c1.c_str(), c1.size() );
     _data[position].CharacterSize = c1.size();
 }
@@ -187,7 +197,8 @@ void framebuffer_t::DrawRect( uint32_t x, uint32_t y, uint32_t w, uint32_t h, st
     {
         for( int j = 1; j < h - 1; j++ )
         {
-            position                      = ( y + j ) * _columns + ( x + i );
+            position = ( y + j ) * _columns + ( x + i );
+
             _data[position].Character[0]  = ' ';
             _data[position].CharacterSize = 1;
         }

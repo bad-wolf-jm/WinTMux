@@ -14,6 +14,9 @@ struct character_range_t
     uint32_t CharacterAttributes() const;
     void     Fg( uint8_t &r, uint8_t &g, uint8_t &b ) const;
     void     Bg( uint8_t &r, uint8_t &g, uint8_t &b ) const;
+
+    uint32_t     Foreground() const;
+    uint32_t     Background() const;
 };
 
 using line_t = std::vector<character_range_t>;
@@ -40,8 +43,8 @@ class framebuffer_t
     void TextLine( uint32_t x, uint32_t y, string_t text );
 
     size_t                     ByteSize();
-    std::vector<line_t> const &Lines();
-    std::vector<Glyph> const  &Data();
+    std::vector<line_t> const &Lines() const;
+    std::vector<Glyph> const  &Data() const;
 
   private:
     uint32_t _background;
