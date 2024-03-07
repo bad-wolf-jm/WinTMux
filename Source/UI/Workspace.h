@@ -1,4 +1,5 @@
 #pragma once
+#include "Console/FrameBuffer.h"
 #include "Core/String.h"
 #include "Workspace/Tree.h"
 
@@ -15,7 +16,7 @@ class Workspace
     // std::vector<std::shared_ptr<Terminal>> &Terminals();
     // void                                    FocusTerminal( int32_t index );
 
-    void Render();
+    void Render( framebuffer_t &framebuffer );
 
     // void VSplit();
     // void HSplit();

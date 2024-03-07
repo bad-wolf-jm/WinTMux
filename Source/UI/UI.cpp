@@ -192,18 +192,10 @@ void UI::RenderHeader()
 
 void UI::RenderWorkspace()
 {
-    //_framebuffer.DrawRect( 10, 20, 50, 25, u8"\u256D", u8"\u2500", u8"\u256E", u8"\u2502", u8"\u256F", u8"\u2500", u8"\u2570",
-    //                       u8"\u2502" );
-    // if( _currentWorkspace >= 0 && _currentWorkspace < _workspaces.size() )
-    // {
-    //     ImGui::SetNextWindowPos( ImVec2( 0.0f, _headerHeight ) );
-    //     ImGui::SetNextWindowSize( ImVec2( _windowSize.x, _windowSize.y - _headerHeight - _commandLineHeight ) );
-    //     ImGui::Begin( "##2", &_windowIsOpen,
-    //                   ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |
-    //                       ImGuiWindowFlags_NoScrollbar );
-    //     _workspaces[_currentWorkspace]->Render();
-    //     ImGui::End();
-    // }
+    if( _currentWorkspace >= 0 && _currentWorkspace < _workspaces.size() )
+    {
+        _workspaces[_currentWorkspace]->Render( _framebuffer );
+    }
 }
 
 void UI::RenderCommandLine()

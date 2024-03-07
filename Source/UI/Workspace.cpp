@@ -51,7 +51,7 @@ Workspace::Workspace( string_t name )
 //     _focusedTerminal = index;
 // }
 
-void Workspace::Render()
+void Workspace::Render(framebuffer_t &framebuffer)
 {
     // _terminalTree->SetSize( ImGui::GetContentRegionAvail() );
 

@@ -30,7 +30,7 @@ add_executable(WinTMux
     Launch/ConsoleMain.cpp
     PseudoConsole/PTYProcess.cpp
 
-    Console/TerminalWindow.cpp
+    # Console/TerminalWindow.cpp
     Console/FrameBuffer.cpp
 
     Platform/Application.cpp
