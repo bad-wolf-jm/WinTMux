@@ -2,9 +2,10 @@
 #include <iostream>
 #include <ostream>
 
-PTYProcess::PTYProcess( string_t command, uint32_t columns, uint32_t lines )
-    : _columns{ columns }
-    , _lines{ lines }
+PTYProcess::PTYProcess( string_t command, framebuffer_t &framebuffer )
+    : _columns{ framebuffer.Columns() }
+    , _lines{ framebuffer.Rows() }
+    , _framebuffer{framebuffer}
     , _command{ command }
 {
     _startupInfo.StartupInfo.cb = sizeof( STARTUPINFOEXA );
@@ -153,8 +154,8 @@ void __cdecl PTYProcess::PipeListener()
     {
         // Read from the pipe
         fRead = ReadFile( hPipe, szBuffer, BUFF_SIZE, &dwBytesRead, NULL );
-
-        _parser.vtparse((unsigned char*)szBuffer, dwBytesRead);
+        
+        _parser.vtparse(_framebuffer, (unsigned char*)szBuffer, dwBytesRead);
 
         // Write received text to the Console
         // Note: Write to the Console using WriteFile(hConsole...), not

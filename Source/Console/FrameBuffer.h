@@ -31,6 +31,8 @@ class framebuffer_t
     void BeginFrame();
     void EndFrame();
 
+    void putc( char ch );
+
     void SetTextAttributes( bool bold, bool italic, bool underline, bool strikeThrough, bool faint );
     void SetBackground( uint8_t r, uint8_t g, uint8_t b );
     void SetForeground( uint8_t r, uint8_t g, uint8_t b );
@@ -45,14 +47,24 @@ class framebuffer_t
     size_t                     ByteSize();
     std::vector<line_t> const &Lines() const;
     std::vector<Glyph> const  &Data() const;
+    std::vector<Glyph>        &DataNC();
 
-    uint32_t Rows() { return _rows; }
-    uint32_t Columns() {return _columns; }
+    uint32_t Rows()
+    {
+        return _rows;
+    }
+    uint32_t Columns()
+    {
+        return _columns;
+    }
+
+    void SetCursor( uint32_t x, uint32_t y );
+    void Cursor( uint32_t &x, uint32_t &y );
 
   private:
-    uint32_t _background{0};
-    uint32_t _foreground{0};
-    uint16_t _attributes{0};
+    uint32_t _background{ 0 };
+    uint32_t _foreground{ 0 };
+    uint16_t _attributes{ 0 };
 
   private:
     uint32_t _rows{ 0 };
@@ -60,4 +72,7 @@ class framebuffer_t
 
     std::vector<Glyph>  _data{};
     std::vector<line_t> _lines{};
+
+    uint32_t _cursorX = 0;
+    uint32_t _cursorY = 0;
 };

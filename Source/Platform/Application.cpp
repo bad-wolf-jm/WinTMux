@@ -5,8 +5,9 @@
 
 Application::Application()
 {
-    _stdin.OnKeyPress = [&]( keycode_t const &keycode, uint32_t modifiers ) {
-        if(keycode.KeyCode == keycode::Q)
+    _stdin.OnKeyPress = [&]( keycode_t const &keycode, uint32_t modifiers )
+    {
+        if( keycode.KeyCode == keycode::Q )
             _shouldExit = true;
     };
 
@@ -41,7 +42,10 @@ bool Application::Tick()
 
     _ui.Render();
 
-    // _stdout.write( _ui.FrameBuffer() );
+    _stdout.write( _ui.FrameBuffer() );
+
+    if( _shouldExit )
+        _ui.Stop();
 
     return !_shouldExit;
 }

@@ -5,6 +5,7 @@
 
 #include "Actions.h"
 #include "States.h"
+#include <Console/FrameBuffer.h>
 
 struct Range
 {
@@ -25,7 +26,7 @@ class Vt100Parser
   public:
     Vt100Parser();
 
-    void vtparse( unsigned char *data, int len );
+    void vtparse( framebuffer_t &framebuffer, unsigned char *data, int len );
 
   private:
     void OnEvent( Range range, Action action );
@@ -52,8 +53,8 @@ class Vt100Parser
 
     Action _entryActions[(size_t)VtParserState::count] = { Action::none };
     Action _exitActions[(size_t)VtParserState::count]  = { Action::none };
-    void   do_action( Action action, char ch );
-    void   do_state_change( VtParserState newState, Action action, char ch );
+    void   do_action( framebuffer_t &framebuffer, Action action, char ch );
+    void   do_state_change( framebuffer_t &framebuffer, VtParserState newState, Action action, char ch );
 
     VtParserState state;
     // vtparse_callback_t cb;
@@ -64,5 +65,7 @@ class Vt100Parser
     int           num_params;
     void         *user_data;
 
-    void Dispatch(Action action, char ch);
+    void Dispatch( framebuffer_t &framebuffer, Action action, char ch );
+    void ProcessGraphicsMode( framebuffer_t freamebuffer );
+    void Erase( framebuffer_t freamebuffer );
 };

@@ -4,7 +4,6 @@
 #include <memory>
 
 UI::UI()
-//: _commandLine{ std::make_shared<CommandLine>( this ) }
 {
     // _workspaces.push_back( std::make_shared<Workspace>( "DEFAULT" ) );
     // _workspaces.push_back( std::make_shared<Workspace>( "WinTMux Source Code" ) );
@@ -17,12 +16,19 @@ UI::UI()
 
 void UI::Start()
 {
-    _bgTerminal = std::make_shared<PTYProcess>("nvim", _framebuffer.Columns(), _framebuffer.Rows());
+    _bgTerminal = std::make_shared<PTYProcess>( "nvim", _bgTerminalBuffer );
+    _bgTerminalBuffer.BeginFrame();
+}
+
+void UI::Stop()
+{
+    _bgTerminal->WaitForCompletion( 1 );
 }
 
 void UI::Resize( uint32_t columns, uint32_t rows )
 {
-    _framebuffer.Resize( columns, rows );
+    _framebuffer.Resize( rows, columns );
+    _bgTerminalBuffer.Resize( rows, columns );
 }
 
 framebuffer_t &UI::FrameBuffer()
@@ -131,6 +137,7 @@ void UI::Render()
     // ImGui::PushStyleVar( ImGuiStyleVar_WindowMinSize, ImVec2( _fontSize, _fontSize ) );
     // ImGui::PushStyleVar( ImGuiStyleVar_WindowPadding, ImVec2( 0, 0 ) );
     _framebuffer.BeginFrame();
+    std::copy( _bgTerminalBuffer.DataNC().begin(), _bgTerminalBuffer.DataNC().end(), _framebuffer.DataNC().begin() );
     // RenderHeader();
     // RenderWorkspace();
     // RenderCommandLine();
@@ -185,7 +192,8 @@ void UI::Render()
 //     // ImGui::SetNextWindowPos( ImVec2( 0.0f, 0.0f ) );
 //     // ImGui::SetNextWindowSize( ImVec2( _windowSize.x, _headerHeight ) );
 //     // ImGui::Begin( "##1", &_windowIsOpen,
-//     //               ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar
+//     //               ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |
+//     ImGuiWindowFlags_NoScrollbar
 //     //               );
 //     // {
 //     //     float posX = 5.0;
@@ -211,7 +219,8 @@ void UI::Render()
 //     // ImGui::SetNextWindowPos( ImVec2( 0.0f, _windowSize.y - _commandLineHeight ) );
 //     // ImGui::SetNextWindowSize( ImVec2( _windowSize.x, _commandLineHeight ) );
 //     // ImGui::Begin( "##3", &_windowIsOpen,
-//     //               ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar
+//     //               ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |
+//     ImGuiWindowFlags_NoScrollbar
 //     //               );
 
 //     // _commandLine->SetHeight( _commandLineHeight );

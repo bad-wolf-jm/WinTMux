@@ -46,6 +46,17 @@ void framebuffer_t::Resize( uint32_t rows, uint32_t columns )
         l.clear();
 }
 
+void framebuffer_t::SetCursor( uint32_t x, uint32_t y )
+{
+    _cursorX = x;
+    _cursorY = y;
+}
+void framebuffer_t::Cursor( uint32_t &x, uint32_t &y )
+{
+    x = _cursorX;
+    y = _cursorY;
+}
+
 size_t framebuffer_t::ByteSize()
 {
     return _data.size() * sizeof( Glyph );
@@ -57,6 +68,11 @@ std::vector<line_t> const &framebuffer_t::Lines() const
 }
 
 std::vector<Glyph> const &framebuffer_t::Data() const
+{
+    return _data;
+}
+
+std::vector<Glyph> &framebuffer_t::DataNC()
 {
     return _data;
 }
@@ -211,5 +227,25 @@ void framebuffer_t::TextLine( uint32_t x, uint32_t y, string_t text )
             _data[position].Attributes   = attributes;
             position++;
         }
+    }
+}
+
+void framebuffer_t::putc( char ch )
+{
+    uint32_t position = _cursorY * _columns + _cursorX;
+    uint64_t attributes =
+        _background | ( static_cast<uint64_t>( _foreground ) << 24 ) | ( static_cast<uint64_t>( _attributes ) << 48 );
+
+    _data[position].Character[0] = ( ch );
+    _data[position].Attributes   = attributes;
+
+    _cursorX += 1;
+
+    if( _cursorX > _columns )
+    {
+        _cursorX = 0;
+        _cursorY++;
+
+        _cursorY = std::min(_cursorY, _rows);
     }
 }

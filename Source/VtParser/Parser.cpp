@@ -2,6 +2,7 @@
 #include "States.h"
 
 #include <cstdint>
+#include <iomanip>
 #include <iostream>
 
 Vt100Parser::Vt100Parser()
@@ -242,47 +243,169 @@ void Vt100Parser::OnEvent( VtParserState state, uint8_t character, Action action
     _stateTransitions[(uint8_t)state][character] = state_transition_t{ transitionTo, action };
 }
 
-void Vt100Parser::Dispatch( Action action, char ch )
+void Vt100Parser::Dispatch( framebuffer_t &framebuffer, Action action, char ch )
 {
     switch( action )
     {
     case Action::print:
         // std::cout << "Action::print" << " " << ch << std::endl;
+        framebuffer.putc(ch);
         break;
     case Action::execute:
-        std::cout << "Action::execute"  << " " << ch <<  std::endl;
+#if 0
+        std::cout << "Action::execute:"
+                  << " "
+                  << "0x" << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint16_t)ch << std::endl;
+#endif
         break;
     case Action::hook:
-        std::cout << "Action::hook" << std::endl;
+        // std::cout << "Action::hook" << std::endl;
         break;
     case Action::put:
-        std::cout << "Action::put" << std::endl;
+        // std::cout << "Action::put" << std::endl;
         break;
     case Action::osc_start:
-        std::cout << "Action::osc_start" << std::endl;
+        // std::cout << "Action::osc_start"
+                  //   << " " << ch << std::endl;
+                //   << "0x" << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint16_t)ch << std::endl;
         break;
     case Action::osc_put:
-        std::cout << "Action::osc_put" << std::endl;
+        // std::cout << "Action::osc_put"
+                //   << " " << ch << std::endl;
+        //   << " "
+        //   << "0x" << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint16_t)ch << std::endl;
         break;
     case Action::osc_end:
-        std::cout << "Action::osc_end" << std::endl;
+        // std::cout << "Action::osc_end" //    << " " << ch << std::endl;
+                //   << " "
+                //   << "0x" << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint16_t)ch << std::endl;
         break;
     case Action::unhook:
-        std::cout << "Action::unhook" << std::endl;
+        // std::cout << "Action::unhook" << std::endl;
         break;
     case Action::csi_dispatch:
-        std::cout << "Action::csi_dispatch"  << " " << ch <<  std::endl;
+        // std::cout << "Action::csi_dispatch"
+        //           << " " << ch << std::dec << " "
+        //           << "parameters: {";
+        // for( int i = 0; i < num_params; i++ )
+        // {
+        //     std::cout << params[i];
+        //     if( i < num_params - 1 )
+        //         std::cout << ", ";
+        // }
+        // std::cout << "}" << std::endl;
+
+        {
+            switch( ch )
+            {
+            case 'H':
+                if( num_params == 0 )
+                    framebuffer.SetCursor( 0, 0 );
+                else
+                    framebuffer.SetCursor( params[0], params[1] );
+                break;
+            case 'f':
+                if( num_params != 0 )
+                    framebuffer.SetCursor( params[0], params[1] );
+                break;
+            case 'A':
+            {
+                uint32_t x, y;
+                framebuffer.Cursor( x, y );
+                y -= params[0];
+                y = std::max( 0u, y );
+                framebuffer.SetCursor( x, y );
+            }
+            break;
+            case 'B':
+            {
+                uint32_t x, y;
+                framebuffer.Cursor( x, y );
+                y += params[0];
+                y = std::min( framebuffer.Rows(), y );
+                framebuffer.SetCursor( x, y );
+            }
+            break;
+            case 'C':
+            {
+                uint32_t x, y;
+                framebuffer.Cursor( x, y );
+                x += params[0];
+                x = std::min( framebuffer.Columns(), y );
+                framebuffer.SetCursor( x, y );
+            }
+            break;
+            case 'D':
+            {
+                uint32_t x, y;
+                framebuffer.Cursor( x, y );
+                x -= params[0];
+                x = std::max( 0u, y );
+                framebuffer.SetCursor( x, y );
+            }
+            break;
+            case 'E':
+            {
+                uint32_t x, y;
+                framebuffer.Cursor( x, y );
+                y += params[0];
+                y = std::min( framebuffer.Rows(), y );
+                x = 0;
+                framebuffer.SetCursor( x, y );
+            }
+            break;
+            case 'F':
+            {
+                uint32_t x, y;
+                framebuffer.Cursor( x, y );
+                y += params[0];
+                y = std::min( framebuffer.Rows(), y );
+                x = 0;
+                framebuffer.SetCursor( x, y );
+            }
+            break;
+            case 'G':
+            {
+                uint32_t x, y;
+                framebuffer.Cursor( x, y );
+                x = params[0];
+                framebuffer.SetCursor( x, y );
+            }
+            break;
+            case 'n':
+                break;
+            case 'J':
+                Erase( framebuffer );
+                break;
+            case 'K':
+                break;
+            case 'm':
+                ProcessGraphicsMode( framebuffer );
+                break;
+            default:
+                break;
+            }
+        }
+
         break;
     case Action::esc_dispatch:
-        std::cout << "Action::esc_dispatch" << std::endl;
+        // std::cout << "Action::esc_dispatch" << std::endl;
         break;
     case Action::none:
-        std::cout << "Action::none" << std::endl;
+        // std::cout << "Action::none" << std::endl;
         break;
     }
 }
 
-void Vt100Parser::do_action( Action action, char ch )
+void Vt100Parser::ProcessGraphicsMode( framebuffer_t framebuffer )
+{
+}
+
+void Vt100Parser::Erase( framebuffer_t framebuffer )
+{
+}
+
+void Vt100Parser::do_action( framebuffer_t &framebuffer, Action action, char ch )
 {
     /* Some actions we handle internally (like parsing parameters), others
      * we hand to our client for processing */
@@ -300,7 +423,7 @@ void Vt100Parser::do_action( Action action, char ch )
     case Action::csi_dispatch:
     case Action::esc_dispatch:
         // cb( action, ch );
-        Dispatch( action, ch );
+        Dispatch( framebuffer, action, ch );
         break;
 
     case Action::ignore:
@@ -321,6 +444,7 @@ void Vt100Parser::do_action( Action action, char ch )
     case Action::param:
     {
         /* process the param character */
+
         if( ch == ';' )
         {
             num_params += 1;
@@ -352,12 +476,12 @@ void Vt100Parser::do_action( Action action, char ch )
         break;
 
     default:
-        Dispatch( Action::none, 0 );
+        Dispatch( framebuffer, Action::none, 0 );
         break;
     }
 }
 
-void Vt100Parser::do_state_change( VtParserState new_state, Action action, char ch )
+void Vt100Parser::do_state_change( framebuffer_t &framebuffer, VtParserState new_state, Action action, char ch )
 {
     /* A state change is an action and/or a new state to transition to. */
 
@@ -369,33 +493,33 @@ void Vt100Parser::do_state_change( VtParserState new_state, Action action, char 
          *   3. the entry action of the new state
          */
 
-        Action exit_action  = _entryActions[(int)state];
-        Action entry_action = _exitActions[(int)new_state];
+        Action exit_action  = _exitActions[(int)state];
+        Action entry_action = _entryActions[(int)new_state];
 
         if( exit_action != Action::none )
-            do_action( exit_action, 0 );
+            do_action( framebuffer, exit_action, 0 );
 
         if( action != Action::none )
-            do_action( action, ch );
+            do_action( framebuffer, action, ch );
 
         if( entry_action != Action::none )
-            do_action( entry_action, 0 );
+            do_action( framebuffer, entry_action, 0 );
 
         state = new_state;
     }
     else
     {
-        do_action( action, ch );
+        do_action( framebuffer, action, ch );
     }
 }
 
-void Vt100Parser::vtparse( unsigned char *data, int len )
+void Vt100Parser::vtparse( framebuffer_t &framebuffer, unsigned char *data, int len )
 {
     int i;
     for( i = 0; i < len; i++ )
     {
         unsigned char      ch     = data[i];
         state_transition_t change = _stateTransitions[(uint8_t)state][ch];
-        do_state_change( change.TransitionTo, change.Action, ch );
+        do_state_change( framebuffer, change.TransitionTo, change.Action, ch );
     }
 }

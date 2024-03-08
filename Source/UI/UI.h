@@ -28,6 +28,7 @@ class UI
     void Render();
     void Resize( uint32_t columns, uint32_t rows );
     void Start();
+    void Stop();
 
     void OnKeyPress( keycode_t const &keyCode, uint32_t modifiers );
 
@@ -67,6 +68,8 @@ class UI
     // bool _commandInputMode = false;
 
     framebuffer_t _framebuffer;
+    framebuffer_t _bgTerminalBuffer;
+    framebuffer_t _fgTerminalBuffer;
     // // std::shared_ptr<WorkspaceSelectorOverlay> _workspaceSelectorOverlay = nullptr;
     // // std::shared_ptr<TerminalSelectorOverlay>  _terminalSelectorOverlay  = nullptr;
 

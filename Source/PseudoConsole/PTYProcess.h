@@ -17,7 +17,7 @@
 class PTYProcess
 {
   public:
-    PTYProcess( string_t command, uint32_t columns, uint32_t lines );
+    PTYProcess( string_t command, framebuffer_t &framebuffer );
     ~PTYProcess();
 
     void WaitForCompletion( int32_t timeout = 0 );
@@ -45,4 +45,5 @@ class PTYProcess
     void PipeListener();
 
     Vt100Parser _parser;
+    framebuffer_t &_framebuffer;
 };
