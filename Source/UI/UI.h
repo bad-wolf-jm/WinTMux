@@ -7,9 +7,9 @@
 #include "Core/Modes.h"
 // #include "MainWindow/TerminalSelectorOverlay.h"
 // #include "MainWindow/WorkspaceSelectorOverlay.h"
-#include "Workspace.h"
 #include "Console/FrameBuffer.h"
 #include "Core/KeyCodes.Console.h"
+#include "Workspace.h"
 // #include "imgui.h"
 
 enum class eOverlayType
@@ -25,25 +25,25 @@ class UI
     UI();
 
     void Render();
-    void Resize(uint32_t columns, uint32_t rows);
+    void Resize( uint32_t columns, uint32_t rows );
 
     void OnKeyPress( keycode_t const &keyCode, uint32_t modifiers );
 
-    void ExecuteCurrentCommand();
-    void OpenWorkspace( string_t name );
-    void CloseWorkspace( string_t name );
+    // void ExecuteCurrentCommand();
+    // void OpenWorkspace( string_t name );
+    // void CloseWorkspace( string_t name );
 
-    Workspace &CurrentWorkspace();
+    // Workspace     &CurrentWorkspace();
     framebuffer_t &FrameBuffer();
     // void       SetFonts( ImFont *normalFont, ImFont *boldFont, ImFont *italicFont, ImFont *boldItalicFont );
 
   public:
     eInputMode Mode = eInputMode::Normal;
 
-  private:
-    void RenderHeader();
-    void RenderWorkspace();
-    void RenderCommandLine();
+//   private:
+    // void RenderHeader();
+    // void RenderWorkspace();
+    // void RenderCommandLine();
 
   private:
     // float _headerHeight      = 25.0f;
@@ -59,16 +59,19 @@ class UI
     // ImFont *_boldItalicFont = nullptr;
 
   public:
-    // std::shared_ptr<CommandLine>            _commandLine;
-    std::vector<std::shared_ptr<Workspace>> _workspaces;
+    // // std::shared_ptr<CommandLine>            _commandLine;
+    // std::vector<std::shared_ptr<Workspace>> _workspaces;
 
-    bool _commandInputMode = false;
+    // bool _commandInputMode = false;
 
     framebuffer_t _framebuffer;
-    // std::shared_ptr<WorkspaceSelectorOverlay> _workspaceSelectorOverlay = nullptr;
-    // std::shared_ptr<TerminalSelectorOverlay>  _terminalSelectorOverlay  = nullptr;
+    // // std::shared_ptr<WorkspaceSelectorOverlay> _workspaceSelectorOverlay = nullptr;
+    // // std::shared_ptr<TerminalSelectorOverlay>  _terminalSelectorOverlay  = nullptr;
 
-    // std::shared_ptr<IOverlay> _displayedOverlay = nullptr;
-    eOverlayType _displayedOverlay = eOverlayType::NONE;
-    int          _currentWorkspace = -1;
+    // // std::shared_ptr<IOverlay> _displayedOverlay = nullptr;
+    // eOverlayType _displayedOverlay = eOverlayType::NONE;
+    // int          _currentWorkspace = -1;
+
+    std::shared_ptr<Terminal> _bgTerminal = nullptr;
+    std::shared_ptr<Terminal> _fgTerminal = nullptr;
 };
