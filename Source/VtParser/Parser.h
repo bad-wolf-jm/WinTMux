@@ -12,10 +12,20 @@ struct Range
     uint8_t End;
 };
 
+struct state_transition_t
+{
+    VtParserState TransitionTo{VtParserState::none};
+    Action Action{Action::none};
+};
+
+constexpr int MAX_INTERMEDIATE_CHARS = 2;
+
 class Vt100Parser
 {
   public:
     Vt100Parser();
+
+    void vtparse( unsigned char *data, int len );
 
   private:
     void OnEvent( Range range, Action action );
@@ -38,8 +48,19 @@ class Vt100Parser
     void OnExit( VtParserState state, Action action );
 
   private:
-    uint16_t _stateTransitions[(size_t)VtParserState::count][std::numeric_limits<uint8_t>::max()];
+    state_transition_t _stateTransitions[(size_t)VtParserState::count][std::numeric_limits<uint8_t>::max()];
 
     Action _entryActions[(size_t)VtParserState::count] = { Action::none };
     Action _exitActions[(size_t)VtParserState::count]  = { Action::none };
+    void   do_action( Action action, char ch );
+    void   do_state_change( VtParserState newState, Action action, char ch );
+
+    VtParserState    state;
+    vtparse_callback_t cb;
+    unsigned char      intermediate_chars[MAX_INTERMEDIATE_CHARS + 1];
+    int                num_intermediate_chars;
+    char               ignore_flagged;
+    int                params[16];
+    int                num_params;
+    void              *user_data;
 };

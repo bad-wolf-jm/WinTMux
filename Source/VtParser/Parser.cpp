@@ -5,6 +5,12 @@
 
 Vt100Parser::Vt100Parser()
 {
+    state                  = VTPARSE_STATE_GROUND;
+    num_intermediate_chars = 0;
+    num_params             = 0;
+    ignore_flagged         = 0;
+    cb                     = cb;
+
     // Anywhere transitions
     OnEvent( 0x18, Action::execute, VtParserState::ground );
     OnEvent( 0x1a, Action::execute, VtParserState::ground );
@@ -232,7 +238,121 @@ void Vt100Parser::OnEvent( VtParserState state, uint8_t character, VtParserState
 
 void Vt100Parser::OnEvent( VtParserState state, uint8_t character, Action action, VtParserState transitionTo )
 {
-    uint16_t transition = ( (uint8_t)action << 8 ) + ( (uint8_t)transitionTo );
+    _stateTransitions[(uint8_t)state][character] = state_transition_t{transitionTo, action};
+}
 
-    _stateTransitions[(uint8_t)transition][character] = transition;
+void Vt100Parser::do_action( Action action, char ch )
+{
+    /* Some actions we handle internally (like parsing parameters), others
+     * we hand to our client for processing */
+
+    switch( action )
+    {
+    case Action::print:
+    case Action::execute:
+    case Action::hook:
+    case Action::put:
+    case Action::osc_start:
+    case Action::osc_put:
+    case Action::osc_end:
+    case Action::unhook:
+    case Action::csi_dispatch:
+    case Action::esc_dispatch:
+        cb( action, ch );
+        break;
+
+    case Action::ignore:
+        /* do nothing */
+        break;
+
+    case Action::collect:
+    {
+        /* Append the character to the intermediate params */
+        if( num_intermediate_chars + 1 > MAX_INTERMEDIATE_CHARS )
+            ignore_flagged = 1;
+        else
+            intermediate_chars[num_intermediate_chars++] = ch;
+
+        break;
+    }
+
+    case Action::param:
+    {
+        /* process the param character */
+        if( ch == ';' )
+        {
+            num_params += 1;
+            params[num_params - 1] = 0;
+        }
+        else
+        {
+            /* the character is a digit */
+            int current_param;
+
+            if( num_params == 0 )
+            {
+                num_params = 1;
+                params[0]  = 0;
+            }
+
+            current_param = num_params - 1;
+            params[current_param] *= 10;
+            params[current_param] += ( ch - '0' );
+        }
+
+        break;
+    }
+
+    case Action::clear:
+        num_intermediate_chars = 0;
+        num_params             = 0;
+        ignore_flagged         = 0;
+        break;
+
+    default:
+        cb( parser, Action::error, 0 );
+    }
+}
+
+void Vt100Parser::do_state_change( VtParserState new_state, Action action, char ch )
+{
+    /* A state change is an action and/or a new state to transition to. */
+
+    if( new_state != VtParserState::none )
+    {
+        /* Perform up to three actions:
+         *   1. the exit action of the old state
+         *   2. the action associated with the transition
+         *   3. the entry action of the new state
+         */
+
+        Action exit_action  = _entryActions[(int)state];
+        Action entry_action = _exitActions[(int)new_state];
+
+        if( exit_action != Action::none )
+            do_action( exit_action, 0 );
+
+        if( action != Action::none )
+            do_action( action, ch );
+
+        if( entry_action != Action::none )
+            do_action( entry_action, 0 );
+
+        state = new_state;
+    }
+    else
+    {
+        do_action( action, ch );
+    }
+}
+
+void Vt100Parser::vtparse( unsigned char *data, int len )
+{
+    int i;
+    for( i = 0; i < len; i++ )
+    {
+        unsigned char  ch     = data[i];
+        state_transition_t change = _stateTransitions[(uint8_t)state][ch];
+        do_state_change( change.TransitionTo, change.Action, ch );
+    }
 }
