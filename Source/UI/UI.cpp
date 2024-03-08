@@ -59,6 +59,17 @@ framebuffer_t &UI::FrameBuffer()
 
 void UI::OnKeyPress( keycode_t const &keyCode, uint32_t modifiers )
 {
+    if( _displayTerminal && keyCode.KeyCode == keycode::ESCAPE )
+    {
+        _displayTerminal = false;
+        return;
+    }
+
+    if( !_displayTerminal && ( keyCode.KeyCode == keycode::GRAVE_ACCENT ) && ( modifiers & ( 1 << (uint32_t)modifiers::CTRL ) ) )
+    {
+        _displayTerminal = true;
+        return;
+    }
     // // Dismiss the overlay on pressing ENTER, if any
     // if( _displayedOverlay != eOverlayType::NONE && keyCode.KeyCode == keycode::ENTER )
     // {
@@ -131,6 +142,7 @@ void UI::OnKeyPress( keycode_t const &keyCode, uint32_t modifiers )
 void UI::Render()
 {
     // ImGui::NewFrame();
+    _bgTerminal->PipeListener();
 
     // _windowSize = ImGui::GetIO().DisplaySize;
 
@@ -138,9 +150,31 @@ void UI::Render()
     // ImGui::PushStyleVar( ImGuiStyleVar_WindowPadding, ImVec2( 0, 0 ) );
     _framebuffer.BeginFrame();
     std::copy( _bgTerminalBuffer.DataNC().begin(), _bgTerminalBuffer.DataNC().end(), _framebuffer.DataNC().begin() );
-    // RenderHeader();
-    // RenderWorkspace();
-    // RenderCommandLine();
+
+    if( _displayTerminal )
+    {
+        int32_t terminalWidth  = static_cast<int32_t>( _framebuffer.Columns() * 0.75f );
+        int32_t remainingWidth = _framebuffer.Columns() - terminalWidth;
+        if( ( remainingWidth % 2 ) != 0 )
+        {
+            terminalWidth++;
+            remainingWidth--;
+        }
+
+        int32_t terminalHeight  = static_cast<int32_t>( _framebuffer.Rows() * 0.95f );
+        int32_t remainingHeight = _framebuffer.Rows() - terminalHeight;
+        if( ( remainingHeight % 2 ) != 0 )
+        {
+            terminalHeight++;
+            remainingHeight--;
+        }
+
+        _framebuffer.SetForeground( 200, 200, 200 );
+        _framebuffer.SetBackground( 75, 75, 75 );
+        _framebuffer.DrawRect( remainingWidth / 2, remainingHeight / 2, terminalWidth, terminalHeight, u8"\u256D", u8"\u2500",
+                               u8"\u256E", u8"\u2502", u8"\u256F", u8"\u2500", u8"\u2570", u8"\u2502" );
+    }
+
     _framebuffer.EndFrame();
     // if( _displayedOverlay != eOverlayType::NONE )
     // {
@@ -181,28 +215,28 @@ void UI::Render()
     // ImGui::Render();
 }
 
-// void UI::RenderHeader()
-// {
-//     _framebuffer.SetForeground( 200, 200, 200 );
-//     _framebuffer.SetBackground( 75, 75, 75 );
+void UI::RenderHeader()
+{
+    _framebuffer.SetForeground( 200, 200, 200 );
+    _framebuffer.SetBackground( 75, 75, 75 );
 
-//     auto line = fmt::sprintf( " WORKSPACE %d (%s)", _currentWorkspace + 1, _workspaces[_currentWorkspace]->Name().c_str() );
-//     _framebuffer.TextLine( 0, 0, line );
+    // auto line = fmt::sprintf( " WORKSPACE %d (%s)", _currentWorkspace + 1, _workspaces[_currentWorkspace]->Name().c_str() );
+    // _framebuffer.TextLine( 0, 0, line );
 
-//     // ImGui::SetNextWindowPos( ImVec2( 0.0f, 0.0f ) );
-//     // ImGui::SetNextWindowSize( ImVec2( _windowSize.x, _headerHeight ) );
-//     // ImGui::Begin( "##1", &_windowIsOpen,
-//     //               ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |
-//     ImGuiWindowFlags_NoScrollbar
-//     //               );
-//     // {
-//     //     float posX = 5.0;
-//     //     float posY = ( _headerHeight - _fontSize ) * 0.5f;
-//     //     ImGui::SetCursorPos( ImVec2{ posX, posY } );
-//     //     ImGui::Text( "WORKSPACE %d (%s)", _currentWorkspace + 1, _workspaces[_currentWorkspace]->Name().c_str() );
-//     // }
-//     // ImGui::End();
-// }
+    // ImGui::SetNextWindowPos( ImVec2( 0.0f, 0.0f ) );
+    // ImGui::SetNextWindowSize( ImVec2( _windowSize.x, _headerHeight ) );
+    // ImGui::Begin( "##1", &_windowIsOpen,
+    //               ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |
+    // ImGuiWindowFlags_NoScrollbar
+    //               );
+    // {
+    //     float posX = 5.0;
+    //     float posY = ( _headerHeight - _fontSize ) * 0.5f;
+    //     ImGui::SetCursorPos( ImVec2{ posX, posY } );
+    //     ImGui::Text( "WORKSPACE %d (%s)", _currentWorkspace + 1, _workspaces[_currentWorkspace]->Name().c_str() );
+    // }
+    // ImGui::End();
+}
 
 // void UI::RenderWorkspace()
 // {

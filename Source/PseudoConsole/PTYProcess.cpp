@@ -5,9 +5,12 @@
 PTYProcess::PTYProcess( string_t command, framebuffer_t &framebuffer )
     : _columns{ framebuffer.Columns() }
     , _lines{ framebuffer.Rows() }
-    , _framebuffer{framebuffer}
+    , _framebuffer{ framebuffer }
     , _command{ command }
 {
+
+    std::cout << _columns <<  " " << _lines << std::endl;
+
     _startupInfo.StartupInfo.cb = sizeof( STARTUPINFOEXA );
 
     CreateConsole( _columns, _lines );
@@ -142,27 +145,33 @@ bool PTYProcess::CreatePipes( HANDLE &consoleStdIn, HANDLE &consoleStdOut )
 void __cdecl PTYProcess::PipeListener()
 {
     HANDLE hPipe{ _consoleStdOut };
-    HANDLE hConsole{ GetStdHandle( STD_OUTPUT_HANDLE ) };
+    // HANDLE hConsole{ GetStdHandle( STD_OUTPUT_HANDLE ) };
 
     const DWORD BUFF_SIZE{ 512 };
     char        szBuffer[BUFF_SIZE]{};
 
-    DWORD dwBytesWritten{};
+    // DWORD dwBytesWritten{};
     DWORD dwBytesRead{};
     BOOL  fRead{ FALSE };
-    do
-    {
-        // Read from the pipe
-        fRead = ReadFile( hPipe, szBuffer, BUFF_SIZE, &dwBytesRead, NULL );
-        
-        _parser.vtparse(_framebuffer, (unsigned char*)szBuffer, dwBytesRead);
 
-        // Write received text to the Console
-        // Note: Write to the Console using WriteFile(hConsole...), not
-        // printf()/puts() to prevent partially-read VT sequences from corrupting
-        // output
-        // WriteFile( hConsole, szBuffer, dwBytesRead, &dwBytesWritten, NULL );
-        // std::cout << dwBytesRead << std::endl;
+    PeekNamedPipe( hPipe, NULL, 0, NULL, &dwBytesRead, NULL );
 
-    } while( _processIsActive && fRead && dwBytesRead >= 0 );
+    if( dwBytesRead == 0 )
+        return;
+
+    // do
+    // {
+    // Read from the pipe
+    fRead = ReadFile( hPipe, szBuffer, BUFF_SIZE, &dwBytesRead, NULL );
+
+    _parser.vtparse( _framebuffer, (unsigned char *)szBuffer, dwBytesRead );
+    //  _framebuffer.EndFrame();
+    // Write received text to the Console
+    // Note: Write to the Console using WriteFile(hConsole...), not
+    // printf()/puts() to prevent partially-read VT sequences from corrupting
+    // output
+    // WriteFile( hConsole, szBuffer, dwBytesRead, &dwBytesWritten, NULL );
+    // std::cout << dwBytesRead << std::endl;
+
+    // } while( _processIsActive && fRead && dwBytesRead >= 0 );
 }

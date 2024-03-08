@@ -43,12 +43,13 @@ class UI
   public:
     eInputMode Mode = eInputMode::Normal;
 
-//   private:
-    // void RenderHeader();
+    //   private:
+    void RenderHeader();
     // void RenderWorkspace();
     // void RenderCommandLine();
 
   private:
+    bool _displayTerminal = false;
     // float _headerHeight      = 25.0f;
     // float _commandLineHeight = 25.0f;
     // bool  _windowIsOpen      = true;

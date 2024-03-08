@@ -1,5 +1,6 @@
 #include "FrameBuffer.h"
 #include "Core/Glyph.h"
+#include <iostream>
 
 uint32_t character_range_t::Foreground() const
 {
@@ -48,6 +49,7 @@ void framebuffer_t::Resize( uint32_t rows, uint32_t columns )
 
 void framebuffer_t::SetCursor( uint32_t x, uint32_t y )
 {
+    // std::cout << "SetCursor( " << x << ", " << y << " )" << std::endl;
     _cursorX = x;
     _cursorY = y;
 }
@@ -133,20 +135,25 @@ void framebuffer_t::SetTextAttributes( bool bold, bool italic, bool underline, b
 void framebuffer_t::SetBackground( uint8_t r, uint8_t g, uint8_t b )
 {
     _background = r << 16 | g << 8 | b;
+    _attributes &= ~( (uint16_t)CharacterAttribute::DEFAULT_BG );
 }
 
 void framebuffer_t::SetForeground( uint8_t r, uint8_t g, uint8_t b )
 {
     _foreground = r << 16 | g << 8 | b;
+    _attributes &= ~( (uint16_t)CharacterAttribute::DEFAULT_FG );
 }
 
 void framebuffer_t::HLine( uint32_t y, uint32_t x0, uint32_t x1, string_t c0, string_t c1, string_t cFill )
 {
     uint32_t position;
+    uint64_t attributes =
+        _background | ( static_cast<uint64_t>( _foreground ) << 24 ) | ( static_cast<uint64_t>( _attributes ) << 48 );
 
     position = y * _columns + x0;
     memcpy( _data[position].Character, c0.c_str(), c0.size() );
     _data[position].CharacterSize = c0.size();
+    _data[position].Attributes    = attributes;
 
     int w = x1 - x0;
     for( int c = 1; c < w - 1; c++ )
@@ -154,19 +161,25 @@ void framebuffer_t::HLine( uint32_t y, uint32_t x0, uint32_t x1, string_t c0, st
         position = y * _columns + ( x0 + c );
         memcpy( _data[position].Character, cFill.c_str(), cFill.size() );
         _data[position].CharacterSize = cFill.size();
+        _data[position].Attributes    = attributes;
     }
     position = y * _columns + ( x1 - 1 );
     memcpy( _data[position].Character, c1.c_str(), c1.size() );
     _data[position].CharacterSize = c1.size();
+    _data[position].Attributes    = attributes;
 }
 
 void framebuffer_t::VLine( uint32_t x, uint32_t y0, uint32_t y1, string_t c0, string_t c1, string_t cFill )
 {
+    uint64_t attributes =
+        _background | ( static_cast<uint64_t>( _foreground ) << 24 ) | ( static_cast<uint64_t>( _attributes ) << 48 );
+
     uint32_t position;
 
     position = y0 * _columns + x;
     memcpy( _data[position].Character, c0.c_str(), c0.size() );
     _data[position].CharacterSize = c0.size();
+    _data[position].Attributes    = attributes;
 
     int h = y1 - y0;
     for( int c = 1; c < h - 1; c++ )
@@ -174,11 +187,13 @@ void framebuffer_t::VLine( uint32_t x, uint32_t y0, uint32_t y1, string_t c0, st
         position = ( y0 + c ) * _columns + x;
         memcpy( _data[position].Character, cFill.c_str(), cFill.size() );
         _data[position].CharacterSize = cFill.size();
+        _data[position].Attributes    = attributes;
     }
 
     position = ( y1 - 1 ) * _columns + x;
     memcpy( _data[position].Character, c1.c_str(), c1.size() );
     _data[position].CharacterSize = c1.size();
+    _data[position].Attributes    = attributes;
 }
 
 void framebuffer_t::DrawRect( uint32_t x, uint32_t y, uint32_t w, uint32_t h, string_t tl, string_t t, string_t tr, string_t r,
@@ -209,6 +224,7 @@ void framebuffer_t::DrawRect( uint32_t x, uint32_t y, uint32_t w, uint32_t h, st
 
             _data[position].Character[0]  = ' ';
             _data[position].CharacterSize = 1;
+            _data[position].Attributes    = attributes;
         }
     }
 }
@@ -232,20 +248,47 @@ void framebuffer_t::TextLine( uint32_t x, uint32_t y, string_t text )
 
 void framebuffer_t::putc( char ch )
 {
+    // std::cout << ch;
+    // std::cout << "putc( " << std::hex << (uint32_t)ch << std::dec << " " << _cursorX << ", " << _cursorY << "   "
+    //           << "w=" << _columns << " "
+    //           << "h=" << _rows << " )" << std::endl;
     uint32_t position = _cursorY * _columns + _cursorX;
+    // _attributes       = CharacterAttribute::DEFAULT_BG | CharacterAttribute::DEFAULT_FG;
     uint64_t attributes =
         _background | ( static_cast<uint64_t>( _foreground ) << 24 ) | ( static_cast<uint64_t>( _attributes ) << 48 );
 
     _data[position].Character[0] = ( ch );
-    _data[position].Attributes   = attributes;
+    // if( ch == '\r' )
+    // {
+    //     _cursorX = 0;
+    //     _cursorY++;
+
+    //     _cursorY = std::min( _cursorY, _rows - 1);
+    // }
+    _data[position].Attributes = attributes;
+    // _data[position].Attributes   = ;
 
     _cursorX += 1;
 
-    if( _cursorX > _columns )
+    if( _cursorX >= _columns )
     {
         _cursorX = 0;
         _cursorY++;
 
-        _cursorY = std::min(_cursorY, _rows);
+        _cursorY = std::min( _cursorY, _rows - 1 );
+    }
+}
+
+void framebuffer_t::ClearCurrentLine()
+{
+    uint32_t startPos            = _cursorY * _columns;
+    uint32_t endPos              = startPos + _columns;
+    uint64_t characterAttributes = CharacterAttribute::DEFAULT_BG | CharacterAttribute::DEFAULT_FG;
+
+    for( uint32_t i = startPos; i < endPos; i++ )
+    {
+        _data[i].Character[0]  = ' ';
+        _data[i].CharacterSize = 1;
+        _data[i].Attributes    = characterAttributes << 48;
     }
 }

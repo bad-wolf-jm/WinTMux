@@ -21,6 +21,7 @@ class PTYProcess
     ~PTYProcess();
 
     void WaitForCompletion( int32_t timeout = 0 );
+    void PipeListener();
 
   private:
     string_t _command = "";
@@ -38,11 +39,11 @@ class PTYProcess
     bool        _processIsActive = true;
     std::thread _pipeListenerThread;
 
+    
   private:
     void StartProcess();
     void CreateConsole( int16_t columns, int16_t lines );
     bool CreatePipes( HANDLE &consoleStdIn, HANDLE &consoleStdOut );
-    void PipeListener();
 
     Vt100Parser _parser;
     framebuffer_t &_framebuffer;

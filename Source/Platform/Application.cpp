@@ -8,16 +8,21 @@ Application::Application()
     _stdin.OnKeyPress = [&]( keycode_t const &keycode, uint32_t modifiers )
     {
         if( keycode.KeyCode == keycode::Q )
+        {
             _shouldExit = true;
+            return;
+        }
+
+        _ui.OnKeyPress( keycode, modifiers );
     };
 
     _stdin.OnConsoleResize = [&]( uint32_t columns, uint32_t rows )
     {
         // Resize the UI
-        _ui.Resize( rows, columns );
+        _ui.Resize( columns, rows );
     };
 
-    _ui.Resize( _stdout.Rows(), _stdout.Columns() );
+    _ui.Resize( _stdout.Columns(), _stdout.Rows() );
     _ui.Start();
 }
 

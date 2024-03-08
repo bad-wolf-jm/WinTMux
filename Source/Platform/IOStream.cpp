@@ -200,6 +200,7 @@ void stdout_t::write( uint32_t attributes, uint32_t bg, uint32_t fg, std::vector
         write( "\x1B[9m" );
 
     write( begin, end );
+    write( "\x1b[0m" );
 }
 
 void stdout_t::write( character_range_t const &range, std::vector<Glyph> const &buffer )
@@ -220,7 +221,7 @@ void stdout_t::write( framebuffer_t const &frameBuffer )
     auto const &buffer = frameBuffer.Data();
     for( auto const &line : lines )
     {
-        write( "\x1b[0m" ); // reset colors for this line
+         // reset colors for this line
 
         for( auto const &range : line )
             write( range, buffer );

@@ -249,7 +249,7 @@ void Vt100Parser::Dispatch( framebuffer_t &framebuffer, Action action, char ch )
     {
     case Action::print:
         // std::cout << "Action::print" << " " << ch << std::endl;
-        framebuffer.putc(ch);
+        framebuffer.putc( ch );
         break;
     case Action::execute:
 #if 0
@@ -266,133 +266,176 @@ void Vt100Parser::Dispatch( framebuffer_t &framebuffer, Action action, char ch )
         break;
     case Action::osc_start:
         // std::cout << "Action::osc_start"
-                  //   << " " << ch << std::endl;
-                //   << "0x" << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint16_t)ch << std::endl;
+        //   << " " << ch << std::endl;
+        //   << "0x" << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint16_t)ch << std::endl;
         break;
     case Action::osc_put:
         // std::cout << "Action::osc_put"
-                //   << " " << ch << std::endl;
+        //   << " " << ch << std::endl;
         //   << " "
         //   << "0x" << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint16_t)ch << std::endl;
         break;
     case Action::osc_end:
         // std::cout << "Action::osc_end" //    << " " << ch << std::endl;
-                //   << " "
-                //   << "0x" << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint16_t)ch << std::endl;
+        //   << " "
+        //   << "0x" << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint16_t)ch << std::endl;
         break;
     case Action::unhook:
-        // std::cout << "Action::unhook" << std::endl;
         break;
     case Action::csi_dispatch:
-        // std::cout << "Action::csi_dispatch"
-        //           << " " << ch << std::dec << " "
-        //           << "parameters: {";
-        // for( int i = 0; i < num_params; i++ )
-        // {
-        //     std::cout << params[i];
-        //     if( i < num_params - 1 )
-        //         std::cout << ", ";
-        // }
-        // std::cout << "}" << std::endl;
-
+    {
+        switch( ch )
         {
-            switch( ch )
+        case 'H':
+            if( num_params == 0 )
+                framebuffer.SetCursor( 0, 0 );
+            else
             {
-            case 'H':
-                if( num_params == 0 )
-                    framebuffer.SetCursor( 0, 0 );
-                else
-                    framebuffer.SetCursor( params[0], params[1] );
+                std::cout << ch << " " << num_params << " " << params[0] << " " << params[1] << std::endl;
+
+                framebuffer.SetCursor( params[0], params[1] );
+            }
+            break;
+        case 'f':
+            std::cout << ch << " " << num_params << " " << params[0] << " " << params[1] << std::endl;
+            if( num_params != 0 )
+                framebuffer.SetCursor( params[0], params[1] );
+            break;
+        case 'A':
+        {
+            std::cout << ch << " " << num_params << " " << params[0] << " " << params[1] << std::endl;
+            uint32_t x, y;
+            framebuffer.Cursor( x, y );
+            y -= params[0];
+            y = std::max( 0u, y );
+            framebuffer.SetCursor( x, y );
+        }
+        break;
+        case 'B':
+        {
+            std::cout << ch << " " << num_params << " " << params[0] << " " << params[1] << std::endl;
+            uint32_t x, y;
+            framebuffer.Cursor( x, y );
+            y += params[0];
+            y = std::min( framebuffer.Rows() - 1, y );
+            framebuffer.SetCursor( x, y );
+        }
+        break;
+        case 'C':
+        {
+            std::cout << ch << " " << num_params << " " << params[0] << " " << params[1] << " " << framebuffer.Columns() << std::endl;
+            uint32_t x, y;
+            framebuffer.Cursor( x, y );
+            x += params[0];
+            x = std::min( framebuffer.Columns() - 1, x );
+            framebuffer.SetCursor( x, y );
+        }
+        break;
+        case 'D':
+        {
+            std::cout << ch << " " << num_params << " " << params[0] << " " << params[1] << std::endl;
+            uint32_t x, y;
+            framebuffer.Cursor( x, y );
+            x -= params[0];
+            x = std::max( 0u, x );
+            framebuffer.SetCursor( x, y );
+        }
+        break;
+        case 'E':
+        {
+            std::cout << ch << " " << num_params << " " << params[0] << " " << params[1] << std::endl;
+            uint32_t x, y;
+            framebuffer.Cursor( x, y );
+            y += params[0];
+            y = std::min( framebuffer.Rows() - 1, y );
+            x = 0;
+            framebuffer.SetCursor( x, y );
+        }
+        break;
+        case 'F':
+        {
+            std::cout << ch << " " << num_params << " " << params[0] << " " << params[1] << std::endl;
+            uint32_t x, y;
+            framebuffer.Cursor( x, y );
+            y += params[0];
+            y = std::min( framebuffer.Rows() - 1, y );
+            x = 0;
+            framebuffer.SetCursor( x, y );
+        }
+        break;
+        case 'G':
+        {
+            std::cout << ch << " " << num_params << " " << params[0] << " " << params[1] << std::endl;
+            uint32_t x, y;
+            framebuffer.Cursor( x, y );
+            x = params[0];
+            framebuffer.SetCursor( x, y );
+        }
+        break;
+        case 'n':
+            std::cout << ch << " " << num_params << " " << params[0] << " " << params[1] << std::endl;
+            break;
+        case 'J':
+        {
+            std::cout << ch << " " << num_params << " " << params[0] << " " << params[1] << std::endl;
+            if( num_params == 0 )
+            {
+                framebuffer.BeginFrame();
+                framebuffer.SetCursor( 0, 0 );
                 break;
-            case 'f':
-                if( num_params != 0 )
-                    framebuffer.SetCursor( params[0], params[1] );
+            }
+            switch( params[0] )
+            {
+            case 1:
                 break;
-            case 'A':
-            {
-                uint32_t x, y;
-                framebuffer.Cursor( x, y );
-                y -= params[0];
-                y = std::max( 0u, y );
-                framebuffer.SetCursor( x, y );
-            }
-            break;
-            case 'B':
-            {
-                uint32_t x, y;
-                framebuffer.Cursor( x, y );
-                y += params[0];
-                y = std::min( framebuffer.Rows(), y );
-                framebuffer.SetCursor( x, y );
-            }
-            break;
-            case 'C':
-            {
-                uint32_t x, y;
-                framebuffer.Cursor( x, y );
-                x += params[0];
-                x = std::min( framebuffer.Columns(), y );
-                framebuffer.SetCursor( x, y );
-            }
-            break;
-            case 'D':
-            {
-                uint32_t x, y;
-                framebuffer.Cursor( x, y );
-                x -= params[0];
-                x = std::max( 0u, y );
-                framebuffer.SetCursor( x, y );
-            }
-            break;
-            case 'E':
-            {
-                uint32_t x, y;
-                framebuffer.Cursor( x, y );
-                y += params[0];
-                y = std::min( framebuffer.Rows(), y );
-                x = 0;
-                framebuffer.SetCursor( x, y );
-            }
-            break;
-            case 'F':
-            {
-                uint32_t x, y;
-                framebuffer.Cursor( x, y );
-                y += params[0];
-                y = std::min( framebuffer.Rows(), y );
-                x = 0;
-                framebuffer.SetCursor( x, y );
-            }
-            break;
-            case 'G':
-            {
-                uint32_t x, y;
-                framebuffer.Cursor( x, y );
-                x = params[0];
-                framebuffer.SetCursor( x, y );
-            }
-            break;
-            case 'n':
+            case 0:
                 break;
-            case 'J':
-                Erase( framebuffer );
-                break;
-            case 'K':
-                break;
-            case 'm':
-                ProcessGraphicsMode( framebuffer );
-                break;
+            case 2:
+                framebuffer.BeginFrame();
+                framebuffer.SetCursor( 0, 0 );
             default:
                 break;
             }
         }
-
         break;
+        case 'K':
+        {
+            if( num_params == 0 )
+            {
+                framebuffer.ClearCurrentLine();
+                break;
+            }
+
+            std::cout << ch << " " << num_params << " " << params[0] << " " << params[1] << std::endl;
+            switch( params[0] )
+            {
+            case 1:
+                break;
+            case 2:
+                break;
+            case 0:
+                framebuffer.ClearCurrentLine();
+            default:
+                break;
+            }
+        }
+        // std::cout << ch << " " << num_params << " " << params[0] << " " << params[1] << std::endl;
+        break;
+        case 'm':
+            std::cout << ch << " " << num_params << " " << params[0] << " " << params[1] << std::endl;
+            ProcessGraphicsMode( framebuffer );
+            break;
+        default:
+            break;
+        }
+    }
+
+    break;
     case Action::esc_dispatch:
-        // std::cout << "Action::esc_dispatch" << std::endl;
+        std::cout << "Action::esc_dispatch" << std::endl;
         break;
     case Action::none:
-        // std::cout << "Action::none" << std::endl;
+        std::cout << "Action::none" << std::endl;
         break;
     }
 }

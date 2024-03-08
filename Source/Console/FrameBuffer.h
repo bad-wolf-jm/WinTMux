@@ -32,6 +32,7 @@ class framebuffer_t
     void EndFrame();
 
     void putc( char ch );
+    void ClearCurrentLine();
 
     void SetTextAttributes( bool bold, bool italic, bool underline, bool strikeThrough, bool faint );
     void SetBackground( uint8_t r, uint8_t g, uint8_t b );
