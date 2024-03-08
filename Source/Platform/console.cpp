@@ -4,7 +4,7 @@
 #include <ostream>
 
 // console_t::console_t( string_t command, uint32_t columns, uint32_t lines )
-console_t::console_t( command, uint32_t columns, uint32_t lines )
+console_t::console_t( uint32_t columns, uint32_t lines )
 //     : _columns{ columns }
 //     , _lines{ lines }
 //     , _command{ command }
@@ -116,27 +116,27 @@ console_t::~console_t()
 //     _pipeListenerThread.join();
 // }
 
-void console_t::CreateConsole( int16_t columns, int16_t lines )
-{
-    HANDLE consoleStdIn{ INVALID_HANDLE_VALUE };
-    HANDLE consoleStdOut{ INVALID_HANDLE_VALUE };
-
-    CreatePipes( consoleStdIn, consoleStdOut );
-    COORD consoleSize{ columns, lines };
-
-    // Create the Pseudo Console of the required size, attached to the PTY-end
-    // of the pipes
-    HRESULT hr = CreatePseudoConsole( consoleSize, consoleStdIn, consoleStdOut, 0, &_console );
-
-    // Note: We can close the handles to the PTY-end of the pipes here
-    // because the handles are dup'ed into the ConHost and will be released
-    // when the ConPTY is destroyed.
-    if( INVALID_HANDLE_VALUE != consoleStdOut )
-        CloseHandle( consoleStdOut );
-
-    if( INVALID_HANDLE_VALUE != consoleStdIn )
-        CloseHandle( consoleStdIn );
-}
+// void console_t::CreateConsole( int16_t columns, int16_t lines )
+// {
+//     HANDLE consoleStdIn{ INVALID_HANDLE_VALUE };
+//     HANDLE consoleStdOut{ INVALID_HANDLE_VALUE };
+//
+//     CreatePipes( consoleStdIn, consoleStdOut );
+//     COORD consoleSize{ columns, lines };
+//
+//     // Create the Pseudo Console of the required size, attached to the PTY-end
+//     // of the pipes
+//     HRESULT hr = CreatePseudoConsole( consoleSize, consoleStdIn, consoleStdOut, 0, &_console );
+//
+//     // Note: We can close the handles to the PTY-end of the pipes here
+//     // because the handles are dup'ed into the ConHost and will be released
+//     // when the ConPTY is destroyed.
+//     if( INVALID_HANDLE_VALUE != consoleStdOut )
+//         CloseHandle( consoleStdOut );
+//
+//     if( INVALID_HANDLE_VALUE != consoleStdIn )
+//         CloseHandle( consoleStdIn );
+// }
 
 // void console_t::StartProcess()
 // {
