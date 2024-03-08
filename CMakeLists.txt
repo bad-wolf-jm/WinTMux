@@ -174,6 +174,7 @@ include_directories(
     #)
 
 add_compile_definitions(NOMINMAX)
+add_compile_definitions(_SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS)
 #add_compile_definitions(ZEP_FEATURE_CPP_FILE_SYSTEM=1)
 
 

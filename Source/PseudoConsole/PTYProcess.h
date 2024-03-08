@@ -12,6 +12,7 @@
 #include <winbase.h>
 
 #include "Core/String.h"
+#include "VtParser/Parser.h"
 
 class PTYProcess
 {
@@ -42,4 +43,6 @@ class PTYProcess
     void CreateConsole( int16_t columns, int16_t lines );
     bool CreatePipes( HANDLE &consoleStdIn, HANDLE &consoleStdOut );
     void PipeListener();
+
+    Vt100Parser _parser;
 };

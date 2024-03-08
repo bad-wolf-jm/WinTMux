@@ -154,12 +154,14 @@ void __cdecl PTYProcess::PipeListener()
         // Read from the pipe
         fRead = ReadFile( hPipe, szBuffer, BUFF_SIZE, &dwBytesRead, NULL );
 
+        _parser.vtparse((unsigned char*)szBuffer, dwBytesRead);
+
         // Write received text to the Console
         // Note: Write to the Console using WriteFile(hConsole...), not
         // printf()/puts() to prevent partially-read VT sequences from corrupting
         // output
-        WriteFile( hConsole, szBuffer, dwBytesRead, &dwBytesWritten, NULL );
-        std::cout << dwBytesRead << std::endl;
+        // WriteFile( hConsole, szBuffer, dwBytesRead, &dwBytesWritten, NULL );
+        // std::cout << dwBytesRead << std::endl;
 
     } while( _processIsActive && fRead && dwBytesRead >= 0 );
 }

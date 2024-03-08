@@ -9,6 +9,7 @@
 // #include "MainWindow/WorkspaceSelectorOverlay.h"
 #include "Console/FrameBuffer.h"
 #include "Core/KeyCodes.Console.h"
+#include "PseudoConsole/PTYProcess.h"
 #include "Workspace.h"
 // #include "imgui.h"
 
@@ -26,6 +27,7 @@ class UI
 
     void Render();
     void Resize( uint32_t columns, uint32_t rows );
+    void Start();
 
     void OnKeyPress( keycode_t const &keyCode, uint32_t modifiers );
 
@@ -72,6 +74,6 @@ class UI
     // eOverlayType _displayedOverlay = eOverlayType::NONE;
     // int          _currentWorkspace = -1;
 
-    std::shared_ptr<Terminal> _bgTerminal = nullptr;
-    std::shared_ptr<Terminal> _fgTerminal = nullptr;
+    std::shared_ptr<PTYProcess> _bgTerminal = nullptr;
+    std::shared_ptr<PTYProcess> _fgTerminal = nullptr;
 };

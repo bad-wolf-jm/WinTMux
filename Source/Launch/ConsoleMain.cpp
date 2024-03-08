@@ -14,6 +14,7 @@ int main()
     // }
     while(Application::Instance()->Tick())
     {}
+    
     Application::Shutdown();
 
 #if 0

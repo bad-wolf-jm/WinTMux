@@ -14,8 +14,8 @@ struct Range
 
 struct state_transition_t
 {
-    VtParserState TransitionTo{VtParserState::none};
-    Action Action{Action::none};
+    VtParserState TransitionTo{ VtParserState::none };
+    Action        Action{ Action::none };
 };
 
 constexpr int MAX_INTERMEDIATE_CHARS = 2;
@@ -55,12 +55,14 @@ class Vt100Parser
     void   do_action( Action action, char ch );
     void   do_state_change( VtParserState newState, Action action, char ch );
 
-    VtParserState    state;
-    vtparse_callback_t cb;
-    unsigned char      intermediate_chars[MAX_INTERMEDIATE_CHARS + 1];
-    int                num_intermediate_chars;
-    char               ignore_flagged;
-    int                params[16];
-    int                num_params;
-    void              *user_data;
+    VtParserState state;
+    // vtparse_callback_t cb;
+    unsigned char intermediate_chars[MAX_INTERMEDIATE_CHARS + 1];
+    int           num_intermediate_chars;
+    char          ignore_flagged;
+    int           params[16];
+    int           num_params;
+    void         *user_data;
+
+    void Dispatch(Action action, char ch);
 };

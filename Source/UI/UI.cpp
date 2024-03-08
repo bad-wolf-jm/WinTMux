@@ -12,6 +12,12 @@ UI::UI()
     // _workspaces.push_back( std::make_shared<Workspace>( "SpockEngine" ) );
 
     // _currentWorkspace = 0;
+    // _bgTerminal = std::make_shared<Terminal>("nvim", _framebuffer.Columns(), _framebuffer.Rows());
+}
+
+void UI::Start()
+{
+    _bgTerminal = std::make_shared<PTYProcess>("nvim", _framebuffer.Columns(), _framebuffer.Rows());
 }
 
 void UI::Resize( uint32_t columns, uint32_t rows )

@@ -2,14 +2,15 @@
 #include "States.h"
 
 #include <cstdint>
+#include <iostream>
 
 Vt100Parser::Vt100Parser()
 {
-    state                  = VTPARSE_STATE_GROUND;
+    state                  = VtParserState::ground;
     num_intermediate_chars = 0;
     num_params             = 0;
     ignore_flagged         = 0;
-    cb                     = cb;
+    // cb                     = cb;
 
     // Anywhere transitions
     OnEvent( 0x18, Action::execute, VtParserState::ground );
@@ -238,7 +239,47 @@ void Vt100Parser::OnEvent( VtParserState state, uint8_t character, VtParserState
 
 void Vt100Parser::OnEvent( VtParserState state, uint8_t character, Action action, VtParserState transitionTo )
 {
-    _stateTransitions[(uint8_t)state][character] = state_transition_t{transitionTo, action};
+    _stateTransitions[(uint8_t)state][character] = state_transition_t{ transitionTo, action };
+}
+
+void Vt100Parser::Dispatch( Action action, char ch )
+{
+    switch( action )
+    {
+    case Action::print:
+        // std::cout << "Action::print" << " " << ch << std::endl;
+        break;
+    case Action::execute:
+        std::cout << "Action::execute"  << " " << ch <<  std::endl;
+        break;
+    case Action::hook:
+        std::cout << "Action::hook" << std::endl;
+        break;
+    case Action::put:
+        std::cout << "Action::put" << std::endl;
+        break;
+    case Action::osc_start:
+        std::cout << "Action::osc_start" << std::endl;
+        break;
+    case Action::osc_put:
+        std::cout << "Action::osc_put" << std::endl;
+        break;
+    case Action::osc_end:
+        std::cout << "Action::osc_end" << std::endl;
+        break;
+    case Action::unhook:
+        std::cout << "Action::unhook" << std::endl;
+        break;
+    case Action::csi_dispatch:
+        std::cout << "Action::csi_dispatch"  << " " << ch <<  std::endl;
+        break;
+    case Action::esc_dispatch:
+        std::cout << "Action::esc_dispatch" << std::endl;
+        break;
+    case Action::none:
+        std::cout << "Action::none" << std::endl;
+        break;
+    }
 }
 
 void Vt100Parser::do_action( Action action, char ch )
@@ -258,7 +299,8 @@ void Vt100Parser::do_action( Action action, char ch )
     case Action::unhook:
     case Action::csi_dispatch:
     case Action::esc_dispatch:
-        cb( action, ch );
+        // cb( action, ch );
+        Dispatch( action, ch );
         break;
 
     case Action::ignore:
@@ -310,7 +352,8 @@ void Vt100Parser::do_action( Action action, char ch )
         break;
 
     default:
-        cb( parser, Action::error, 0 );
+        Dispatch( Action::none, 0 );
+        break;
     }
 }
 
@@ -351,7 +394,7 @@ void Vt100Parser::vtparse( unsigned char *data, int len )
     int i;
     for( i = 0; i < len; i++ )
     {
-        unsigned char  ch     = data[i];
+        unsigned char      ch     = data[i];
         state_transition_t change = _stateTransitions[(uint8_t)state][ch];
         do_state_change( change.TransitionTo, change.Action, ch );
     }

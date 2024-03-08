@@ -13,7 +13,7 @@ add_executable(WinTMux
     #Core/ControlSequences.cpp
     #Core/utf8.cpp
     
-    #VtParser/Parser.cpp
+    VtParser/Parser.cpp
 
     # Launch/Main.cpp
     

@@ -6,7 +6,8 @@
 Application::Application()
 {
     _stdin.OnKeyPress = [&]( keycode_t const &keycode, uint32_t modifiers ) {
-
+        if(keycode.KeyCode == keycode::Q)
+            _shouldExit = true;
     };
 
     _stdin.OnConsoleResize = [&]( uint32_t columns, uint32_t rows )
@@ -16,6 +17,7 @@ Application::Application()
     };
 
     _ui.Resize( _stdout.Rows(), _stdout.Columns() );
+    _ui.Start();
 }
 
 std::unique_ptr<Application> Application::_uniqueInstance;
@@ -39,9 +41,9 @@ bool Application::Tick()
 
     _ui.Render();
 
-    _stdout.write( _ui.FrameBuffer() );
+    // _stdout.write( _ui.FrameBuffer() );
 
-    return true;
+    return !_shouldExit;
 }
 
 void Application::Shutdown()

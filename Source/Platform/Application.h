@@ -24,4 +24,5 @@ class Application
     stdout_t _stdout;
 
     UI _ui;
+    bool _shouldExit = false;
 };
