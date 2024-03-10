@@ -1,5 +1,6 @@
 #include "utf8.h"
 
+#define UTF_SIZ     4
 #define LEN( a )           ( sizeof( a ) / sizeof( a )[0] )
 #define BETWEEN( x, a, b ) ( ( a ) <= ( x ) && ( x ) <= ( b ) )
 

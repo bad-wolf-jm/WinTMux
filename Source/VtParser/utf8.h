@@ -3,7 +3,6 @@
 #include <cstdint>
 
 #define UTF_INVALID 0xFFFD
-#define UTF_SIZ     4
 
 size_t   utf8decode( const char *, uint32_t *, size_t );
 uint32_t utf8decodebyte( char, size_t * );
