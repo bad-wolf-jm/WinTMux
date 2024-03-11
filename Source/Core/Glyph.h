@@ -16,8 +16,8 @@ enum CharacterAttribute : uint32_t
 
 struct Glyph
 {
-    char_t   Character[4];
-    uint32_t CharacterSize;
+    char_t   Character[4]  = { 0 };
+    uint32_t CharacterSize = 1;
 
     // The attributes member encodes the glyph's character attributes,
     // as well as the foreground and background color:

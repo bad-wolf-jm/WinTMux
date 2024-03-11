@@ -323,7 +323,7 @@ void Vt100Parser::Dispatch( framebuffer_t &framebuffer, Action action, char ch )
         break;
         case 'C':
         {
-            std::cout << ch << " " << num_params << " " << params[0] << " " << params[1] << " " << framebuffer.Columns() << std::endl;
+            // std::cout << ch << " " << num_params << " " << params[0] << " " << framebuffer.Columns() << std::endl;
             uint32_t x, y;
             framebuffer.Cursor( x, y );
             x += params[0];
@@ -422,7 +422,7 @@ void Vt100Parser::Dispatch( framebuffer_t &framebuffer, Action action, char ch )
         // std::cout << ch << " " << num_params << " " << params[0] << " " << params[1] << std::endl;
         break;
         case 'm':
-            std::cout << ch << " " << num_params << " " << params[0] << " " << params[1] << std::endl;
+            // std::cout << ch << " " << num_params << " " << params[0] << " " << params[1] << std::endl;
             ProcessGraphicsMode( framebuffer );
             break;
         default:
@@ -432,8 +432,10 @@ void Vt100Parser::Dispatch( framebuffer_t &framebuffer, Action action, char ch )
 
     break;
     case Action::esc_dispatch:
-        std::cout << "Action::esc_dispatch"
-                  << " " << ch << " " << num_params << " " << params[0] << " " << params[1] << std::endl;
+        // std::cout << "Action::esc_dispatch"
+        //           << " " << ch << " " << num_intermediate_chars << " "
+        //           << "0x" << std::setw( 2 ) << std::setfill( '0' ) << std::hex << intermediate_chars[0] << " "
+        //           << "0x" << std::setw( 2 ) << std::setfill( '0' ) << std::hex << intermediate_chars[1] << std::endl;
         //   << "0x" << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint16_t)ch << std::endl;
         break;
     case Action::none:
@@ -517,8 +519,21 @@ static const uint32_t colormapped[256] = {
 };
 // clang-format on
 
-void Vt100Parser::ProcessGraphicsMode( framebuffer_t framebuffer )
+void Vt100Parser::ProcessGraphicsMode( framebuffer_t &framebuffer )
 {
+    if( num_params == 0 )
+    {
+        _bold      = false;
+        _faint     = false;
+        _italic    = false;
+        _underline = false;
+        _strikeout = false;
+        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint );
+        framebuffer.SetForeground( 0u );
+        framebuffer.SetBackground( 0u );
+        return;
+    }
+    
     auto code = params[0];
 
     switch( code )
@@ -715,7 +730,7 @@ void Vt100Parser::ProcessGraphicsMode( framebuffer_t framebuffer )
     }
 }
 
-void Vt100Parser::Erase( framebuffer_t framebuffer )
+void Vt100Parser::Erase( framebuffer_t &framebuffer )
 {
 }
 

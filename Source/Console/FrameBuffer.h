@@ -7,9 +7,9 @@
 
 struct character_range_t
 {
-    uint64_t Attributes;
-    uint32_t Start;
-    uint32_t End;
+    uint64_t Attributes = 0;
+    uint32_t Start      = 0;
+    uint32_t End        = 0;
 
     uint32_t CharacterAttributes() const;
     void     Fg( uint8_t &r, uint8_t &g, uint8_t &b ) const;
@@ -35,7 +35,7 @@ class framebuffer_t
     void ClearCurrentLine();
 
     void SetTextAttributes( bool bold, bool italic, bool underline, bool strikeThrough, bool faint );
-    
+
     void SetBackground( uint8_t r, uint8_t g, uint8_t b );
     void SetBackground( uint32_t b );
 

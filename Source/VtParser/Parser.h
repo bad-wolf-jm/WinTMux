@@ -66,17 +66,17 @@ class Vt100Parser
     void         *user_data;
 
     void Dispatch( framebuffer_t &framebuffer, Action action, char ch );
-    void ProcessGraphicsMode( framebuffer_t freamebuffer );
-    void Erase( framebuffer_t freamebuffer );
+    void ProcessGraphicsMode( framebuffer_t &freamebuffer );
+    void Erase( framebuffer_t &freamebuffer );
 
   private:
-    bool     _bold;
-    bool     _faint;
-    bool     _italic;
-    bool     _underline;
-    bool     _strikeout;
-    bool     _useDefaultFg;
-    bool     _useDefaultBg;
-    uint32_t _foregroundColor;
-    uint32_t _backgroundColor;
+    bool     _bold         = false;
+    bool     _faint        = false;
+    bool     _italic       = false;
+    bool     _underline    = false;
+    bool     _strikeout    = false;
+    bool     _useDefaultFg = false;
+    bool     _useDefaultBg = false;
+    uint32_t _foregroundColor = 0;
+    uint32_t _backgroundColor = 0;
 };

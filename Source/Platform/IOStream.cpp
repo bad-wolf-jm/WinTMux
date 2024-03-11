@@ -221,8 +221,6 @@ void stdout_t::write( framebuffer_t const &frameBuffer )
     auto const &buffer = frameBuffer.Data();
     for( auto const &line : lines )
     {
-         // reset colors for this line
-
         for( auto const &range : line )
             write( range, buffer );
     }
