@@ -68,4 +68,15 @@ class Vt100Parser
     void Dispatch( framebuffer_t &framebuffer, Action action, char ch );
     void ProcessGraphicsMode( framebuffer_t freamebuffer );
     void Erase( framebuffer_t freamebuffer );
+
+  private:
+    bool     _bold;
+    bool     _faint;
+    bool     _italic;
+    bool     _underline;
+    bool     _strikeout;
+    bool     _useDefaultFg;
+    bool     _useDefaultBg;
+    uint32_t _foregroundColor;
+    uint32_t _backgroundColor;
 };

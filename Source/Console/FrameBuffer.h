@@ -35,8 +35,12 @@ class framebuffer_t
     void ClearCurrentLine();
 
     void SetTextAttributes( bool bold, bool italic, bool underline, bool strikeThrough, bool faint );
+    
     void SetBackground( uint8_t r, uint8_t g, uint8_t b );
+    void SetBackground( uint32_t b );
+
     void SetForeground( uint8_t r, uint8_t g, uint8_t b );
+    void SetForeground( uint32_t b );
 
     void HLine( uint32_t y, uint32_t x0, uint32_t x1, string_t c0, string_t c1, string_t cFill );
     void VLine( uint32_t x, uint32_t y0, uint32_t y1, string_t c0, string_t c1, string_t cFill );

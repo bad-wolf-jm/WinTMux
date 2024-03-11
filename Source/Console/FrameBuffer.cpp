@@ -135,13 +135,55 @@ void framebuffer_t::SetTextAttributes( bool bold, bool italic, bool underline, b
 void framebuffer_t::SetBackground( uint8_t r, uint8_t g, uint8_t b )
 {
     _background = r << 16 | g << 8 | b;
+    std::cout << "SET_BACKGROUND"
+              << " "
+              << "0x" << std::setw( 8 ) << std::setfill( '0' ) << std::hex << (uint32_t)_background << std::endl;
     _attributes &= ~( (uint16_t)CharacterAttribute::DEFAULT_BG );
+}
+
+void framebuffer_t::SetBackground( uint32_t color )
+{
+    if( color == 0u )
+    {
+        _attributes |= ( (uint16_t)CharacterAttribute::DEFAULT_BG );
+    }
+    else
+    {
+        _attributes &= ~( (uint16_t)CharacterAttribute::DEFAULT_BG );
+    }
+
+    std::cout << "SET_BACKGROUND"
+              << " "
+              << "0x" << std::setw( 8 ) << std::setfill( '0' ) << std::hex << (uint32_t)color << std::endl;
+
+    _background = color;
 }
 
 void framebuffer_t::SetForeground( uint8_t r, uint8_t g, uint8_t b )
 {
     _foreground = r << 16 | g << 8 | b;
+    std::cout << "SET_FOREGROUND"
+              << " "
+              << "0x" << std::setw( 8 ) << std::setfill( '0' ) << std::hex << (uint32_t)_foreground << std::endl;
     _attributes &= ~( (uint16_t)CharacterAttribute::DEFAULT_FG );
+}
+
+void framebuffer_t::SetForeground( uint32_t color )
+{
+    if( color == 0u )
+    {
+        _attributes |= ( (uint16_t)CharacterAttribute::DEFAULT_FG );
+    }
+    else
+    {
+        _attributes &= ~( (uint16_t)CharacterAttribute::DEFAULT_BG );
+    }
+
+    std::cout << "SET_FOREGROUND"
+              << " "
+              << "0x" << std::setw( 8 ) << std::setfill( '0' ) << std::hex << (uint32_t)color << std::endl;
+
+    _foreground = color;
 }
 
 void framebuffer_t::HLine( uint32_t y, uint32_t x0, uint32_t x1, string_t c0, string_t c1, string_t cFill )

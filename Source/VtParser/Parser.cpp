@@ -432,16 +432,287 @@ void Vt100Parser::Dispatch( framebuffer_t &framebuffer, Action action, char ch )
 
     break;
     case Action::esc_dispatch:
-        std::cout << "Action::esc_dispatch" << std::endl;
+        std::cout << "Action::esc_dispatch"
+                  << " " << ch << " " << num_params << " " << params[0] << " " << params[1] << std::endl;
+        //   << "0x" << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint16_t)ch << std::endl;
         break;
     case Action::none:
-        std::cout << "Action::none" << std::endl;
+        // std::cout << "Action::none" << std::endl;
         break;
     }
 }
 
+#define rgb( r, g, b ) \
+    ( ( 255u << 24 ) | ( ( (uint8_t)r & 0xff ) << 16 ) | ( ( (uint8_t)g & 0xff ) << 8 ) | ( ( (uint8_t)b & 0xff ) << 0 ) )
+// clang-format off
+static const uint32_t colormapped[256] = {
+    // Use the windows palette here: normal colors
+    rgb( 0, 0, 0 ),       rgb( 128, 0, 0 ),     rgb( 0, 128, 0 ),     rgb( 128, 128, 0 ),
+    rgb( 0, 0, 128 ),     rgb( 128, 0, 128 ),   rgb( 0, 128, 128 ),   rgb( 192, 192, 192 ),
+
+    // Use the windows palette here: bright colors
+    rgb( 128, 128, 128 ), rgb( 255, 0, 0 ),     rgb( 0, 255, 0 ),     rgb( 255, 255, 0 ),
+    rgb( 0, 0, 255 ),     rgb( 255, 0, 255 ),   rgb( 0, 255, 255 ),   rgb( 255, 255, 255 ),
+
+    rgb( 0, 0, 0 ),       rgb( 0, 0, 95 ),      rgb( 0, 0, 135 ),     rgb( 0, 0, 175 ),
+    rgb( 0, 0, 215 ),     rgb( 0, 0, 255 ),     rgb( 0, 95, 0 ),      rgb( 0, 95, 95 ),
+    rgb( 0, 95, 135 ),    rgb( 0, 95, 175 ),    rgb( 0, 95, 215 ),    rgb( 0, 95, 255 ),
+    rgb( 0, 135, 0 ),     rgb( 0, 135, 95 ),    rgb( 0, 135, 135 ),   rgb( 0, 135, 175 ),
+    rgb( 0, 135, 215 ),   rgb( 0, 135, 255 ),   rgb( 0, 175, 0 ),     rgb( 0, 175, 95 ),
+    rgb( 0, 175, 135 ),   rgb( 0, 175, 175 ),   rgb( 0, 175, 215 ),   rgb( 0, 175, 255 ),
+    rgb( 0, 215, 0 ),     rgb( 0, 215, 95 ),    rgb( 0, 215, 135 ),   rgb( 0, 215, 175 ),
+    rgb( 0, 215, 215 ),   rgb( 0, 215, 255 ),   rgb( 0, 255, 0 ),     rgb( 0, 255, 95 ),
+    rgb( 0, 255, 135 ),   rgb( 0, 255, 175 ),   rgb( 0, 255, 215 ),   rgb( 0, 255, 255 ),
+    rgb( 95, 0, 0 ),      rgb( 95, 0, 95 ),     rgb( 95, 0, 135 ),    rgb( 95, 0, 175 ),
+    rgb( 95, 0, 215 ),    rgb( 95, 0, 255 ),    rgb( 95, 95, 0 ),     rgb( 95, 95, 95 ),
+    rgb( 95, 95, 135 ),   rgb( 95, 95, 175 ),   rgb( 95, 95, 215 ),   rgb( 95, 95, 255 ),
+    rgb( 95, 135, 0 ),    rgb( 95, 135, 95 ),   rgb( 95, 135, 135 ),  rgb( 95, 135, 175 ),
+    rgb( 95, 135, 215 ),  rgb( 95, 135, 255 ),  rgb( 95, 175, 0 ),    rgb( 95, 175, 95 ),
+    rgb( 95, 175, 135 ),  rgb( 95, 175, 175 ),  rgb( 95, 175, 215 ),  rgb( 95, 175, 255 ),
+    rgb( 95, 215, 0 ),    rgb( 95, 215, 95 ),   rgb( 95, 215, 135 ),  rgb( 95, 215, 175 ),
+    rgb( 95, 215, 215 ),  rgb( 95, 215, 255 ),  rgb( 95, 255, 0 ),    rgb( 95, 255, 95 ),
+    rgb( 95, 255, 135 ),  rgb( 95, 255, 175 ),  rgb( 95, 255, 215 ),  rgb( 95, 255, 255 ),
+    rgb( 135, 0, 0 ),     rgb( 135, 0, 95 ),    rgb( 135, 0, 135 ),   rgb( 135, 0, 175 ),
+    rgb( 135, 0, 215 ),   rgb( 135, 0, 255 ),   rgb( 135, 95, 0 ),    rgb( 135, 95, 95 ),
+    rgb( 135, 95, 135 ),  rgb( 135, 95, 175 ),  rgb( 135, 95, 215 ),  rgb( 135, 95, 255 ),
+    rgb( 135, 135, 0 ),   rgb( 135, 135, 95 ),  rgb( 135, 135, 135 ), rgb( 135, 135, 175 ),
+    rgb( 135, 135, 215 ), rgb( 135, 135, 255 ), rgb( 135, 175, 0 ),   rgb( 135, 175, 95 ),
+    rgb( 135, 175, 135 ), rgb( 135, 175, 175 ), rgb( 135, 175, 215 ), rgb( 135, 175, 255 ),
+    rgb( 135, 215, 0 ),   rgb( 135, 215, 95 ),  rgb( 135, 215, 135 ), rgb( 135, 215, 175 ),
+    rgb( 135, 215, 215 ), rgb( 135, 215, 255 ), rgb( 135, 255, 0 ),   rgb( 135, 255, 95 ),
+    rgb( 135, 255, 135 ), rgb( 135, 255, 175 ), rgb( 135, 255, 215 ), rgb( 135, 255, 255 ),
+    rgb( 175, 0, 0 ),     rgb( 175, 0, 95 ),    rgb( 175, 0, 135 ),   rgb( 175, 0, 175 ),
+    rgb( 175, 0, 215 ),   rgb( 175, 0, 255 ),   rgb( 175, 95, 0 ),    rgb( 175, 95, 95 ),
+    rgb( 175, 95, 135 ),  rgb( 175, 95, 175 ),  rgb( 175, 95, 215 ),  rgb( 175, 95, 255 ),
+    rgb( 175, 135, 0 ),   rgb( 175, 135, 95 ),  rgb( 175, 135, 135 ), rgb( 175, 135, 175 ),
+    rgb( 175, 135, 215 ), rgb( 175, 135, 255 ), rgb( 175, 175, 0 ),   rgb( 175, 175, 95 ),
+    rgb( 175, 175, 135 ), rgb( 175, 175, 175 ), rgb( 175, 175, 215 ), rgb( 175, 175, 255 ),
+    rgb( 175, 215, 0 ),   rgb( 175, 215, 95 ),  rgb( 175, 215, 135 ), rgb( 175, 215, 175 ),
+    rgb( 175, 215, 215 ), rgb( 175, 215, 255 ), rgb( 175, 255, 0 ),   rgb( 175, 255, 95 ),
+    rgb( 175, 255, 135 ), rgb( 175, 255, 175 ), rgb( 175, 255, 215 ), rgb( 175, 255, 255 ),
+    rgb( 215, 0, 0 ),     rgb( 215, 0, 95 ),    rgb( 215, 0, 135 ),   rgb( 215, 0, 175 ),
+    rgb( 215, 0, 215 ),   rgb( 215, 0, 255 ),   rgb( 215, 95, 0 ),    rgb( 215, 95, 95 ),
+    rgb( 215, 95, 135 ),  rgb( 215, 95, 175 ),  rgb( 215, 95, 215 ),  rgb( 215, 95, 255 ),
+    rgb( 215, 135, 0 ),   rgb( 215, 135, 95 ),  rgb( 215, 135, 135 ), rgb( 215, 135, 175 ),
+    rgb( 215, 135, 215 ), rgb( 215, 135, 255 ), rgb( 215, 175, 0 ),   rgb( 215, 175, 95 ),
+    rgb( 215, 175, 135 ), rgb( 215, 175, 175 ), rgb( 215, 175, 215 ), rgb( 215, 175, 255 ),
+    rgb( 215, 215, 0 ),   rgb( 215, 215, 95 ),  rgb( 215, 215, 135 ), rgb( 215, 215, 175 ),
+    rgb( 215, 215, 215 ), rgb( 215, 215, 255 ), rgb( 215, 255, 0 ),   rgb( 215, 255, 95 ),
+    rgb( 215, 255, 135 ), rgb( 215, 255, 175 ), rgb( 215, 255, 215 ), rgb( 215, 255, 255 ),
+    rgb( 255, 0, 0 ),     rgb( 255, 0, 95 ),    rgb( 255, 0, 135 ),   rgb( 255, 0, 175 ),
+    rgb( 255, 0, 215 ),   rgb( 255, 0, 255 ),   rgb( 255, 95, 0 ),    rgb( 255, 95, 95 ),
+    rgb( 255, 95, 135 ),  rgb( 255, 95, 175 ),  rgb( 255, 95, 215 ),  rgb( 255, 95, 255 ),
+    rgb( 255, 135, 0 ),   rgb( 255, 135, 95 ),  rgb( 255, 135, 135 ), rgb( 255, 135, 175 ),
+    rgb( 255, 135, 215 ), rgb( 255, 135, 255 ), rgb( 255, 175, 0 ),   rgb( 255, 175, 95 ),
+    rgb( 255, 175, 135 ), rgb( 255, 175, 175 ), rgb( 255, 175, 215 ), rgb( 255, 175, 255 ),
+    rgb( 255, 215, 0 ),   rgb( 255, 215, 95 ),  rgb( 255, 215, 135 ), rgb( 255, 215, 175 ),
+    rgb( 255, 215, 215 ), rgb( 255, 215, 255 ), rgb( 255, 255, 0 ),   rgb( 255, 255, 95 ),
+    rgb( 255, 255, 135 ), rgb( 255, 255, 175 ), rgb( 255, 255, 215 ), rgb( 255, 255, 255 ),
+    rgb( 8, 8, 8 ),       rgb( 18, 18, 18 ),    rgb( 28, 28, 28 ),    rgb( 38, 38, 38 ),
+    rgb( 48, 48, 48 ),    rgb( 58, 58, 58 ),    rgb( 68, 68, 68 ),    rgb( 78, 78, 78 ),
+    rgb( 88, 88, 88 ),    rgb( 98, 98, 98 ),    rgb( 108, 108, 108 ), rgb( 118, 118, 118 ),
+    rgb( 128, 128, 128 ), rgb( 138, 138, 138 ), rgb( 148, 148, 148 ), rgb( 158, 158, 158 ),
+    rgb( 168, 168, 168 ), rgb( 178, 178, 178 ), rgb( 188, 188, 188 ), rgb( 198, 198, 198 ),
+    rgb( 208, 208, 208 ), rgb( 218, 218, 218 ), rgb( 228, 228, 228 ), rgb( 238, 238, 238 ) 
+};
+// clang-format on
+
 void Vt100Parser::ProcessGraphicsMode( framebuffer_t framebuffer )
 {
+    auto code = params[0];
+
+    switch( code )
+    {
+    case 0:
+        _bold      = false;
+        _faint     = false;
+        _italic    = false;
+        _underline = false;
+        _strikeout = false;
+        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint );
+        framebuffer.SetForeground( 0u );
+        framebuffer.SetBackground( 0u );
+        break; // Reset or normal	All attributes become turned off
+    case 1:
+        _bold = true;
+        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint );
+        break; // Bold or increased intensity	As with faint, the color change is a PC (SCO / CGA) invention.[25][better source
+               // needed]
+    case 2:
+        _faint = true;
+        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint );
+        break; // Faint, decreased intensity, or dim	May be implemented as a light font weight like bold.[26]
+    case 3:
+        _italic = true;
+        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint );
+        break; // Italic	Not widely supported. Sometimes treated as inverse or blink.[25]
+    case 4:
+        _underline = true;
+        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint );
+        break; // Underline	Style extensions exist for Kitty, VTE, mintty, iTerm2 and Konsole.[27][28][29]
+    case 5:
+        break; // Slow blink	Sets blinking to less than 150 times per minute
+    case 6:
+        break; // Rapid blink	MS-DOS ANSI.SYS, 150+ per minute; not widely supported
+    case 7:
+        break; // Reverse video or invert	Swap foreground and background colors; inconsistent emulation[30][dubious – discuss]
+    case 8:
+        break; // Conceal or hide	Not widely supported.
+    case 9:
+        _strikeout = true;
+        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint );
+        break; // Crossed-out, or strike	Characters legible but marked as if for deletion. Not supported in Terminal.app.
+    case 10:
+        break; // Primary (default) font
+    case 11:
+    case 12:
+    case 13:
+    case 14:
+    case 15:
+    case 16:
+    case 17:
+    case 18:
+    case 19:
+        break; // Alternative font	Select alternative font n − 10
+    case 20:
+        break; // Fraktur (Gothic)	Rarely supported
+    case 21:
+        break; // Doubly underlined; or: not bold	Double-underline per ECMA-48,[5]: 8.3.117  but instead disables bold intensity on
+               // several terminals, including in the Linux kernel's console before version 4.17.[31]
+    case 22:
+        _bold  = false;
+        _faint = false;
+        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint );
+        break; // Normal intensity	Neither bold nor faint; color changes where intensity is implemented as such.
+    case 23:
+        _italic = false;
+        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint );
+        break; // Neither italic, nor blackletter
+    case 24:
+        _underline = false;
+        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint );
+        break; // Not underlined	Neither singly nor doubly underlined
+    case 25:
+        break; // Not blinking	Turn blinking off
+    case 26:
+        break; // Proportional spacing	ITU T.61 and T.416, not known to be used on terminals
+    case 27:
+        break; // Not reversed
+    case 28:
+        break; // Reveal	Not concealed
+    case 29:
+        break; // Not crossed out
+    case 30:
+    case 31:
+    case 32:
+    case 33:
+    case 34:
+    case 35:
+    case 36:
+    case 37:
+        _foregroundColor = colormapped[code - 30];
+        framebuffer.SetForeground( _foregroundColor );
+        break; // Next arguments are 5;n or 2;r;g;b
+    case 38:
+    {
+        if( params[1] == 2 )
+        {
+            framebuffer.SetForeground( params[2], params[3], params[4] );
+        }
+        else if( params[1] == 5 )
+        {
+            framebuffer.SetForeground( colormapped[params[3]] );
+        }
+    }
+    break; // Next arguments are 5;n or 2;r;g;b
+    case 39:
+        framebuffer.SetForeground( 0u );
+        break; // Default foreground color	Implementation defined (according to standard)
+    case 40:
+    case 41:
+    case 42:
+    case 43:
+    case 44:
+    case 45:
+    case 46:
+    case 47:
+        _backgroundColor = colormapped[code - 30];
+        framebuffer.SetBackground( _backgroundColor );
+        break; // Set background color	Next arguments are 5;n or 2;r;g;b
+    case 48:
+    {
+        if( params[1] == 2 )
+        {
+            framebuffer.SetBackground( params[2], params[3], params[4] );
+        }
+        else if( params[1] == 5 )
+        {
+            framebuffer.SetBackground( colormapped[params[3]] );
+        }
+    }
+    break; // Set background color	Next arguments are 5;n or 2;r;g;b
+    case 49:
+        framebuffer.SetBackground( 0u );
+        break; // Default background color	Implementation defined (according to standard)
+    case 50:
+        break; // Disable proportional spacing	T.61 and T.416
+    case 51:
+        break; // Framed	Implemented as "emoji variation selector" in mintty.[32]
+    case 52:
+        break; // Encircled
+    case 53:
+        break; // Overlined	Not supported in Terminal.app
+    case 54:
+        break; // Neither framed nor encircled
+    case 55:
+        break; // Not overlined
+    case 58:
+        break; // Set underline color	Not in standard; implemented in Kitty, VTE, mintty, and iTerm2.[27][28] Next arguments are 5;n
+               // or 2;r;g;b.
+    case 59:
+        break; // Default underline color	Not in standard; implemented in Kitty, VTE, mintty, and iTerm2.[27][28]
+    case 60:
+        break; // Ideogram underline or right side line	Rarely supported
+    case 61:
+        break; // Ideogram double underline, or double line on the right side
+    case 62:
+        break; // Ideogram overline or left side line
+    case 63:
+        break; // Ideogram double overline, or double line on the left side
+    case 64:
+        break; // Ideogram stress marking
+    case 65:
+        break; // No ideogram attributes	Reset the effects of all of 60–64
+    case 73:
+        break; // Superscript	Implemented only in mintty[32]
+    case 74:
+        break; // Subscript
+    case 75:
+        break; // Neither superscript nor subscript
+    case 90:
+    case 91:
+    case 92:
+    case 93:
+    case 94:
+    case 95:
+    case 96:
+    case 97:
+        _foregroundColor = colormapped[code - 82];
+        framebuffer.SetForeground( _foregroundColor );
+        break; // Set bright foreground color	Not in standard; originally implemented by aixterm[16]
+    case 100:
+    case 101:
+    case 102:
+    case 103:
+    case 104:
+    case 105:
+    case 106:
+    case 107:
+        _backgroundColor = colormapped[code - 92];
+        framebuffer.SetBackground( _backgroundColor );
+    default:
+        break;
+    }
 }
 
 void Vt100Parser::Erase( framebuffer_t framebuffer )
@@ -465,7 +736,6 @@ void Vt100Parser::do_action( framebuffer_t &framebuffer, Action action, char ch 
     case Action::unhook:
     case Action::csi_dispatch:
     case Action::esc_dispatch:
-        // cb( action, ch );
         Dispatch( framebuffer, action, ch );
         break;
 
