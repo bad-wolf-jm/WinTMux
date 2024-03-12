@@ -10,8 +10,10 @@ enum CharacterAttribute : uint32_t
     ITALIC        = ( 1 << 2 ),
     UNDERLINE     = ( 1 << 3 ),
     STRIKETHROUGH = ( 1 << 4 ),
-    DEFAULT_BG    = ( 1 << 5 ),
-    DEFAULT_FG    = ( 1 << 6 )
+    REVERSED      = ( 1 << 5 ),
+    HIDDEN        = ( 1 << 6 ),
+    DEFAULT_BG    = ( 1 << 7 ),
+    DEFAULT_FG    = ( 1 << 8 )
 };
 
 struct Glyph

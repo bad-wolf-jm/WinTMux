@@ -123,7 +123,8 @@ void framebuffer_t::EndFrame()
     }
 }
 
-void framebuffer_t::SetTextAttributes( bool bold, bool italic, bool underline, bool strikeThrough, bool faint )
+void framebuffer_t::SetTextAttributes( bool bold, bool italic, bool underline, bool strikeThrough, bool faint, bool reversed,
+                                       bool hidden )
 {
     _attributes = _attributes & ( CharacterAttribute::DEFAULT_BG | CharacterAttribute::DEFAULT_FG );
 
@@ -132,15 +133,17 @@ void framebuffer_t::SetTextAttributes( bool bold, bool italic, bool underline, b
     _attributes |= underline ? CharacterAttribute::UNDERLINE : 0;
     _attributes |= strikeThrough ? CharacterAttribute::STRIKETHROUGH : 0;
     _attributes |= faint ? CharacterAttribute::FAINT : 0;
+    _attributes |= reversed ? CharacterAttribute::REVERSED : 0;
+    _attributes |= hidden ? CharacterAttribute::HIDDEN : 0;
 
-    std::cout << "SetTextAttributes( "
-              << "Attr = " << std::bitset<16>( _attributes ) << "; "
-              << "Faint = " << ( _attributes & CharacterAttribute::FAINT ) << "; "
-              << "Italic = " << ( _attributes & CharacterAttribute::ITALIC ) << "; "
-              << "Strike = " << ( _attributes & CharacterAttribute::STRIKETHROUGH ) << "; "
-              << "Bold = " << ( _attributes & CharacterAttribute::BOLD ) << "; "
-              << "Underline = " << ( _attributes & CharacterAttribute::UNDERLINE ) << "; "
-              << " )" << std::endl;
+    //     std::cout << "SetTextAttributes( "
+    //               << "Attr = " << std::bitset<16>( _attributes ) << "; "
+    //               << "Faint = " << ( _attributes & CharacterAttribute::FAINT ) << "; "
+    //               << "Italic = " << ( _attributes & CharacterAttribute::ITALIC ) << "; "
+    //               << "Strike = " << ( _attributes & CharacterAttribute::STRIKETHROUGH ) << "; "
+    //               << "Bold = " << ( _attributes & CharacterAttribute::BOLD ) << "; "
+    //               << "Underline = " << ( _attributes & CharacterAttribute::UNDERLINE ) << "; "
+    //               << " )" << std::endl;
 }
 
 void framebuffer_t::SetBackground( uint8_t r, uint8_t g, uint8_t b )
@@ -293,16 +296,17 @@ void framebuffer_t::TextLine( uint32_t x, uint32_t y, string_t text )
 
 void framebuffer_t::putc( char ch )
 {
-     std::cout << "putc( " << std::hex << (uint32_t)ch << std::dec << "; " << std::hex << (uint32_t)_foreground << " " << std::hex
-               << (uint32_t)_background << std::dec << "; " << _cursorX << ", " << _cursorY << "; "
-               << "Attr = " << std::bitset<16>( _attributes ) << "; "
-               << "Faint = " << ( _attributes & CharacterAttribute::FAINT ) << "; "
-               << "Italic = " << ( _attributes & CharacterAttribute::ITALIC ) << "; "
-               << "Strike = " << ( _attributes & CharacterAttribute::STRIKETHROUGH ) << "; "
-               << "Bold = " << ( _attributes & CharacterAttribute::BOLD ) << "; "
-               << "Underline = " << ( _attributes & CharacterAttribute::UNDERLINE ) << "; "
-               << "w=" << _columns << "; "
-               << "h=" << _rows << " )" << std::endl;
+    //     std::cout << "putc( " << std::hex << (uint32_t)ch << std::dec << "; " << std::hex << (uint32_t)_foreground << " " <<
+    //     std::hex
+    //               << (uint32_t)_background << std::dec << "; " << _cursorX << ", " << _cursorY << "; "
+    //               << "Attr = " << std::bitset<16>( _attributes ) << "; "
+    //               << "Faint = " << ( _attributes & CharacterAttribute::FAINT ) << "; "
+    //               << "Italic = " << ( _attributes & CharacterAttribute::ITALIC ) << "; "
+    //               << "Strike = " << ( _attributes & CharacterAttribute::STRIKETHROUGH ) << "; "
+    //               << "Bold = " << ( _attributes & CharacterAttribute::BOLD ) << "; "
+    //               << "Underline = " << ( _attributes & CharacterAttribute::UNDERLINE ) << "; "
+    //               << "w=" << _columns << "; "
+    //               << "h=" << _rows << " )" << std::endl;
 
     uint32_t position = _cursorY * _columns + _cursorX;
     // _attributes       |= CharacterAttribute::DEFAULT_BG | CharacterAttribute::DEFAULT_FG;

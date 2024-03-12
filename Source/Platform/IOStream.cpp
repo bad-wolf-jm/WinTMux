@@ -111,8 +111,8 @@ stdout_t::stdout_t()
     {
     }
 
-    GetConsoleMode( _stream, (LPDWORD)&_consoleMode );
-    HRESULT hr = SetConsoleMode( _stream, _consoleMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING ) ? S_OK : GetLastError();
+    // GetConsoleMode( _stream, (LPDWORD)&_consoleMode );
+    // HRESULT hr = SetConsoleMode( _stream, _consoleMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING ) ? S_OK : GetLastError();
     CONSOLE_SCREEN_BUFFER_INFO csbi{};
     if( GetConsoleScreenBufferInfo( _stream, &csbi ) )
     {
@@ -198,6 +198,12 @@ void stdout_t::write( uint32_t attributes, uint32_t bg, uint32_t fg, std::vector
 
     if( attributes & CharacterAttribute::UNDERLINE )
         write( "\x1B[4m" );
+
+    if( attributes & CharacterAttribute::REVERSED )
+        write( "\x1B[7m" );
+
+    if( attributes & CharacterAttribute::HIDDEN )
+        write( "\x1B[8m" );
 
     if( attributes & CharacterAttribute::STRIKETHROUGH )
         write( "\x1B[9m" );

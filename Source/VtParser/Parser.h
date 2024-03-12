@@ -70,13 +70,16 @@ class Vt100Parser
     void Erase( framebuffer_t &freamebuffer );
 
   private:
-    bool     _bold         = false;
-    bool     _faint        = false;
-    bool     _italic       = false;
-    bool     _underline    = false;
-    bool     _strikeout    = false;
-    bool     _useDefaultFg = false;
-    bool     _useDefaultBg = false;
+    bool _bold         = false;
+    bool _faint        = false;
+    bool _italic       = false;
+    bool _underline    = false;
+    bool _strikeout    = false;
+    bool _reversed     = false;
+    bool _hidden       = false;
+    bool _useDefaultFg = false;
+    bool _useDefaultBg = false;
+
     uint32_t _foregroundColor = 0;
     uint32_t _backgroundColor = 0;
 };

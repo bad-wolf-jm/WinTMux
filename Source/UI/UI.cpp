@@ -16,7 +16,7 @@ UI::UI()
 
 void UI::Start()
 {
-    _bgTerminal = std::make_shared<PTYProcess>( "python \"C:\\GitLab\\WinTMux\\Scripts\\test_terminal.py\"", _bgTerminalBuffer );
+    _bgTerminal = std::make_shared<PTYProcess>( "py \"C:\\GitLab\\WinTMux\\Scripts\\test_terminal.py\"", _bgTerminalBuffer );
     //_bgTerminal = std::make_shared<PTYProcess>( "python -m rich", _bgTerminalBuffer );
     _bgTerminalBuffer.BeginFrame();
 }

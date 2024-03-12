@@ -249,9 +249,9 @@ void Vt100Parser::Dispatch( framebuffer_t &framebuffer, Action action, char ch )
     switch( action )
     {
     case Action::print:
-        if( ch == ' ' )
-            std::cout << "SPACE" << std::hex << (uint8_t)action << " "
-                      << "0x" << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint16_t)ch << std::endl;
+        // if( ch == ' ' )
+        //     std::cout << "SPACE" << std::hex << (uint8_t)action << " "
+        //               << "0x" << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint16_t)ch << std::endl;
         framebuffer.putc( ch );
         break;
     case Action::execute:
@@ -564,10 +564,12 @@ void Vt100Parser::ProcessGraphicsMode( framebuffer_t &framebuffer )
         _italic    = false;
         _underline = false;
         _strikeout = false;
-        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint );
+        _reversed  = false;
+        _hidden    = false;
+        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden );
         framebuffer.SetForeground( 0u );
         framebuffer.SetBackground( 0u );
-        std::cout << "RESET0" << std::endl;
+
         return;
     }
 
@@ -581,39 +583,45 @@ void Vt100Parser::ProcessGraphicsMode( framebuffer_t &framebuffer )
         _italic    = false;
         _underline = false;
         _strikeout = false;
-        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint );
+        _reversed  = false;
+        _hidden    = false;
+        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden );
         framebuffer.SetForeground( 0u );
         framebuffer.SetBackground( 0u );
-        std::cout << "RESET1" << std::endl;
+        // std::cout << "RESET1" << std::endl;
         break; // Reset or normal	All attributes become turned off
     case 1:
         _bold = true;
-        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint );
+        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden );
         break; // Bold or increased intensity	As with faint, the color change is a PC (SCO / CGA) invention.[25][better source
                // needed]
     case 2:
         _faint = true;
-        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint );
+        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden );
         break; // Faint, decreased intensity, or dim	May be implemented as a light font weight like bold.[26]
     case 3:
         _italic = true;
-        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint );
+        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden );
         break; // Italic	Not widely supported. Sometimes treated as inverse or blink.[25]
     case 4:
         _underline = true;
-        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint );
+        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden );
         break; // Underline	Style extensions exist for Kitty, VTE, mintty, iTerm2 and Konsole.[27][28][29]
     case 5:
         break; // Slow blink	Sets blinking to less than 150 times per minute
     case 6:
         break; // Rapid blink	MS-DOS ANSI.SYS, 150+ per minute; not widely supported
     case 7:
+        _reversed = true;
+        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden );
         break; // Reverse video or invert	Swap foreground and background colors; inconsistent emulation[30][dubious – discuss]
     case 8:
+        _hidden = true;
+        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden );
         break; // Conceal or hide	Not widely supported.
     case 9:
         _strikeout = true;
-        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint );
+        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden );
         break; // Crossed-out, or strike	Characters legible but marked as if for deletion. Not supported in Terminal.app.
     case 10:
         break; // Primary (default) font
@@ -635,27 +643,31 @@ void Vt100Parser::ProcessGraphicsMode( framebuffer_t &framebuffer )
     case 22:
         _bold  = false;
         _faint = false;
-        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint );
+        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden );
         break; // Normal intensity	Neither bold nor faint; color changes where intensity is implemented as such.
     case 23:
         _italic = false;
-        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint );
+        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden );
         break; // Neither italic, nor blackletter
     case 24:
         _underline = false;
-        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint );
+        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden );
         break; // Not underlined	Neither singly nor doubly underlined
     case 25:
         break; // Not blinking	Turn blinking off
     case 26:
         break; // Proportional spacing	ITU T.61 and T.416, not known to be used on terminals
     case 27:
+        _reversed = false;
+        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden );
         break; // Not reversed
     case 28:
+        _hidden = false;
+        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden );
         break; // Reveal	Not concealed
     case 29:
         _strikeout = false;
-        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint );
+        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden );
         break; // Not crossed out
     case 30:
     case 31:
@@ -888,7 +900,7 @@ void Vt100Parser::vtparse( framebuffer_t &framebuffer, unsigned char *data, int 
     {
         unsigned char      ch     = data[i];
         state_transition_t change = _stateTransitions[(uint8_t)state][ch];
-        std::cout << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint32_t)ch << " ";
-        //do_state_change( framebuffer, change.TransitionTo, change.Action, ch );
+        // std::cout << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint32_t)ch << " ";
+        do_state_change( framebuffer, change.TransitionTo, change.Action, ch );
     }
 }
