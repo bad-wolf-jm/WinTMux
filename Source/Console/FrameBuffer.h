@@ -69,7 +69,7 @@ class framebuffer_t
   private:
     uint32_t _background{ 0 };
     uint32_t _foreground{ 0 };
-    uint16_t _attributes{ 0 };
+    uint16_t _attributes{ CharacterAttribute::DEFAULT_BG | CharacterAttribute::DEFAULT_FG };
 
   private:
     uint32_t _rows{ 0 };

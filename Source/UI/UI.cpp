@@ -16,8 +16,8 @@ UI::UI()
 
 void UI::Start()
 {
-    // _bgTerminal = std::make_shared<PTYProcess>( "python \"C:\\GitLab\\WinTMux\\Scripts\\test_terminal.py\"", _bgTerminalBuffer );
-    _bgTerminal = std::make_shared<PTYProcess>( "python -m rich", _bgTerminalBuffer );
+    _bgTerminal = std::make_shared<PTYProcess>( "python \"C:\\GitLab\\WinTMux\\Scripts\\test_terminal.py\"", _bgTerminalBuffer );
+    //_bgTerminal = std::make_shared<PTYProcess>( "python -m rich", _bgTerminalBuffer );
     _bgTerminalBuffer.BeginFrame();
 }
 
@@ -171,7 +171,7 @@ void UI::Render()
         }
 
         _framebuffer.SetForeground( 200, 200, 200 );
-        _framebuffer.SetBackground( 20,20,20 );
+        _framebuffer.SetBackground( 20, 20, 20 );
         _framebuffer.DrawRect( remainingWidth / 2, remainingHeight / 2, terminalWidth, terminalHeight, u8"\u256D", u8"\u2500",
                                u8"\u256E", u8"\u2502", u8"\u256F", u8"\u2500", u8"\u2570", u8"\u2502" );
     }

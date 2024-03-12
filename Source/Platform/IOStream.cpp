@@ -154,6 +154,9 @@ void stdout_t::write( std::vector<Glyph>::const_iterator begin, std::vector<Glyp
     for( std::vector<Glyph>::const_iterator gl = begin; gl < end; gl++ )
     {
         auto const *character     = ( *gl ).Character;
+        if(character[0] == '\0')
+            continue;
+
         auto const  characterSize = ( *gl ).CharacterSize;
 
         std::copy( character, character + characterSize, renderedLine.begin() + position );

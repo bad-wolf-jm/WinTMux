@@ -245,18 +245,47 @@ void Vt100Parser::OnEvent( VtParserState state, uint8_t character, Action action
 
 void Vt100Parser::Dispatch( framebuffer_t &framebuffer, Action action, char ch )
 {
+
     switch( action )
     {
     case Action::print:
-        // std::cout << "Action::print" << " " << ch << std::endl;
+        if( ch == ' ' )
+            std::cout << "SPACE" << std::hex << (uint8_t)action << " "
+                      << "0x" << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint16_t)ch << std::endl;
         framebuffer.putc( ch );
         break;
     case Action::execute:
-#if 0
-        std::cout << "Action::execute:"
-                  << " "
-                  << "0x" << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint16_t)ch << std::endl;
-#endif
+        switch( ch )
+        {
+        case '\x0a':
+        {
+            uint32_t x, y;
+            framebuffer.Cursor( x, y );
+            y += 1;
+            y = std::min( framebuffer.Rows() - 1, y );
+            x = 0;
+            framebuffer.SetCursor( x, y );
+        }
+        break;
+        case '\x0d':
+        {
+            uint32_t x, y;
+            framebuffer.Cursor( x, y );
+            x = 0;
+            framebuffer.SetCursor( x, y );
+        }
+        break;
+        case '\x09':
+        {
+            uint32_t x, y;
+            framebuffer.Cursor( x, y );
+            x = ( x / 8 + 1 ) * 8;
+            framebuffer.SetCursor( x, y );
+        }
+        break;
+        }
+        // #if 0
+        // #endif
         break;
     case Action::hook:
         // std::cout << "Action::hook" << std::endl;
@@ -293,13 +322,13 @@ void Vt100Parser::Dispatch( framebuffer_t &framebuffer, Action action, char ch )
             {
                 std::cout << ch << " " << num_params << " " << params[0] << " " << params[1] << std::endl;
 
-                framebuffer.SetCursor( params[0], params[1] );
+                framebuffer.SetCursor( params[1] - 1, params[0] - 1 );
             }
             break;
         case 'f':
             std::cout << ch << " " << num_params << " " << params[0] << " " << params[1] << std::endl;
             if( num_params != 0 )
-                framebuffer.SetCursor( params[0], params[1] );
+                framebuffer.SetCursor( params[1] - 1, params[0] - 1 );
             break;
         case 'A':
         {
@@ -441,6 +470,13 @@ void Vt100Parser::Dispatch( framebuffer_t &framebuffer, Action action, char ch )
     case Action::none:
         // std::cout << "Action::none" << std::endl;
         break;
+    case Action::ignore:
+    case Action::clear:
+    case Action::collect:
+    case Action::param:
+    case Action::count:
+    default:
+        break;
     }
 }
 
@@ -531,9 +567,10 @@ void Vt100Parser::ProcessGraphicsMode( framebuffer_t &framebuffer )
         framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint );
         framebuffer.SetForeground( 0u );
         framebuffer.SetBackground( 0u );
+        std::cout << "RESET0" << std::endl;
         return;
     }
-    
+
     auto code = params[0];
 
     switch( code )
@@ -547,6 +584,7 @@ void Vt100Parser::ProcessGraphicsMode( framebuffer_t &framebuffer )
         framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint );
         framebuffer.SetForeground( 0u );
         framebuffer.SetBackground( 0u );
+        std::cout << "RESET1" << std::endl;
         break; // Reset or normal	All attributes become turned off
     case 1:
         _bold = true;
@@ -616,6 +654,8 @@ void Vt100Parser::ProcessGraphicsMode( framebuffer_t &framebuffer )
     case 28:
         break; // Reveal	Not concealed
     case 29:
+        _strikeout = false;
+        framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint );
         break; // Not crossed out
     case 30:
     case 31:
@@ -848,6 +888,7 @@ void Vt100Parser::vtparse( framebuffer_t &framebuffer, unsigned char *data, int 
     {
         unsigned char      ch     = data[i];
         state_transition_t change = _stateTransitions[(uint8_t)state][ch];
-        do_state_change( framebuffer, change.TransitionTo, change.Action, ch );
+        std::cout << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint32_t)ch << " ";
+        //do_state_change( framebuffer, change.TransitionTo, change.Action, ch );
     }
 }

@@ -9,13 +9,13 @@ PTYProcess::PTYProcess( string_t command, framebuffer_t &framebuffer )
     , _command{ command }
 {
 
-    std::cout << _columns <<  " " << _lines << std::endl;
+    // std::cout << _columns <<  " " << _lines << std::endl;
 
     _startupInfo.StartupInfo.cb = sizeof( STARTUPINFOEXA );
 
     CreateConsole( _columns, _lines );
-    _processIsActive    = true;
-    _pipeListenerThread = std::thread( &PTYProcess::PipeListener, this );
+    //_processIsActive    = true;
+    //_pipeListenerThread = std::thread( &PTYProcess::PipeListener, this );
 
     size_t attributeListSize = 0;
     InitializeProcThreadAttributeList( NULL, 1, 0, &attributeListSize );
@@ -95,8 +95,8 @@ void PTYProcess::WaitForCompletion( int32_t timeout )
             errorText = NULL;
         }
     }
-    _processIsActive = false;
-    _pipeListenerThread.join();
+    //_processIsActive = false;
+    //_pipeListenerThread.join();
 }
 
 void PTYProcess::CreateConsole( int16_t columns, int16_t lines )
