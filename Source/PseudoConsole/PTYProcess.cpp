@@ -123,6 +123,7 @@ void PTYProcess::CreateConsole( int16_t columns, int16_t lines )
 
 void PTYProcess::StartProcess()
 {
+    SetEnvironmentVariable( TEXT( "TERM" ), TEXT( "dumb" ) );
     CreateProcessA( NULL,                                       // No module name - use Command Line
                     reinterpret_cast<LPSTR>( _command.data() ), // Command Line
                     NULL,                                       // Process handle not inheritable
