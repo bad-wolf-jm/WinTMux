@@ -158,20 +158,22 @@ void UI::Render()
         {
             uint32_t fg = static_cast<uint32_t>( ( glyph.Attributes >> 24 ) & 0xFFFFFF );
             {
-                uint8_t r = ( ( fg & 0xff ) >> 16 ) >> 1;
-                uint8_t g = ( ( fg & 0xff ) >> 8 ) >> 1;
+                uint8_t r = ( ( fg & 0xff0000 ) >> 16 ) >> 1;
+                uint8_t g = ( ( fg & 0xff00 ) >> 8 ) >> 1;
                 uint8_t b = ( fg & 0xff ) >> 1;
 
                 fg = r << 16 | g << 8 | b;
             }
+
             uint32_t bg = static_cast<uint32_t>( glyph.Attributes & 0xFFFFFF );
             {
-                uint8_t r = ( ( bg & 0xff ) >> 16 ) >> 1;
-                uint8_t g = ( ( bg & 0xff ) >> 8 ) >> 1;
+                uint8_t r = ( ( bg & 0xff0000 ) >> 16 ) >> 1;
+                uint8_t g = ( ( bg & 0xff00 ) >> 8 ) >> 1;
                 uint8_t b = ( bg & 0xff ) >> 1;
 
                 bg = r << 16 | g << 8 | b;
             }
+            
             uint32_t attributes = glyph.Attributes >> 48;
 
             glyph.Attributes =
