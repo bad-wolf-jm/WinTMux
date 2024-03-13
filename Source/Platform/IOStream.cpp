@@ -199,6 +199,12 @@ void stdout_t::write( uint32_t attributes, uint32_t bg, uint32_t fg, std::vector
     if( attributes & CharacterAttribute::UNDERLINE )
         write( "\x1B[4m" );
 
+    if( attributes & CharacterAttribute::SLOW_BLINK )
+        write( "\x1B[5m" );
+
+    if( attributes & CharacterAttribute::FAST_BLINK )
+        write( "\x1B[6m" );
+
     if( attributes & CharacterAttribute::REVERSED )
         write( "\x1B[7m" );
 

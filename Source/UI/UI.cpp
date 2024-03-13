@@ -17,6 +17,7 @@ UI::UI()
 void UI::Start()
 {
     _bgTerminal = std::make_shared<PTYProcess>( "py \"C:\\GitLab\\WinTMux\\Scripts\\test_terminal.py\"", _bgTerminalBuffer );
+    // _bgTerminal = std::make_shared<PTYProcess>( "nvim", _bgTerminalBuffer );
     //_bgTerminal = std::make_shared<PTYProcess>( "python -m rich", _bgTerminalBuffer );
     _bgTerminalBuffer.BeginFrame();
 }
@@ -142,18 +143,18 @@ void UI::OnKeyPress( keycode_t const &keyCode, uint32_t modifiers )
 
 void UI::Render()
 {
-    // ImGui::NewFrame();
     _bgTerminal->PipeListener();
 
-    // _windowSize = ImGui::GetIO().DisplaySize;
-
-    // ImGui::PushStyleVar( ImGuiStyleVar_WindowMinSize, ImVec2( _fontSize, _fontSize ) );
-    // ImGui::PushStyleVar( ImGuiStyleVar_WindowPadding, ImVec2( 0, 0 ) );
     _framebuffer.BeginFrame();
+
+    // Blit the main terminal framebuffer to the output buffer.
     std::copy( _bgTerminalBuffer.DataNC().begin(), _bgTerminalBuffer.DataNC().end(), _framebuffer.DataNC().begin() );
 
     if( _displayTerminal )
     {
+        // Dim the main terminal buffer before displaying the work terminal 
+        // over it
+
         int32_t terminalWidth  = static_cast<int32_t>( _framebuffer.Columns() * 0.75f );
         int32_t remainingWidth = _framebuffer.Columns() - terminalWidth;
         if( ( remainingWidth % 2 ) != 0 )

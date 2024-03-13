@@ -124,7 +124,7 @@ void framebuffer_t::EndFrame()
 }
 
 void framebuffer_t::SetTextAttributes( bool bold, bool italic, bool underline, bool strikeThrough, bool faint, bool reversed,
-                                       bool hidden )
+                                       bool hidden, bool slowBlink, bool fastBlink )
 {
     _attributes = _attributes & ( CharacterAttribute::DEFAULT_BG | CharacterAttribute::DEFAULT_FG );
 
@@ -135,6 +135,8 @@ void framebuffer_t::SetTextAttributes( bool bold, bool italic, bool underline, b
     _attributes |= faint ? CharacterAttribute::FAINT : 0;
     _attributes |= reversed ? CharacterAttribute::REVERSED : 0;
     _attributes |= hidden ? CharacterAttribute::HIDDEN : 0;
+    _attributes |= slowBlink ? CharacterAttribute::SLOW_BLINK : 0;
+    _attributes |= fastBlink ? CharacterAttribute::FAST_BLINK : 0;
 
     //     std::cout << "SetTextAttributes( "
     //               << "Attr = " << std::bitset<16>( _attributes ) << "; "

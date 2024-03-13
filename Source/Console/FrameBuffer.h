@@ -34,7 +34,8 @@ class framebuffer_t
     void putc( char ch );
     void ClearCurrentLine();
 
-    void SetTextAttributes( bool bold, bool italic, bool underline, bool strikeThrough, bool faint, bool reversed, bool hidden );
+    void SetTextAttributes( bool bold, bool italic, bool underline, bool strikeThrough, bool faint, bool reversed, bool hidden,
+                            bool slowBlink, bool fastBlink );
 
     void SetBackground( uint8_t r, uint8_t g, uint8_t b );
     void SetBackground( uint32_t b );

@@ -28,8 +28,8 @@ class Terminal
     uint32_t _columns = 0;
     uint32_t _rows    = 0;
 
-    ImFont *_normalFont     = nullptr;
-    ImFont *_boldFont       = nullptr;
-    ImFont *_italicFont     = nullptr;
-    ImFont *_boldItalicFont = nullptr;
+    // ImFont *_normalFont     = nullptr;
+    // ImFont *_boldFont       = nullptr;
+    // ImFont *_italicFont     = nullptr;
+    // ImFont *_boldItalicFont = nullptr;
 };

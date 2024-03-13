@@ -12,8 +12,10 @@ enum CharacterAttribute : uint32_t
     STRIKETHROUGH = ( 1 << 4 ),
     REVERSED      = ( 1 << 5 ),
     HIDDEN        = ( 1 << 6 ),
-    DEFAULT_BG    = ( 1 << 7 ),
-    DEFAULT_FG    = ( 1 << 8 )
+    SLOW_BLINK    = ( 1 << 7 ),
+    FAST_BLINK    = ( 1 << 8 ),
+    DEFAULT_BG    = ( 1 << 9 ),
+    DEFAULT_FG    = ( 1 << 10 )
 };
 
 struct Glyph

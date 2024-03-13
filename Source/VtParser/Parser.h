@@ -77,6 +77,8 @@ class Vt100Parser
     bool _strikeout    = false;
     bool _reversed     = false;
     bool _hidden       = false;
+    bool _slowBlink    = false;
+    bool _fastBlink    = false;
     bool _useDefaultFg = false;
     bool _useDefaultBg = false;
 
