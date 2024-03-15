@@ -17,9 +17,11 @@ UI::UI()
 void UI::Start()
 {
     _bgTerminal = std::make_shared<PTYProcess>( "py \"C:\\GitLab\\WinTMux\\Scripts\\test_terminal.py\"", _bgTerminalBuffer );
+    _fgTerminal = std::make_shared<PTYProcess>( "powershell", _bgTerminalBuffer );
     // _bgTerminal = std::make_shared<PTYProcess>( "nvim", _bgTerminalBuffer );
     //_bgTerminal = std::make_shared<PTYProcess>( "python -m rich", _bgTerminalBuffer );
     _bgTerminalBuffer.BeginFrame();
+    _fgTerminalBuffer.BeginFrame();
 }
 
 void UI::Stop()
@@ -31,6 +33,7 @@ void UI::Resize( uint32_t columns, uint32_t rows )
 {
     _framebuffer.Resize( rows, columns );
     _bgTerminalBuffer.Resize( rows, columns );
+    _fgTerminalBuffer.Resize( rows, columns );
 }
 
 framebuffer_t &UI::FrameBuffer()
@@ -173,32 +176,32 @@ void UI::Render()
 
                 bg = r << 16 | g << 8 | b;
             }
-            
+
             uint32_t attributes = glyph.Attributes >> 48;
 
             glyph.Attributes =
                 static_cast<uint64_t>( attributes ) << 48 | static_cast<uint64_t>( fg ) << 24 | static_cast<uint64_t>( bg );
         }
 
-        int32_t terminalWidth  = static_cast<int32_t>( _framebuffer.Columns() * 0.75f );
-        int32_t remainingWidth = _framebuffer.Columns() - terminalWidth;
+        _fgTerminalWidth       = static_cast<int32_t>( _framebuffer.Columns() * 0.75f );
+        int32_t remainingWidth = _framebuffer.Columns() - _fgTerminalWidth;
         if( ( remainingWidth % 2 ) != 0 )
         {
-            terminalWidth++;
+            _fgTerminalWidth++;
             remainingWidth--;
         }
 
-        int32_t terminalHeight  = static_cast<int32_t>( _framebuffer.Rows() * 0.95f );
-        int32_t remainingHeight = _framebuffer.Rows() - terminalHeight;
+        _fgTerminalHeight       = static_cast<int32_t>( _framebuffer.Rows() * 0.95f );
+        int32_t remainingHeight = _framebuffer.Rows() - _fgTerminalHeight;
         if( ( remainingHeight % 2 ) != 0 )
         {
-            terminalHeight++;
+            _fgTerminalHeight++;
             remainingHeight--;
         }
 
         _framebuffer.SetForeground( 200, 200, 200 );
         _framebuffer.SetBackground( 20, 20, 20 );
-        _framebuffer.DrawRect( remainingWidth / 2, remainingHeight / 2, terminalWidth, terminalHeight, u8"\u256D", u8"\u2500",
+        _framebuffer.DrawRect( remainingWidth / 2, remainingHeight / 2, _fgTerminalWidth, _fgTerminalHeight, u8"\u256D", u8"\u2500",
                                u8"\u256E", u8"\u2502", u8"\u256F", u8"\u2500", u8"\u2570", u8"\u2502" );
     }
 
