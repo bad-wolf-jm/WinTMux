@@ -17,7 +17,7 @@ UI::UI()
 void UI::Start()
 {
     _bgTerminal = std::make_shared<PTYProcess>( "py \"C:\\GitLab\\WinTMux\\Scripts\\test_terminal.py\"", _bgTerminalBuffer );
-    _fgTerminal = std::make_shared<PTYProcess>( "powershell", _bgTerminalBuffer );
+    _fgTerminal = std::make_shared<PTYProcess>( "powershell", _fgTerminalBuffer );
     // _bgTerminal = std::make_shared<PTYProcess>( "nvim", _bgTerminalBuffer );
     //_bgTerminal = std::make_shared<PTYProcess>( "python -m rich", _bgTerminalBuffer );
     _bgTerminalBuffer.BeginFrame();
@@ -33,7 +33,20 @@ void UI::Resize( uint32_t columns, uint32_t rows )
 {
     _framebuffer.Resize( rows, columns );
     _bgTerminalBuffer.Resize( rows, columns );
-    _fgTerminalBuffer.Resize( rows, columns );
+
+    _fgTerminalWidth  = static_cast<int32_t>( _framebuffer.Columns() * 0.75f );
+    _fgTerminalHeight = static_cast<int32_t>( _framebuffer.Rows() * 0.95f );
+
+    int32_t remainingWidth = _framebuffer.Columns() - _fgTerminalWidth;
+    if( ( remainingWidth % 2 ) != 0 )
+        _fgTerminalWidth++;
+
+    int32_t remainingHeight = _framebuffer.Rows() - _fgTerminalHeight;
+    if( ( remainingHeight % 2 ) != 0 )
+        _fgTerminalHeight++;
+
+    // Reduce the size of the terminal framebuffer to allow space for the frame
+    _fgTerminalBuffer.Resize( _fgTerminalHeight - 2, _fgTerminalWidth - 2 );
 }
 
 framebuffer_t &UI::FrameBuffer()
@@ -147,6 +160,7 @@ void UI::OnKeyPress( keycode_t const &keyCode, uint32_t modifiers )
 void UI::Render()
 {
     _bgTerminal->PipeListener();
+    _fgTerminal->PipeListener();
 
     _framebuffer.BeginFrame();
 
@@ -183,66 +197,31 @@ void UI::Render()
                 static_cast<uint64_t>( attributes ) << 48 | static_cast<uint64_t>( fg ) << 24 | static_cast<uint64_t>( bg );
         }
 
-        _fgTerminalWidth       = static_cast<int32_t>( _framebuffer.Columns() * 0.75f );
-        int32_t remainingWidth = _framebuffer.Columns() - _fgTerminalWidth;
-        if( ( remainingWidth % 2 ) != 0 )
-        {
-            _fgTerminalWidth++;
-            remainingWidth--;
-        }
-
-        _fgTerminalHeight       = static_cast<int32_t>( _framebuffer.Rows() * 0.95f );
+        int32_t remainingWidth  = _framebuffer.Columns() - _fgTerminalWidth;
         int32_t remainingHeight = _framebuffer.Rows() - _fgTerminalHeight;
-        if( ( remainingHeight % 2 ) != 0 )
-        {
-            _fgTerminalHeight++;
-            remainingHeight--;
-        }
+
+        int32_t fgTerminalPositionX = remainingWidth / 2;
+        int32_t fgTerminalPositionY = remainingHeight / 2;
 
         _framebuffer.SetForeground( 200, 200, 200 );
         _framebuffer.SetBackground( 20, 20, 20 );
-        _framebuffer.DrawRect( remainingWidth / 2, remainingHeight / 2, _fgTerminalWidth, _fgTerminalHeight, u8"\u256D", u8"\u2500",
+        _framebuffer.DrawRect( fgTerminalPositionX, fgTerminalPositionY, _fgTerminalWidth, _fgTerminalHeight, u8"\u256D", u8"\u2500",
                                u8"\u256E", u8"\u2502", u8"\u256F", u8"\u2500", u8"\u2570", u8"\u2502" );
+
+        // Paint the foreground terminal framebuffer inside the rectangle
+        for( int r = 0; r < _fgTerminalBuffer.Rows(); r++ )
+        {
+            for( int c = 0; c < _fgTerminalBuffer.Columns(); c++ )
+            {
+                int position         = r * _fgTerminalBuffer.Columns() + c;
+                int positionOnScreen = ( r + fgTerminalPositionY + 1 ) * _framebuffer.Columns() + ( c + fgTerminalPositionX + 1 );
+
+                _framebuffer.DataNC()[positionOnScreen] = _fgTerminalBuffer.DataNC()[position];
+            }
+        }
     }
 
     _framebuffer.EndFrame();
-    // if( _displayedOverlay != eOverlayType::NONE )
-    // {
-    //     ImGui::SetNextWindowPos( ImVec2( 0.0f, 0.0f ) );
-    //     ImGui::SetNextWindowSize( ImVec2( _windowSize.x, _windowSize.y ) );
-    //     ImGui::PushStyleColor( ImGuiCol_WindowBg, IM_COL32( 0, 0, 0, 200 ) );
-    //     ImGui::Begin( "##4", &_windowIsOpen,
-    //                   ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |
-    //                       ImGuiWindowFlags_NoScrollbar );
-    // }
-
-    // switch( _displayedOverlay )
-    // {
-    // case eOverlayType::TERMINAL_SELECTOR:
-    // {
-    //     // _terminalSelectorOverlay->Render();
-    //     break;
-    // }
-    // case eOverlayType::WORKSPACE_SELECTOR:
-    // {
-    //     // _workspaceSelectorOverlay->Render();
-    //     break;
-    // }
-    // case eOverlayType::NONE:
-    // default:
-    //     break;
-    // }
-
-    // if( _displayedOverlay != eOverlayType::NONE )
-    // {
-    //     ImGui::End();
-    //     ImGui::PopStyleColor();
-    // }
-
-    // ImGui::PopStyleVar();
-    // ImGui::PopStyleVar();
-
-    // ImGui::Render();
 }
 
 void UI::RenderHeader()
