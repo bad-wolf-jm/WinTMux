@@ -1,5 +1,6 @@
 #pragma once
-#include "Platform/IOStream.h"
+#include "Platform/stdin.h"
+#include "Platform/stdout.h"
 #include "UI/UI.h"
 #include <memory>
 

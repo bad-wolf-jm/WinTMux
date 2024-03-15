@@ -36,7 +36,8 @@ add_executable(WinTMux
     Console/FrameBuffer.cpp
 
     Platform/Application.cpp
-    Platform/iostream.cpp
+    Platform/stdout.cpp
+    Platform/stdin.cpp
 
     UI/UI.cpp
     UI/Workspace.cpp
