@@ -4,7 +4,7 @@
 #include <vector>
 
 // #include "CommandLine.h"
-#include "Core/Modes.h"
+// #include "Core/Modes.h"
 // #include "MainWindow/TerminalSelectorOverlay.h"
 // #include "MainWindow/WorkspaceSelectorOverlay.h"
 #include "Console/FrameBuffer.h"

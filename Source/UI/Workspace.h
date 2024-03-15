@@ -1,7 +1,7 @@
 #pragma once
 #include "Console/FrameBuffer.h"
 #include "Core/String.h"
-#include "Workspace/Tree.h"
+// #include "Workspace/Tree.h"
 
 class Workspace
 {

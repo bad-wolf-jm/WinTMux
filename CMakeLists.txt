@@ -181,7 +181,7 @@ add_compile_definitions(_SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS)
 #include_directories(Shaders/Embedded)
 #include_directories(Shaders/Source)
 
-add_subdirectory(ThirdParty)
+# add_subdirectory(ThirdParty)
 #add_subdirectory(Shaders)
 add_subdirectory(Source)
 # add_subdirectory(Programs/TestMaterialSystem)
