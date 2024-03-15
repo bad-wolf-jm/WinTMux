@@ -8,7 +8,7 @@
 // #include "MainWindow/TerminalSelectorOverlay.h"
 // #include "MainWindow/WorkspaceSelectorOverlay.h"
 #include "Console/FrameBuffer.h"
-#include "Core/KeyCodes.Console.h"
+#include "Core/KeyCodes.h"
 #include "Platform/process.h"
 #include "Workspace.h"
 // #include "imgui.h"

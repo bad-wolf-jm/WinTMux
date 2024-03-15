@@ -12,6 +12,6 @@ class pipe_t
     void  close_write();
 
   private:
-    void *_wstream{ (void *)-1 }; // Console stdin
-    void *_rstream{ (void *)-1 }; // Console stdin
+    void *_wstream{ (void *)-1 };
+    void *_rstream{ (void *)-1 };
 };

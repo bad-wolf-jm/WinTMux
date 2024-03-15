@@ -6,7 +6,7 @@
 
 #include "Console/Framebuffer.h"
 #include "Core/Glyph.h"
-#include "Core/KeyCodes.Console.h"
+#include "Core/KeyCodes.h"
 #include "Core/String.h"
 
 using handle_t = void *;

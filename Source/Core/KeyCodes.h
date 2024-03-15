@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "GLFW/glfw3.h"
+// #include "GLFW/glfw3.h"
 
 #include <cstdint>
 enum class keycode : size_t
@@ -95,7 +95,7 @@ enum class keycode : size_t
     KEYPAD_SUBTRACT, // = GLFW_KEY_KP_SUBTRACT,
     KEYPAD_ADD,      // = GLFW_KEY_KP_ADD,
     BACKSPACE,       // = GLFW_KEY_BACKSPACE,
-    DELETE_K,          // = GLFW_KEY_DELETE,
+    DELETE_K,        // = GLFW_KEY_DELETE,
     ESCAPE,          // = GLFW_KEY_ESCAPE,
     ENTER,           // = GLFW_KEY_ENTER,
     TAB,             // = GLFW_KEY_TAB,
@@ -145,9 +145,8 @@ enum class modifiers : size_t
 struct keycode_t
 {
     keycode KeyCode;
-    int      ScanCode;
-    char     Symbol;
-    char     ShiftedSymbol;
+    char    Symbol;
+    char    ShiftedSymbol;
 
     char GetCharacter( bool isShifted ) const;
 };
@@ -161,9 +160,9 @@ class KeyboardHandler
     bool IsPrintable( keycode key );
 
     keycode_t const &GetKeyCode( int keycode );
-    uint32_t       GetModifierState( int mods );
 
   private:
-    keycode_t Keys[GLFW_KEY_LAST + 1];
-    void    InitKeyCodes();
+    keycode_t _keys[256 + 1];
+
+    void      InitKeyCodes();
 };

@@ -13,7 +13,6 @@ pipe_t::pipe_t()
 
 pipe_t::~pipe_t()
 {
-    // Clean-up the pipes
     close_read();
     close_write();
 }
