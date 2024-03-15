@@ -9,7 +9,7 @@
 // #include "MainWindow/WorkspaceSelectorOverlay.h"
 #include "Console/FrameBuffer.h"
 #include "Core/KeyCodes.Console.h"
-#include "PseudoConsole/PTYProcess.h"
+#include "Platform/process.h"
 #include "Workspace.h"
 // #include "imgui.h"
 
@@ -53,6 +53,6 @@ class UI
     int32_t       _fgTerminalInnerHeight = 0;
     framebuffer_t _fgTerminalBuffer;
 
-    std::shared_ptr<PTYProcess> _bgTerminal = nullptr;
-    std::shared_ptr<PTYProcess> _fgTerminal = nullptr;
+    std::shared_ptr<process_t> _bgTerminal = nullptr;
+    std::shared_ptr<process_t> _fgTerminal = nullptr;
 };

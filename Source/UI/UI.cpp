@@ -16,10 +16,10 @@ UI::UI()
 
 void UI::Start()
 {
-    _bgTerminal = std::make_shared<PTYProcess>( "py \"C:\\GitLab\\WinTMux\\Scripts\\test_terminal.py\"", _bgTerminalBuffer );
-    _fgTerminal = std::make_shared<PTYProcess>( "powershell", _fgTerminalBuffer );
-    // _bgTerminal = std::make_shared<PTYProcess>( "nvim", _bgTerminalBuffer );
-    //_bgTerminal = std::make_shared<PTYProcess>( "python -m rich", _bgTerminalBuffer );
+    _bgTerminal = std::make_shared<process_t>( "py \"C:\\GitLab\\WinTMux\\Scripts\\test_terminal.py\"", _bgTerminalBuffer );
+    _fgTerminal = std::make_shared<process_t>( "powershell", _fgTerminalBuffer );
+    // _bgTerminal = std::make_shared<process_t>( "nvim", _bgTerminalBuffer );
+    //_bgTerminal = std::make_shared<process_t>( "python -m rich", _bgTerminalBuffer );
     _bgTerminalBuffer.BeginFrame();
     _fgTerminalBuffer.BeginFrame();
 }

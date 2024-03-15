@@ -1,4 +1,5 @@
 #pragma once
+
 #include <SDKDDKVer.h>
 #include <Windows.h>
 #include <errhandlingapi.h>
@@ -14,11 +15,11 @@
 #include "Core/String.h"
 #include "VtParser/Parser.h"
 
-class PTYProcess
+class process_t
 {
   public:
-    PTYProcess( string_t command, framebuffer_t &framebuffer );
-    ~PTYProcess();
+    process_t( string_t command, framebuffer_t &framebuffer );
+    ~process_t();
 
     void WaitForCompletion( int32_t timeout = 0 );
     void PipeListener();

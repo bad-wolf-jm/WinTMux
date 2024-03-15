@@ -1,8 +1,10 @@
-#include "PTYProcess.h"
+#include "process.h"
+
+
 #include <iostream>
 #include <ostream>
 
-PTYProcess::PTYProcess( string_t command, framebuffer_t &framebuffer )
+process_t::process_t( string_t command, framebuffer_t &framebuffer )
     : _columns{ framebuffer.Columns() }
     , _lines{ framebuffer.Rows() }
     , _framebuffer{ framebuffer }
@@ -15,7 +17,7 @@ PTYProcess::PTYProcess( string_t command, framebuffer_t &framebuffer )
 
     CreateConsole( _columns, _lines );
     //_processIsActive    = true;
-    //_pipeListenerThread = std::thread( &PTYProcess::PipeListener, this );
+    //_pipeListenerThread = std::thread( &process_t::PipeListener, this );
 
     size_t attributeListSize = 0;
     InitializeProcThreadAttributeList( NULL, 1, 0, &attributeListSize );
@@ -51,7 +53,7 @@ PTYProcess::PTYProcess( string_t command, framebuffer_t &framebuffer )
     StartProcess();
 }
 
-PTYProcess::~PTYProcess()
+process_t::~process_t()
 {
     // Close the listening thread
 
@@ -74,7 +76,7 @@ PTYProcess::~PTYProcess()
     free( _startupInfo.lpAttributeList );
 }
 
-void PTYProcess::WaitForCompletion( int32_t timeout )
+void process_t::WaitForCompletion( int32_t timeout )
 {
     // Wait up to 10s for ping process to complete
     DWORD result = WaitForSingleObject( _clientProcess.hThread, timeout );
@@ -99,7 +101,7 @@ void PTYProcess::WaitForCompletion( int32_t timeout )
     //_pipeListenerThread.join();
 }
 
-void PTYProcess::CreateConsole( int16_t columns, int16_t lines )
+void process_t::CreateConsole( int16_t columns, int16_t lines )
 {
     HANDLE consoleStdIn{ INVALID_HANDLE_VALUE };
     HANDLE consoleStdOut{ INVALID_HANDLE_VALUE };
@@ -121,7 +123,7 @@ void PTYProcess::CreateConsole( int16_t columns, int16_t lines )
         CloseHandle( consoleStdIn );
 }
 
-void PTYProcess::StartProcess()
+void process_t::StartProcess()
 {
     SetEnvironmentVariable( TEXT( "TERM" ), TEXT( "dumb" ) );
     CreateProcessA( NULL,                                       // No module name - use Command Line
@@ -136,14 +138,14 @@ void PTYProcess::StartProcess()
                     &_clientProcess );                          // Pointer to PROCESS_INFORMATION
 }
 
-bool PTYProcess::CreatePipes( HANDLE &consoleStdIn, HANDLE &consoleStdOut )
+bool process_t::CreatePipes( HANDLE &consoleStdIn, HANDLE &consoleStdOut )
 {
     HRESULT hr{ E_UNEXPECTED };
 
     return CreatePipe( &consoleStdIn, &_consoleStdIn, NULL, 0 ) && CreatePipe( &_consoleStdOut, &consoleStdOut, NULL, 0 );
 }
 
-void __cdecl PTYProcess::PipeListener()
+void __cdecl process_t::PipeListener()
 {
     HANDLE hPipe{ _consoleStdOut };
     // HANDLE hConsole{ GetStdHandle( STD_OUTPUT_HANDLE ) };

@@ -28,7 +28,7 @@ add_executable(WinTMux
     # MainWindow/WorkspaceSelectorOverlay.cpp
 
     Launch/ConsoleMain.cpp
-    PseudoConsole/PTYProcess.cpp
+    Platform/process.cpp
 
     # Console/TerminalWindow.cpp
     Console/FrameBuffer.cpp
