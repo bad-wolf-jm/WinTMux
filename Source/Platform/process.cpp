@@ -1,6 +1,5 @@
 #include "process.h"
 
-
 #include <iostream>
 #include <ostream>
 
@@ -10,14 +9,9 @@ process_t::process_t( string_t command, framebuffer_t &framebuffer )
     , _framebuffer{ framebuffer }
     , _command{ command }
 {
-
-    // std::cout << _columns <<  " " << _lines << std::endl;
-
     _startupInfo.StartupInfo.cb = sizeof( STARTUPINFOEXA );
 
-    CreateConsole( _columns, _lines );
-    //_processIsActive    = true;
-    //_pipeListenerThread = std::thread( &process_t::PipeListener, this );
+    _console = std::make_unique<console_t>( _columns, _lines );
 
     size_t attributeListSize = 0;
     InitializeProcThreadAttributeList( NULL, 1, 0, &attributeListSize );
@@ -26,7 +20,7 @@ process_t::process_t( string_t command, framebuffer_t &framebuffer )
     if( InitializeProcThreadAttributeList( _startupInfoAttributeList, 1, 0, &attributeListSize ) )
     {
         _startupInfo.lpAttributeList = _startupInfoAttributeList;
-        HRESULT hr = UpdateProcThreadAttribute( _startupInfo.lpAttributeList, 0, PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE, _console,
+        HRESULT hr = UpdateProcThreadAttribute( _startupInfo.lpAttributeList, 0, PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE, _console->handle(),
                                                 sizeof( HPCON ), NULL, NULL );
         if( !hr )
         {
@@ -55,21 +49,9 @@ process_t::process_t( string_t command, framebuffer_t &framebuffer )
 
 process_t::~process_t()
 {
-    // Close the listening thread
-
     // Now safe to clean-up client app's process-info & thread
     CloseHandle( _clientProcess.hThread );
     CloseHandle( _clientProcess.hProcess );
-
-    // Close ConPTY - this will terminate client process if running
-    ClosePseudoConsole( _console );
-
-    // Clean-up the pipes
-    if( INVALID_HANDLE_VALUE != _consoleStdOut )
-        CloseHandle( _consoleStdOut );
-
-    if( INVALID_HANDLE_VALUE != _consoleStdIn )
-        CloseHandle( _consoleStdIn );
 
     // Cleanup attribute list
     DeleteProcThreadAttributeList( _startupInfo.lpAttributeList );
@@ -97,30 +79,6 @@ void process_t::WaitForCompletion( int32_t timeout )
             errorText = NULL;
         }
     }
-    //_processIsActive = false;
-    //_pipeListenerThread.join();
-}
-
-void process_t::CreateConsole( int16_t columns, int16_t lines )
-{
-    HANDLE consoleStdIn{ INVALID_HANDLE_VALUE };
-    HANDLE consoleStdOut{ INVALID_HANDLE_VALUE };
-
-    CreatePipes( consoleStdIn, consoleStdOut );
-    COORD consoleSize{ columns, lines };
-
-    // Create the Pseudo Console of the required size, attached to the PTY-end
-    // of the pipes
-    HRESULT hr = CreatePseudoConsole( consoleSize, consoleStdIn, consoleStdOut, 0, &_console );
-
-    // Note: We can close the handles to the PTY-end of the pipes here
-    // because the handles are dup'ed into the ConHost and will be released
-    // when the ConPTY is destroyed.
-    if( INVALID_HANDLE_VALUE != consoleStdOut )
-        CloseHandle( consoleStdOut );
-
-    if( INVALID_HANDLE_VALUE != consoleStdIn )
-        CloseHandle( consoleStdIn );
 }
 
 void process_t::StartProcess()
@@ -138,16 +96,9 @@ void process_t::StartProcess()
                     &_clientProcess );                          // Pointer to PROCESS_INFORMATION
 }
 
-bool process_t::CreatePipes( HANDLE &consoleStdIn, HANDLE &consoleStdOut )
-{
-    HRESULT hr{ E_UNEXPECTED };
-
-    return CreatePipe( &consoleStdIn, &_consoleStdIn, NULL, 0 ) && CreatePipe( &_consoleStdOut, &consoleStdOut, NULL, 0 );
-}
-
 void __cdecl process_t::PipeListener()
 {
-    HANDLE hPipe{ _consoleStdOut };
+    HANDLE hPipe{ _console->std_out()->read_end() };
     // HANDLE hConsole{ GetStdHandle( STD_OUTPUT_HANDLE ) };
 
     const DWORD BUFF_SIZE{ 512 };
@@ -162,19 +113,7 @@ void __cdecl process_t::PipeListener()
     if( dwBytesRead == 0 )
         return;
 
-    // do
-    // {
-    // Read from the pipe
     fRead = ReadFile( hPipe, szBuffer, BUFF_SIZE, &dwBytesRead, NULL );
 
     _parser.vtparse( _framebuffer, (unsigned char *)szBuffer, dwBytesRead );
-    //  _framebuffer.EndFrame();
-    // Write received text to the Console
-    // Note: Write to the Console using WriteFile(hConsole...), not
-    // printf()/puts() to prevent partially-read VT sequences from corrupting
-    // output
-    // WriteFile( hConsole, szBuffer, dwBytesRead, &dwBytesWritten, NULL );
-    // std::cout << dwBytesRead << std::endl;
-
-    // } while( _processIsActive && fRead && dwBytesRead >= 0 );
 }

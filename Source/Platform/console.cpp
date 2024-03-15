@@ -22,3 +22,18 @@ console_t::~console_t()
 {
     ClosePseudoConsole( _console );
 }
+
+std::unique_ptr<pipe_t> &console_t::std_in()
+{
+    return _stdin;
+}
+
+std::unique_ptr<pipe_t> &console_t::std_out()
+{
+    return _stdout;
+}
+
+void *console_t::handle()
+{
+    return _console;
+}

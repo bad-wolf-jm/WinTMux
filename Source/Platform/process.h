@@ -13,6 +13,7 @@
 #include <winbase.h>
 
 #include "Core/String.h"
+#include "Platform/console.h"
 #include "VtParser/Parser.h"
 
 class process_t
@@ -29,9 +30,7 @@ class process_t
     uint32_t _columns{ 0 };
     uint32_t _lines{ 0 };
 
-    HPCON  _console{ INVALID_HANDLE_VALUE };       // Handle to the TTY
-    HANDLE _consoleStdIn{ INVALID_HANDLE_VALUE };  // Console stdin
-    HANDLE _consoleStdOut{ INVALID_HANDLE_VALUE }; // Console stdout
+    std::unique_ptr<console_t> _console;
 
     PROCESS_INFORMATION          _clientProcess{};
     STARTUPINFOEXA               _startupInfo{};
@@ -40,12 +39,9 @@ class process_t
     bool        _processIsActive = true;
     std::thread _pipeListenerThread;
 
-    
   private:
     void StartProcess();
-    void CreateConsole( int16_t columns, int16_t lines );
-    bool CreatePipes( HANDLE &consoleStdIn, HANDLE &consoleStdOut );
 
-    Vt100Parser _parser;
+    Vt100Parser    _parser;
     framebuffer_t &_framebuffer;
 };

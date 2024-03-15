@@ -16,32 +16,21 @@
 class console_t
 {
   public:
-    // console_t( string_t command, uint32_t columns, uint32_t lines );
     console_t() = default;
     console_t( int16_t columns, int16_t lines );
     ~console_t();
 
-    // void WaitForCompletion( int32_t timeout = 0 );
+    std::unique_ptr<pipe_t> &std_in();
+    std::unique_ptr<pipe_t> &std_out();
+
+    void *handle();
 
   private:
-    // string_t _command = "";
     int16_t _columns{ 0 };
     int16_t _lines{ 0 };
 
-    void  *_console{ (void *)-1 }; // Handle to the TTY
-    std::unique_ptr<pipe_t> _stdin;                 //{ INVALID_HANDLE_VALUE };  // Console stdin
-    std::unique_ptr<pipe_t> _stdout;                //{ INVALID_HANDLE_VALUE }; // Console stdout
+    void *_console{ (void *)-1 }; // Handle to the TTY
 
-    //    PROCESS_INFORMATION          _clientProcess{};
-    //    STARTUPINFOEXA               _startupInfo{};
-    //    LPPROC_THREAD_ATTRIBUTE_LIST _startupInfoAttributeList;
-
-    //    bool        _processIsActive = true;
-    //    std::thread _pipeListenerThread;
-
-  private:
-    //     void StartProcess();
-    //     void CreateConsole( int16_t columns, int16_t lines );
-    //     bool CreatePipes( HANDLE &consoleStdIn, HANDLE &consoleStdOut );
-    //     void PipeListener();
+    std::unique_ptr<pipe_t> _stdin;  // Console stdin
+    std::unique_ptr<pipe_t> _stdout; // Console stdout
 };
