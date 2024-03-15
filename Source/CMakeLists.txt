@@ -29,6 +29,8 @@ add_executable(WinTMux
 
     Launch/ConsoleMain.cpp
     Platform/process.cpp
+    Platform/console.cpp
+    Platform/pipe.cpp
 
     # Console/TerminalWindow.cpp
     Console/FrameBuffer.cpp
