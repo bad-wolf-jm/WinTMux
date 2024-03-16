@@ -1,4 +1,4 @@
-#pragma oncex
+#pragma once
 
 #include "Platform/stdin.h"
 #include "Platform/stdout.h"

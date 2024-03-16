@@ -590,7 +590,6 @@ void Vt100Parser::ProcessGraphicsMode( framebuffer_t &framebuffer )
         framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden, _slowBlink, _fastBlink );
         framebuffer.SetForeground( 0u );
         framebuffer.SetBackground( 0u );
-        // std::cout << "RESET1" << std::endl;
         break; // Reset or normal	All attributes become turned off
     case 1:
         _bold = true;
