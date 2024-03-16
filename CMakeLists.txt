@@ -141,7 +141,7 @@ set(SE_EXTRA_INCLUDES ${sol2_SOURCE_DIR}/include ${SE_EXTRA_INCLUDES})
 #set(SE_EXTRA_INCLUDES ${glslangl_SOURCE_DIR} ${SE_EXTRA_INCLUDES})
 
 set(SE_EXTRA_INCLUDES ${SE_EXTRA_INCLUDES} PARENT_SCOPE)
-set(EXTERNAL_LIBRARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty)
+set(EXTERNAL_LIBRARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Lib)
 
 set(IMGUI_DIR ${EXTERNAL_LIBRARY_DIR}/imgui)
 include_directories(${IMGUI_DIR})
@@ -180,7 +180,7 @@ add_compile_definitions(NOMINMAX)
 #include_directories(Shaders/Embedded)
 #include_directories(Shaders/Source)
 
-add_subdirectory(ThirdParty)
+add_subdirectory(Lib)
 #add_subdirectory(Shaders)
 add_subdirectory(Source)
 # add_subdirectory(Programs/TestMaterialSystem)

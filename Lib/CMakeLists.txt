@@ -16,9 +16,7 @@ set(IMGUI_DIR ${EXTERNAL_LIBRARY_DIR}/imgui)
 include_directories(${IMGUI_DIR})
 
 include_directories(
-    ${IMGUI_DIR}
-    ${IMGUI_DIR}/backends
-    ${IMGUI_DIR}/misc/cpp )
+    ${IMGUI_DIR} )
 
 add_library(imgui STATIC
     ${IMGUI_DIR}/imgui.cpp
