@@ -3,15 +3,9 @@
 #include <memory>
 #include <vector>
 
-// #include "CommandLine.h"
-#include "Core/Modes.h"
-// #include "MainWindow/TerminalSelectorOverlay.h"
-// #include "MainWindow/WorkspaceSelectorOverlay.h"
 #include "Console/FrameBuffer.h"
 #include "Core/KeyCodes.h"
 #include "Platform/process.h"
-#include "Workspace.h"
-// #include "imgui.h"
 
 enum class eOverlayType
 {
@@ -34,10 +28,6 @@ class UI
 
     framebuffer_t &FrameBuffer();
 
-  public:
-    eInputMode Mode = eInputMode::Normal;
-
-    void RenderHeader();
 
   private:
     bool _displayTerminal = false;
