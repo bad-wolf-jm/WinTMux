@@ -59,6 +59,7 @@ class framebuffer_t
     {
         return _rows;
     }
+    
     uint32_t Columns()
     {
         return _columns;

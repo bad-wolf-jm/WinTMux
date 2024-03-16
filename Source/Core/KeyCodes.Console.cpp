@@ -1,7 +1,5 @@
 #include "KeyCodes.h"
-#include "GLFW/glfw3.h"
 
-// KeyCode Keys[KEY_LAST];
 char keycode_t::GetCharacter( bool isShifted ) const
 {
     return !isShifted ? Symbol : ShiftedSymbol;
