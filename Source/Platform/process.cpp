@@ -20,17 +20,18 @@ process_t::process_t( string_t command, framebuffer_t &framebuffer )
     if( InitializeProcThreadAttributeList( _startupInfoAttributeList, 1, 0, &attributeListSize ) )
     {
         _startupInfo.lpAttributeList = _startupInfoAttributeList;
-        HRESULT hr = UpdateProcThreadAttribute( _startupInfo.lpAttributeList, 0, PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE, _console->handle(),
-                                                sizeof( HPCON ), NULL, NULL );
+        HRESULT hr                   = UpdateProcThreadAttribute( _startupInfo.lpAttributeList, 0, PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE,
+                                                                  _console->handle(), sizeof( HPCON ), NULL, NULL );
         if( !hr )
         {
             LPTSTR errorText = NULL;
             FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_IGNORE_INSERTS,
-                           NULL, // unused with FORMAT_MESSAGE_FROM_SYSTEM
-                           GetLastError(), MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),
-                           (LPTSTR)&errorText, // output
-                           0,                  // minimum size for output buffer
-                           NULL );             // arguments - see note
+                           NULL,                                        // unused with FORMAT_MESSAGE_FROM_SYSTEM
+                           GetLastError(),                              //
+                           MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ), //
+                           (LPTSTR)&errorText,                          // output
+                           0,                                           // minimum size for output buffer
+                           NULL );                                      // arguments - see note
 
             if( NULL != errorText )
             {
@@ -66,11 +67,12 @@ void process_t::WaitForCompletion( int32_t timeout )
     {
         LPTSTR errorText = NULL;
         FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_IGNORE_INSERTS,
-                       NULL, // unused with FORMAT_MESSAGE_FROM_SYSTEM
-                       GetLastError(), MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),
-                       (LPTSTR)&errorText, // output
-                       0,                  // minimum size for output buffer
-                       NULL );             // arguments - see note
+                       NULL,                                        // unused with FORMAT_MESSAGE_FROM_SYSTEM
+                       GetLastError(),                              //
+                       MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ), //
+                       (LPTSTR)&errorText,                          // output
+                       0,                                           // minimum size for output buffer
+                       NULL );                                      // arguments - see note
 
         if( NULL != errorText )
         {

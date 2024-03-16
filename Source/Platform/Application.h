@@ -1,4 +1,5 @@
-#pragma once
+#pragma oncex
+
 #include "Platform/stdin.h"
 #include "Platform/stdout.h"
 #include "UI/UI.h"
