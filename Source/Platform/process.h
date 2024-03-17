@@ -42,6 +42,6 @@ class process_t
   private:
     void StartProcess();
 
-    Vt100Parser    _parser;
+    vtparser_t     _parser;
     framebuffer_t &_framebuffer;
 };

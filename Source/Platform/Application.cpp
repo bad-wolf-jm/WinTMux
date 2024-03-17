@@ -47,7 +47,7 @@ bool Application::Tick()
 
     _ui.Render();
 
-    _stdout.write( _ui.FrameBuffer() );
+    // _stdout.write( _ui.FrameBuffer() );
 
     if( _shouldExit )
         _ui.Stop();
@@ -58,3 +58,4 @@ bool Application::Tick()
 void Application::Shutdown()
 {
 }
+

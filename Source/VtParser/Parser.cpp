@@ -5,7 +5,7 @@
 #include <iomanip>
 #include <iostream>
 
-Vt100Parser::Vt100Parser()
+vtparser_t::vtparser_t()
 {
     state                  = VtParserState::ground;
     num_intermediate_chars = 0;
@@ -170,80 +170,80 @@ Vt100Parser::Vt100Parser()
     OnEvent( VtParserState::osc_string, Range{ 0x20, 0x7f }, Action::osc_put );
 }
 
-void Vt100Parser::OnEntry( VtParserState state, Action action )
+void vtparser_t::OnEntry( VtParserState state, Action action )
 {
     _entryActions[(uint8_t)state] = action;
 }
 
-void Vt100Parser::OnExit( VtParserState state, Action action )
+void vtparser_t::OnExit( VtParserState state, Action action )
 {
     _exitActions[(uint8_t)state] = action;
 }
 
-void Vt100Parser::OnEvent( Range range, Action action )
+void vtparser_t::OnEvent( Range range, Action action )
 {
     OnEvent( range, action, VtParserState::none );
 }
 
-void Vt100Parser::OnEvent( Range range, VtParserState transitionTo )
+void vtparser_t::OnEvent( Range range, VtParserState transitionTo )
 {
     OnEvent( range, Action::none, transitionTo );
 }
 
-void Vt100Parser::OnEvent( Range range, Action action, VtParserState transitionTo )
+void vtparser_t::OnEvent( Range range, Action action, VtParserState transitionTo )
 {
     for( int i = 0; i < (int)VtParserState::count; i++ )
         OnEvent( (VtParserState)i, range, action, transitionTo );
 }
 
-void Vt100Parser::OnEvent( VtParserState state, Range range, Action action )
+void vtparser_t::OnEvent( VtParserState state, Range range, Action action )
 {
     OnEvent( state, range, action, VtParserState::none );
 }
 
-void Vt100Parser::OnEvent( VtParserState state, Range range, VtParserState transitionTo )
+void vtparser_t::OnEvent( VtParserState state, Range range, VtParserState transitionTo )
 {
     OnEvent( state, range, Action::none, transitionTo );
 }
 
-void Vt100Parser::OnEvent( VtParserState state, Range range, Action action, VtParserState transitionTo )
+void vtparser_t::OnEvent( VtParserState state, Range range, Action action, VtParserState transitionTo )
 {
     for( uint8_t c = range.Start; c <= range.End; c++ )
         OnEvent( state, c, action, transitionTo );
 }
 
-void Vt100Parser::OnEvent( uint8_t character, Action action )
+void vtparser_t::OnEvent( uint8_t character, Action action )
 {
     OnEvent( character, action, VtParserState::none );
 }
 
-void Vt100Parser::OnEvent( uint8_t character, VtParserState transitionTo )
+void vtparser_t::OnEvent( uint8_t character, VtParserState transitionTo )
 {
     OnEvent( character, Action::none, transitionTo );
 }
 
-void Vt100Parser::OnEvent( uint8_t character, Action action, VtParserState transitionTo )
+void vtparser_t::OnEvent( uint8_t character, Action action, VtParserState transitionTo )
 {
     for( int i = 0; i < (int)VtParserState::count; i++ )
         OnEvent( (VtParserState)i, character, action, transitionTo );
 }
 
-void Vt100Parser::OnEvent( VtParserState state, uint8_t character, Action action )
+void vtparser_t::OnEvent( VtParserState state, uint8_t character, Action action )
 {
     OnEvent( state, character, action, VtParserState::none );
 }
 
-void Vt100Parser::OnEvent( VtParserState state, uint8_t character, VtParserState transitionTo )
+void vtparser_t::OnEvent( VtParserState state, uint8_t character, VtParserState transitionTo )
 {
     OnEvent( state, character, Action::none, transitionTo );
 }
 
-void Vt100Parser::OnEvent( VtParserState state, uint8_t character, Action action, VtParserState transitionTo )
+void vtparser_t::OnEvent( VtParserState state, uint8_t character, Action action, VtParserState transitionTo )
 {
     _stateTransitions[(uint8_t)state][character] = state_transition_t{ transitionTo, action };
 }
 
-void Vt100Parser::Dispatch( framebuffer_t &framebuffer, Action action, char ch )
+void vtparser_t::Dispatch( framebuffer_t &framebuffer, Action action, char ch )
 {
 
     switch( action )
@@ -555,7 +555,7 @@ static const uint32_t colormapped[256] = {
 };
 // clang-format on
 
-void Vt100Parser::ProcessGraphicsMode( framebuffer_t &framebuffer )
+void vtparser_t::ProcessGraphicsMode( framebuffer_t &framebuffer )
 {
     if( num_params == 0 )
     {
@@ -711,7 +711,7 @@ void Vt100Parser::ProcessGraphicsMode( framebuffer_t &framebuffer )
     case 45:
     case 46:
     case 47:
-        _backgroundColor = colormapped[code - 30];
+        _backgroundColor = colormapped[code - 40];
         framebuffer.SetBackground( _backgroundColor );
         break; // Set background color	Next arguments are 5;n or 2;r;g;b
     case 48:
@@ -790,11 +790,11 @@ void Vt100Parser::ProcessGraphicsMode( framebuffer_t &framebuffer )
     }
 }
 
-void Vt100Parser::Erase( framebuffer_t &framebuffer )
+void vtparser_t::Erase( framebuffer_t &framebuffer )
 {
 }
 
-void Vt100Parser::do_action( framebuffer_t &framebuffer, Action action, char ch )
+void vtparser_t::do_action( framebuffer_t &framebuffer, Action action, char ch )
 {
     /* Some actions we handle internally (like parsing parameters), others
      * we hand to our client for processing */
@@ -869,7 +869,7 @@ void Vt100Parser::do_action( framebuffer_t &framebuffer, Action action, char ch 
     }
 }
 
-void Vt100Parser::do_state_change( framebuffer_t &framebuffer, VtParserState new_state, Action action, char ch )
+void vtparser_t::do_state_change( framebuffer_t &framebuffer, VtParserState new_state, Action action, char ch )
 {
     /* A state change is an action and/or a new state to transition to. */
 
@@ -901,14 +901,14 @@ void Vt100Parser::do_state_change( framebuffer_t &framebuffer, VtParserState new
     }
 }
 
-void Vt100Parser::vtparse( framebuffer_t &framebuffer, unsigned char *data, int len )
+void vtparser_t::vtparse( framebuffer_t &framebuffer, unsigned char *data, int len )
 {
     int i;
     for( i = 0; i < len; i++ )
     {
         unsigned char      ch     = data[i];
         state_transition_t change = _stateTransitions[(uint8_t)state][ch];
-        // std::cout << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint32_t)ch << " ";
-        do_state_change( framebuffer, change.TransitionTo, change.Action, ch );
+        std::cout << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint32_t)ch << " ";
+        // do_state_change( framebuffer, change.TransitionTo, change.Action, ch );
     }
 }

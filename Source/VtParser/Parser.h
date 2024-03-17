@@ -21,10 +21,10 @@ struct state_transition_t
 
 constexpr int MAX_INTERMEDIATE_CHARS = 2;
 
-class Vt100Parser
+class vtparser_t
 {
   public:
-    Vt100Parser();
+    vtparser_t();
 
     void vtparse( framebuffer_t &framebuffer, unsigned char *data, int len );
 
