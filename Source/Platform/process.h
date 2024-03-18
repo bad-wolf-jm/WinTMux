@@ -13,6 +13,7 @@
 #include <winbase.h>
 
 #include "Core/String.h"
+#include "Core/KeyCodes.h"
 #include "Platform/console.h"
 #include "VtParser/Parser.h"
 
@@ -24,6 +25,8 @@ class process_t
 
     void WaitForCompletion( int32_t timeout = 0 );
     void PipeListener();
+
+    void OnKeyPress(keycode_t const& KeyCode, uint32_t modifiers);
 
   private:
     string_t _command = "";

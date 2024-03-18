@@ -58,6 +58,17 @@ void UI::OnKeyPress( keycode_t const &keyCode, uint32_t modifiers )
         _displayTerminal = true;
         return;
     }
+
+    if( _displayTerminal )
+    {
+        // If the foreground terminal is visible, then it receives
+        // the keypress event, and further processing is disabled
+        _fgTerminal->OnKeyPress( keyCode, modifiers );
+        return;
+    }
+
+    // Send the keypress event to the main program.
+    _bgTerminal->OnKeyPress( keyCode, modifiers );
 }
 
 void UI::Render()

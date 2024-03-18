@@ -119,3 +119,8 @@ void __cdecl process_t::PipeListener()
 
     _parser.parse( _framebuffer, (unsigned char *)szBuffer, dwBytesRead );
 }
+
+void process_t::OnKeyPress(keycode_t const& keyCode, uint32_t modifiers)
+{
+}
+

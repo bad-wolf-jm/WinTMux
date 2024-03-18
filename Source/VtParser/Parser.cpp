@@ -685,7 +685,7 @@ void vtparser_t::ProcessGraphicsMode( framebuffer_t &framebuffer )
         return; // Next arguments are 5;n or 2;r;g;b
     }
 
-    if(code== 39)
+    if(code == 39)
     {
         framebuffer.SetForeground( 0u );
         return;
