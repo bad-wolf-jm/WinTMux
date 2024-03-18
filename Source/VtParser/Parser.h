@@ -1,10 +1,11 @@
 #pragma once
 
+#include <array>
 #include <cstdint>
 #include <limits>
-#include <array>
 
 #include "Actions.h"
+#include "Core/ringbuffer.h"
 #include "States.h"
 #include <Console/FrameBuffer.h>
 
@@ -28,6 +29,7 @@ class vtparser_t
     vtparser_t();
 
     void parse( framebuffer_t &framebuffer, unsigned char *data, int len );
+    void parse( framebuffer_t &framebuffer, ringbuffer_t<uint8_t> &inputBuffer );
 
   private:
     void OnEvent( Range range, vtparser_action action );
@@ -72,20 +74,20 @@ class vtparser_t
     void Erase( framebuffer_t &freamebuffer );
 
   private:
-    bool                _bold            = false;
-    bool                _faint           = false;
-    bool                _italic          = false;
-    bool                _underline       = false;
-    bool                _strikeout       = false;
-    bool                _reversed        = false;
-    bool                _hidden          = false;
-    bool                _slowBlink       = false;
-    bool                _fastBlink       = false;
-    bool                _useDefaultFg    = false;
-    bool                _useDefaultBg    = false;
+    bool _bold         = false;
+    bool _faint        = false;
+    bool _italic       = false;
+    bool _underline    = false;
+    bool _strikeout    = false;
+    bool _reversed     = false;
+    bool _hidden       = false;
+    bool _slowBlink    = false;
+    bool _fastBlink    = false;
+    bool _useDefaultFg = false;
+    bool _useDefaultBg = false;
 
-    std::array<bool, 9> _textAttributes  = { 0 };
+    std::array<bool, 9> _textAttributes = { 0 };
 
-    uint32_t            _foregroundColor = 0;
-    uint32_t            _backgroundColor = 0;
+    uint32_t _foregroundColor = 0;
+    uint32_t _backgroundColor = 0;
 };

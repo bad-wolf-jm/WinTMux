@@ -8,6 +8,155 @@
 #include <iostream>
 #include <vector>
 
+template <typename T, bool isconst = false>
+struct ringbuffer_iterator
+{
+    using value_type        = T;
+    using size_type         = size_t;
+    using container_type    = std::vector<value_type>;
+    using iterator_category = std::random_access_iterator_tag;
+    using difference_type   = long long;
+    using reference         = typename std::conditional_t<isconst, T const &, T &>;
+    using pointer           = typename std::conditional_t<isconst, T const *, T *>;
+    using vec_pointer       = typename std::conditional_t<isconst, std::vector<T> const *, std::vector<T> *>;
+
+  private:
+    vec_pointer ptrToBuffer;
+    size_type   offset;
+    size_type   index;
+    bool        reverse;
+
+    bool comparable( const ringbuffer_iterator &other )
+    {
+        return ( reverse == other.reverse );
+    }
+
+  public:
+    ringbuffer_iterator()
+        : ptrToBuffer( nullptr )
+        , offset( 0 )
+        , index( 0 )
+        , reverse( false )
+    {
+    } //
+    ringbuffer_iterator( const ringbuffer_iterator & )            = delete;
+    ringbuffer_iterator( ringbuffer_iterator && )                 = delete;
+    ringbuffer_iterator &operator=( const ringbuffer_iterator & ) = delete;
+    ringbuffer_iterator &operator=( ringbuffer_iterator && )      = delete;
+    ringbuffer_iterator( const ringbuffer_iterator<T, false> &i )
+        : ptrToBuffer( i.ptrToBuffer )
+        , offset( i.offset )
+        , index( i.index )
+        , reverse( i.reverse )
+    {
+    }
+    reference operator*()
+    {
+        if( reverse )
+            return ( *ptrToBuffer )[( ptrToBuffer->size() + offset - index ) % ( ptrToBuffer->size() )];
+        return ( *ptrToBuffer )[( offset + index ) % ( ptrToBuffer->size() )];
+    }
+    reference operator[]( size_type index )
+    {
+        ringbuffer_iterator iter = *this;
+        iter.index += index;
+        return *iter;
+    }
+    pointer operator->()
+    {
+        return &( operator*() );
+    }
+
+    ringbuffer_iterator &operator++()
+    {
+        ++index;
+        return *this;
+    }
+    ringbuffer_iterator operator++( int )
+    {
+        ringbuffer_iterator iter = *this;
+        ++index;
+        return iter;
+    }
+    ringbuffer_iterator &operator--()
+    {
+        --index;
+        return *this;
+    }
+    ringbuffer_iterator operator--( int )
+    {
+        ringbuffer_iterator iter = *this;
+        --index;
+        return iter;
+    }
+    friend ringbuffer_iterator operator+( ringbuffer_iterator lhs, int rhs )
+    {
+        lhs.index += rhs;
+        return lhs;
+    }
+    friend ringbuffer_iterator operator+( int lhs, ringbuffer_iterator rhs )
+    {
+        rhs.index += lhs;
+        return rhs;
+    }
+    ringbuffer_iterator &operator+=( int n )
+    {
+        index += n;
+        return *this;
+    }
+    friend ringbuffer_iterator operator-( ringbuffer_iterator lhs, int rhs )
+    {
+        lhs.index -= rhs;
+        return lhs;
+    }
+    friend difference_type operator-( const ringbuffer_iterator &lhs, const ringbuffer_iterator &rhs )
+    {
+        lhs.index -= rhs;
+        return lhs.index - rhs.index;
+    }
+    ringbuffer_iterator &operator-=( int n )
+    {
+        index -= n;
+        return *this;
+    }
+    bool operator==( const ringbuffer_iterator &other )
+    {
+        if( comparable( other ) )
+            return ( index + offset == other.index + other.offset );
+        return false;
+    }
+    bool operator!=( const ringbuffer_iterator &other )
+    {
+        if( comparable( other ) )
+            return !this->operator==( other );
+        return true;
+    }
+    bool operator<( const ringbuffer_iterator &other )
+    {
+        if( comparable( other ) )
+            return ( index + offset < other.index + other.offset );
+        return false;
+    }
+    bool operator<=( const ringbuffer_iterator &other )
+    {
+        if( comparable( other ) )
+            return ( index + offset <= other.index + other.offset );
+        return false;
+    }
+    bool operator>( const ringbuffer_iterator &other )
+    {
+        if( comparable( other ) )
+            return !this->operator<=( other );
+        return false;
+    }
+    bool operator>=( const ringbuffer_iterator &other )
+    {
+        if( comparable( other ) )
+            return !this->operator<( other );
+        return false;
+    }
+};
+
 template <class T>
 class ringbuffer_t
 {
@@ -43,8 +192,11 @@ class ringbuffer_t
         assert( _array_size > 1 && "size must be greater than 1" );
     }
 
-    template <bool isconst>
-    struct my_iterator;
+    size_type available_size()
+    {
+        return _array_size - _contents_size;
+    }
+
     reference front()
     {
         return _array[_head];
@@ -99,8 +251,8 @@ class ringbuffer_t
     reference       at( size_type index );
     const_reference at( size_type index ) const;
 
-    using iterator       = my_iterator<false>;
-    using const_iterator = my_iterator<true>;
+    using iterator       = ringbuffer_iterator<T, false>;
+    using const_iterator = ringbuffer_iterator<T, true>;
     iterator       begin();
     const_iterator begin() const;
     const_iterator cbegin() const;
@@ -115,153 +267,6 @@ class ringbuffer_t
   private:
     void increment_tail();
     void increment_head();
-
-    template <bool isconst = false>
-    struct my_iterator
-    {
-        using iterator_category = std::random_access_iterator_tag;
-        using difference_type   = long long;
-        using reference         = typename std::conditional_t<isconst, T const &, T &>;
-        using pointer           = typename std::conditional_t<isconst, T const *, T *>;
-        using vec_pointer       = typename std::conditional_t<isconst, std::vector<T> const *, std::vector<T> *>;
-
-      private:
-        vec_pointer ptrToBuffer;
-        size_type   offset;
-        size_type   index;
-        bool        reverse;
-
-        bool comparable( const my_iterator &other )
-        {
-            return ( reverse == other.reverse );
-        }
-
-      public:
-        my_iterator()
-            : ptrToBuffer( nullptr )
-            , offset( 0 )
-            , index( 0 )
-            , reverse( false )
-        {
-        } //
-        my_iterator( const my_iterator & )            = delete;
-        my_iterator( my_iterator && )                 = delete;
-        my_iterator &operator=( const my_iterator & ) = delete;
-        my_iterator &operator=( my_iterator && )      = delete;
-        my_iterator( const ringbuffer_t<T>::my_iterator<false> &i )
-            : ptrToBuffer( i.ptrToBuffer )
-            , offset( i.offset )
-            , index( i.index )
-            , reverse( i.reverse )
-        {
-        }
-        reference operator*()
-        {
-            if( reverse )
-                return ( *ptrToBuffer )[( ptrToBuffer->size() + offset - index ) % ( ptrToBuffer->size() )];
-            return ( *ptrToBuffer )[( offset + index ) % ( ptrToBuffer->size() )];
-        }
-        reference operator[]( size_type index )
-        {
-            my_iterator iter = *this;
-            iter.index += index;
-            return *iter;
-        }
-        pointer operator->()
-        {
-            return &( operator*() );
-        }
-
-        my_iterator &operator++()
-        {
-            ++index;
-            return *this;
-        };
-        my_iterator operator++( int )
-        {
-            my_iterator iter = *this;
-            ++index;
-            return iter;
-        }
-        my_iterator &operator--()
-        {
-            --index;
-            return *this;
-        }
-        my_iterator operator--( int )
-        {
-            my_iterator iter = *this;
-            --index;
-            return iter;
-        }
-        friend my_iterator operator+( my_iterator lhs, int rhs )
-        {
-            lhs.index += rhs;
-            return lhs;
-        }
-        friend my_iterator operator+( int lhs, my_iterator rhs )
-        {
-            rhs.index += lhs;
-            return rhs;
-        }
-        my_iterator &operator+=( int n )
-        {
-            index += n;
-            return *this;
-        }
-        friend my_iterator operator-( my_iterator lhs, int rhs )
-        {
-            lhs.index -= rhs;
-            return lhs;
-        }
-        friend difference_type operator-( const my_iterator &lhs, const my_iterator &rhs )
-        {
-            lhs.index -= rhs;
-            return lhs.index - rhs.index;
-        }
-        my_iterator &operator-=( int n )
-        {
-            index -= n;
-            return *this;
-        }
-        bool operator==( const my_iterator &other )
-        {
-            if( comparable( other ) )
-                return ( index + offset == other.index + other.offset );
-            return false;
-        }
-        bool operator!=( const my_iterator &other )
-        {
-            if( comparable( other ) )
-                return !this->operator==( other );
-            return true;
-        }
-        bool operator<( const my_iterator &other )
-        {
-            if( comparable( other ) )
-                return ( index + offset < other.index + other.offset );
-            return false;
-        }
-        bool operator<=( const my_iterator &other )
-        {
-            if( comparable( other ) )
-                return ( index + offset <= other.index + other.offset );
-            return false;
-        }
-        bool operator>( const my_iterator &other )
-        {
-            if( comparable( other ) )
-                return !this->operator<=( other );
-            return false;
-        }
-        bool operator>=( const my_iterator &other )
-        {
-            if( comparable( other ) )
-                return !this->operator<( other );
-            return false;
-        }
-        friend class ringbuffer_t<T>;
-    };
 };
 
 template <class T>

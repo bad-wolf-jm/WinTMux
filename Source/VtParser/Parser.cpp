@@ -1,5 +1,6 @@
 #include "Parser.h"
 #include "Console/FrameBuffer.h"
+#include "Core/ringbuffer.h"
 #include "States.h"
 #include "VtParser/csi_commands.h"
 
@@ -833,4 +834,10 @@ void vtparser_t::parse( framebuffer_t &framebuffer, unsigned char *data, int len
         // std::cout << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint32_t)ch << " ";
         do_state_change( framebuffer, change.TransitionTo, change.Action, ch );
     }
+}
+
+
+void vtparser_t::parse( framebuffer_t &framebuffer, ringbuffer_t<uint8_t> &inputBuffer )
+{
+  // Iterate through the input buffer, convert unicode characters if necessary. 
 }

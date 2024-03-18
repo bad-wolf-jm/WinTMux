@@ -68,7 +68,7 @@ void UI::OnKeyPress( keycode_t const &keyCode, uint32_t modifiers )
     }
 
     // Send the keypress event to the main program.
-    _bgTerminal->OnKeyPress( keyCode, modifiers );
+    // _bgTerminal->OnKeyPress( keyCode, modifiers );
 }
 
 void UI::Render()

@@ -24,6 +24,7 @@ class console_t
     std::unique_ptr<pipe_t> &std_out();
 
     void *handle();
+    void write(char c);
 
   private:
     int16_t _columns{ 0 };

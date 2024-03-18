@@ -42,3 +42,47 @@ void pipe_t::close_write()
 
     _wstream = INVALID_HANDLE_VALUE;
 }
+
+void pipe_t::write( char c )
+{
+    DWORD bytesWritten;
+
+    WriteFile( _wstream, &c, 1, &bytesWritten, NULL );
+}
+
+void pipe_t::write( string_t buffer )
+{
+    DWORD bytesWritten{};
+    WriteFile( _wstream, buffer.c_str(), buffer.size() * sizeof( char_t ), &bytesWritten, NULL );
+}
+
+size_t pipe_t::chars_ready()
+{
+    DWORD bytesRead{};
+
+    PeekNamedPipe( _rstream, NULL, 0, NULL, &bytesRead, NULL );
+
+    return static_cast<size_t>( bytesRead );
+}
+
+void pipe_t::read( ringbuffer_t<uint8_t> &buffer )
+{
+    size_t availableInPipe = chars_ready();
+
+    while( availableInPipe > 0 && buffer.available_size() > 0 )
+    {
+        const size_t readBufferSize = 1024;
+        size_t       bytesToRead    = std::min( buffer.available_size(), readBufferSize );
+
+        char  readBuffer[readBufferSize] = {};
+        BOOL  readSuccess                = FALSE;
+        DWORD bytesRead                  = 0;
+
+        readSuccess = ReadFile( _rstream, readBuffer, bytesToRead, &bytesRead, NULL );
+
+        for( int i = 0; i < bytesRead; i++ )
+            buffer.push_back( readBuffer[i] );
+
+        availableInPipe = chars_ready();
+    }
+}

@@ -9,6 +9,7 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 find_package(OpenGL REQUIRED)
 add_executable(wtmux 
     Core/KeyCodes.Console.cpp
+    Core/control_sequences.cpp
     
     VtParser/Parser.cpp
     VtParser/utf8.cpp

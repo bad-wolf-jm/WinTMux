@@ -122,5 +122,7 @@ void __cdecl process_t::PipeListener()
 
 void process_t::OnKeyPress(keycode_t const& keyCode, uint32_t modifiers)
 {
+    char c = (modifiers & (uint32_t)modifiers::SHIFT) ? keyCode.ShiftedSymbol : keyCode.Symbol;
+    _console->write(c);
 }
 

@@ -37,3 +37,9 @@ void *console_t::handle()
 {
     return _console;
 }
+
+
+void console_t::write(char c)
+{
+    _stdin->write(c);
+}

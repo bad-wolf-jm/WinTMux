@@ -257,7 +257,7 @@ void KeyboardHandler::InitKeyCodes()
     _keys[platform_keycode::KEY_NUMPAD_MULTIPLY] = { keycode::KEYPAD_MULTIPLY, '*', '*' };
     _keys[platform_keycode::KEY_NUMPAD_SUBTRACT] = { keycode::KEYPAD_SUBTRACT, '-', '-' };
     _keys[platform_keycode::KEY_NUMPAD_ADD]      = { keycode::KEYPAD_ADD, '+', '+' };
-    _keys[platform_keycode::KEY_ENTER]           = { keycode::ENTER, '\n', '\0' };
+    _keys[platform_keycode::KEY_ENTER]           = { keycode::ENTER, '\r', '\0' };
     _keys[platform_keycode::KEY_TAB]             = { keycode::TAB, '\t', '\0' };
     _keys[platform_keycode::KEY_BACKSPACE]       = { keycode::BACKSPACE, '\0', '\0' };
     _keys[platform_keycode::KEY_RIGHT]           = { keycode::RIGHT, '\0', '\0' };
