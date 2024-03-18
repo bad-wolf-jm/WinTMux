@@ -626,11 +626,9 @@ void vtparser_t::ProcessGraphicsMode( framebuffer_t &framebuffer )
         constexpr int _hidden    = 7;
         constexpr int _strikeout = 8;
 
-        int attributeId = ( code >= 1 && code < 9 ) ? ( code - 1 ) : ( code - 22 );
-
         if( code >= 1 && code < 9 )
         {
-            _textAttributes[attributeId] = true;
+            _textAttributes[code - 1] = true;
         }
         else
         {
@@ -639,41 +637,28 @@ void vtparser_t::ProcessGraphicsMode( framebuffer_t &framebuffer )
             case 22:
                 _textAttributes[_bold]  = false;
                 _textAttributes[_faint] = false;
-                // framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden, _slowBlink,
-                //                                _fastBlink );
-                break; // Normal intensity	Neither bold nor faint; color changes where intensity is implemented as such.
+                break;
             case 23:
                 _textAttributes[_italic] = false;
-                // framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden, _slowBlink,
-                //                                _fastBlink );
-                break; // Neither italic, nor blackletter
+                break;
             case 24:
                 _textAttributes[_underline] = false;
-                // framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden, _slowBlink,
-                //                                _fastBlink );
                 break; // Not underlined	Neither singly nor doubly underlined
             case 25:
                 _textAttributes[_slowBlink] = false;
                 _textAttributes[_fastBlink] = false;
-                // framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden, _slowBlink,
-                //                                _fastBlink );
                 break; // Not blinking	Turn blinking off
             case 26:
                 break; // Proportional spacing	ITU T.61 and T.416, not known to be used on terminals
             case 27:
                 _textAttributes[_reversed] = false;
-                // framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden, _slowBlink,
-                //                                _fastBlink );
                 break; // Not reversed
             case 28:
                 _textAttributes[_hidden] = false;
-                // framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden, _slowBlink,
-                //                                _fastBlink );
                 break; // Reveal	Not concealed
             case 29:
                 _textAttributes[_strikeout] = false;
-                // framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden, _slowBlink,
-                //                               _fastBlink );
+                break;
             }
         }
 
@@ -686,119 +671,7 @@ void vtparser_t::ProcessGraphicsMode( framebuffer_t &framebuffer )
         return;
     }
 
-    switch( code )
-    {
-        //     case 0:
-        //         _bold      = false;
-        //         _faint     = false;
-        //         _italic    = false;
-        //         _underline = false;
-        //         _strikeout = false;
-        //         _reversed  = false;
-        //         _hidden    = false;
-        //         framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden, _slowBlink,
-        //         _fastBlink ); framebuffer.SetForeground( 0u ); framebuffer.SetBackground( 0u ); break; // Reset or normal	All
-        //         attributes become turned off
-    // case 1:
-    //     _bold = true;
-    //     framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden, _slowBlink, _fastBlink );
-    //     break; // Bold or increased intensity	As with faint, the color change is a PC (SCO / CGA) invention.[25][better source
-    //            // needed]
-    // case 2:
-    //     _faint = true;
-    //     framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden, _slowBlink, _fastBlink );
-    //     break; // Faint, decreased intensity, or dim	May be implemented as a light font weight like bold.[26]
-    // case 3:
-    //     _italic = true;
-    //     framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden, _slowBlink, _fastBlink );
-    //     break; // Italic	Not widely supported. Sometimes treated as inverse or blink.[25]
-    // case 4:
-    //     _underline = true;
-    //     framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden, _slowBlink, _fastBlink );
-    //     break; // Underline	Style extensions exist for Kitty, VTE, mintty, iTerm2 and Konsole.[27][28][29]
-    // case 5:
-    //     _slowBlink = true;
-    //     framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden, _slowBlink, _fastBlink );
-    //     break; // Slow blink	Sets blinking to less than 150 times per minute
-    // case 6:
-    //     _fastBlink = true;
-    //     framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden, _slowBlink, _fastBlink );
-    //     break; // Rapid blink	MS-DOS ANSI.SYS, 150+ per minute; not widely supported
-    // case 7:
-    //     _reversed = true;
-    //     framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden, _slowBlink, _fastBlink );
-    //     break; // Reverse video or invert	Swap foreground and background colors; inconsistent emulation[30][dubious – discuss]
-    // case 8:
-    //     _hidden = true;
-    //     framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden, _slowBlink, _fastBlink );
-    //     break; // Conceal or hide	Not widely supported.
-    // case 9:
-    //     _strikeout = true;
-    //     framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden, _slowBlink, _fastBlink );
-    //     break; // Crossed-out, or strike	Characters legible but marked as if for deletion. Not supported in Terminal.app.
-    case 10:
-        break; // Primary (default) font
-               //    case 11:
-               //    case 12:
-               //    case 13:
-               //    case 14:
-               //    case 15:
-               //    case 16:
-               //    case 17:
-               //    case 18:
-               //    case 19:
-               //        // Select alternative font. Not supported for now.
-               //        break; // Alternative font	Select alternative font n − 10
-               //    case 20:
-               //        break; // Fraktur (Gothic)	Rarely supported
-               //    case 21:
-        //        break; // Doubly underlined; or: not bold	Double-underline per ECMA-48,[5]: 8.3.117  but instead disables bold
-        //        intensity on
-        //               // several terminals, including in the Linux kernel's console before version 4.17.[31]
-    // case 22:
-    //     _bold  = false;
-    //     _faint = false;
-    //     framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden, _slowBlink, _fastBlink );
-    //     break; // Normal intensity	Neither bold nor faint; color changes where intensity is implemented as such.
-    // case 23:
-    //     _italic = false;
-    //     framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden, _slowBlink, _fastBlink );
-    //     break; // Neither italic, nor blackletter
-    // case 24:
-    //     _underline = false;
-    //     framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden, _slowBlink, _fastBlink );
-    //     break; // Not underlined	Neither singly nor doubly underlined
-    // case 25:
-    //     _slowBlink = false;
-    //     _fastBlink = false;
-    //     framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden, _slowBlink, _fastBlink );
-    //     break; // Not blinking	Turn blinking off
-    // case 26:
-    //     break; // Proportional spacing	ITU T.61 and T.416, not known to be used on terminals
-    // case 27:
-    //     _reversed = false;
-    //     framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden, _slowBlink, _fastBlink );
-    //     break; // Not reversed
-    // case 28:
-    //     _hidden = false;
-    //     framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden, _slowBlink, _fastBlink );
-    //     break; // Reveal	Not concealed
-    // case 29:
-    //     _strikeout = false;
-    //     framebuffer.SetTextAttributes( _bold, _italic, _underline, _strikeout, _faint, _reversed, _hidden, _slowBlink, _fastBlink );
-    //     break; // Not crossed out
-               //    case 30:
-               //    case 31:
-               //    case 32:
-               //    case 33:
-               //    case 34:
-               //    case 35:
-               //    case 36:
-               //    case 37:
-               //        _foregroundColor = colormapped[code - 30];
-               //        framebuffer.SetForeground( _foregroundColor );
-               //        break; // Next arguments are 5;n or 2;r;g;b
-    case 38:
+    if(code == 38)
     {
         if( params[1] == 2 )
         {
@@ -808,23 +681,17 @@ void vtparser_t::ProcessGraphicsMode( framebuffer_t &framebuffer )
         {
             framebuffer.SetForeground( colormapped[params[3]] );
         }
+
+        return; // Next arguments are 5;n or 2;r;g;b
     }
-    break; // Next arguments are 5;n or 2;r;g;b
-    case 39:
+
+    if(code== 39)
+    {
         framebuffer.SetForeground( 0u );
-        break; // Default foreground color	Implementation defined (according to standard)
-    // case 40:
-    // case 41:
-    // case 42:
-    // case 43:
-    // case 44:
-    // case 45:
-    // case 46:
-    // case 47:
-    //     _backgroundColor = colormapped[code - 40];
-    //     framebuffer.SetBackground( _backgroundColor );
-    //     break; // Set background color	Next arguments are 5;n or 2;r;g;b
-    case 48:
+        return;
+    }
+
+    if(code == 48)
     {
         if( params[1] == 2 )
         {
@@ -834,70 +701,14 @@ void vtparser_t::ProcessGraphicsMode( framebuffer_t &framebuffer )
         {
             framebuffer.SetBackground( colormapped[params[3]] );
         }
+
+        return; // Set background color	Next arguments are 5;n or 2;r;g;b
     }
-    break; // Set background color	Next arguments are 5;n or 2;r;g;b
-    case 49:
+
+    if(code == 49)
+    {
         framebuffer.SetBackground( 0u );
-        break; // Default background color	Implementation defined (according to standard)
-    // case 50:
-    //     break; // Disable proportional spacing	T.61 and T.416
-    // case 51:
-    //     break; // Framed	Implemented as "emoji variation selector" in mintty.[32]
-    // case 52:
-    //     break; // Encircled
-    // case 53:
-    //     break; // Overlined	Not supported in Terminal.app
-    // case 54:
-    //     break; // Neither framed nor encircled
-    // case 55:
-    //     break; // Not overlined
-    // case 58:
-    //     break; // Set underline color	Not in standard; implemented in Kitty, VTE, mintty, and iTerm2.[27][28] Next arguments are
-    //     5;n
-    //            // or 2;r;g;b.
-    // case 59:
-    //     break; // Default underline color	Not in standard; implemented in Kitty, VTE, mintty, and iTerm2.[27][28]
-    // case 60:
-    //     break; // Ideogram underline or right side line	Rarely supported
-    // case 61:
-    //     break; // Ideogram double underline, or double line on the right side
-    // case 62:
-    //     break; // Ideogram overline or left side line
-    // case 63:
-    //     break; // Ideogram double overline, or double line on the left side
-    // case 64:
-    //     break; // Ideogram stress marking
-    // case 65:
-    //     break; // No ideogram attributes	Reset the effects of all of 60–64
-    // case 73:
-    //     break; // Superscript	Implemented only in mintty[32]
-    // case 74:
-    //     break; // Subscript
-    // case 75:
-    //     break; // Neither superscript nor subscript
-    // case 90:
-    // case 91:
-    // case 92:
-    // case 93:
-    // case 94:
-    // case 95:
-    // case 96:
-    // case 97:
-    //     _foregroundColor = colormapped[code - 82];
-    //     framebuffer.SetForeground( _foregroundColor );
-    //     break; // Set bright foreground color	Not in standard; originally implemented by aixterm[16]
-    // case 100:
-    // case 101:
-    // case 102:
-    // case 103:
-    // case 104:
-    // case 105:
-    // case 106:
-    // case 107:
-    //     _backgroundColor = colormapped[code - 92];
-    //     framebuffer.SetBackground( _backgroundColor );
-    default:
-        break;
+        return; // Default background color	Implementation defined (according to standard)$^
     }
 }
 
