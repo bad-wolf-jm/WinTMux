@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-enum class Action : uint8_t
+enum class vtparser_action : uint8_t
 {
     none,
 

@@ -6,7 +6,7 @@ from: https://vt100.net/emu/dec_ansi_parser
 
 #include <cstdint>
 
-enum class VtParserState : uint8_t
+enum class vtparser_state : uint8_t
 {
     none,
 

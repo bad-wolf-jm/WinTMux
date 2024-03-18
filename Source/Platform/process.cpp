@@ -117,5 +117,5 @@ void __cdecl process_t::PipeListener()
 
     fRead = ReadFile( hPipe, szBuffer, BUFF_SIZE, &dwBytesRead, NULL );
 
-    _parser.vtparse( _framebuffer, (unsigned char *)szBuffer, dwBytesRead );
+    _parser.parse( _framebuffer, (unsigned char *)szBuffer, dwBytesRead );
 }

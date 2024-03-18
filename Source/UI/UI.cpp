@@ -10,7 +10,7 @@ UI::UI()
 void UI::Start()
 {
     _bgTerminal = std::make_shared<process_t>( "py \"C:\\GitLab\\WinTMux\\Scripts\\test_terminal.py\"", _bgTerminalBuffer );
-//    _fgTerminal = std::make_shared<process_t>( "powershell", _fgTerminalBuffer );
+    _fgTerminal = std::make_shared<process_t>( "powershell", _fgTerminalBuffer );
     _bgTerminalBuffer.BeginFrame();
     _fgTerminalBuffer.BeginFrame();
 }
@@ -63,7 +63,7 @@ void UI::OnKeyPress( keycode_t const &keyCode, uint32_t modifiers )
 void UI::Render()
 {
     _bgTerminal->PipeListener();
-    // _fgTerminal->PipeListener();
+    _fgTerminal->PipeListener();
 
     _framebuffer.BeginFrame();
 

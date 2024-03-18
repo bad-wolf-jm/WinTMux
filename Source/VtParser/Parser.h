@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <limits>
+#include <array>
 
 #include "Actions.h"
 #include "States.h"
@@ -15,8 +16,8 @@ struct Range
 
 struct state_transition_t
 {
-    VtParserState TransitionTo{ VtParserState::none };
-    Action        Action{ Action::none };
+    vtparser_state  TransitionTo{ vtparser_state::none };
+    vtparser_action Action{ vtparser_action::none };
 };
 
 constexpr int MAX_INTERMEDIATE_CHARS = 2;
@@ -26,37 +27,37 @@ class vtparser_t
   public:
     vtparser_t();
 
-    void vtparse( framebuffer_t &framebuffer, unsigned char *data, int len );
+    void parse( framebuffer_t &framebuffer, unsigned char *data, int len );
 
   private:
-    void OnEvent( Range range, Action action );
-    void OnEvent( Range range, VtParserState transitionTo );
-    void OnEvent( Range range, Action action, VtParserState transitionTo );
+    void OnEvent( Range range, vtparser_action action );
+    void OnEvent( Range range, vtparser_state transitionTo );
+    void OnEvent( Range range, vtparser_action action, vtparser_state transitionTo );
 
-    void OnEvent( VtParserState state, Range range, Action action );
-    void OnEvent( VtParserState state, Range range, VtParserState transitionTo );
-    void OnEvent( VtParserState state, Range range, Action action, VtParserState transitionTo );
+    void OnEvent( vtparser_state state, Range range, vtparser_action action );
+    void OnEvent( vtparser_state state, Range range, vtparser_state transitionTo );
+    void OnEvent( vtparser_state state, Range range, vtparser_action action, vtparser_state transitionTo );
 
-    void OnEvent( uint8_t character, Action action );
-    void OnEvent( uint8_t character, VtParserState transitionTo );
-    void OnEvent( uint8_t character, Action action, VtParserState transitionTo );
+    void OnEvent( uint8_t character, vtparser_action action );
+    void OnEvent( uint8_t character, vtparser_state transitionTo );
+    void OnEvent( uint8_t character, vtparser_action action, vtparser_state transitionTo );
 
-    void OnEvent( VtParserState state, uint8_t character, Action action );
-    void OnEvent( VtParserState state, uint8_t character, VtParserState transitionTo );
-    void OnEvent( VtParserState state, uint8_t character, Action action, VtParserState transitionTo );
+    void OnEvent( vtparser_state state, uint8_t character, vtparser_action action );
+    void OnEvent( vtparser_state state, uint8_t character, vtparser_state transitionTo );
+    void OnEvent( vtparser_state state, uint8_t character, vtparser_action action, vtparser_state transitionTo );
 
-    void OnEntry( VtParserState state, Action action );
-    void OnExit( VtParserState state, Action action );
+    void OnEntry( vtparser_state state, vtparser_action action );
+    void OnExit( vtparser_state state, vtparser_action action );
 
   private:
-    state_transition_t _stateTransitions[(size_t)VtParserState::count][std::numeric_limits<uint8_t>::max()];
+    state_transition_t _stateTransitions[(size_t)vtparser_state::count][std::numeric_limits<uint8_t>::max()];
 
-    Action _entryActions[(size_t)VtParserState::count] = { Action::none };
-    Action _exitActions[(size_t)VtParserState::count]  = { Action::none };
-    void   do_action( framebuffer_t &framebuffer, Action action, char ch );
-    void   do_state_change( framebuffer_t &framebuffer, VtParserState newState, Action action, char ch );
+    vtparser_action _entryActions[(size_t)vtparser_state::count] = { vtparser_action::none };
+    vtparser_action _exitActions[(size_t)vtparser_state::count]  = { vtparser_action::none };
+    void            do_action( framebuffer_t &framebuffer, vtparser_action action, char ch );
+    void            do_state_change( framebuffer_t &framebuffer, vtparser_state newState, vtparser_action action, char ch );
 
-    VtParserState state;
+    vtparser_state state;
     // vtparse_callback_t cb;
     unsigned char intermediate_chars[MAX_INTERMEDIATE_CHARS + 1];
     int           num_intermediate_chars;
@@ -65,23 +66,26 @@ class vtparser_t
     int           num_params;
     void         *user_data;
 
-    void Dispatch( framebuffer_t &framebuffer, Action action, char ch );
+    void dispatch_csi( char ch, framebuffer_t &framebuffer );
+    void Dispatch( framebuffer_t &framebuffer, vtparser_action action, char ch );
     void ProcessGraphicsMode( framebuffer_t &freamebuffer );
     void Erase( framebuffer_t &freamebuffer );
 
   private:
-    bool _bold         = false;
-    bool _faint        = false;
-    bool _italic       = false;
-    bool _underline    = false;
-    bool _strikeout    = false;
-    bool _reversed     = false;
-    bool _hidden       = false;
-    bool _slowBlink    = false;
-    bool _fastBlink    = false;
-    bool _useDefaultFg = false;
-    bool _useDefaultBg = false;
+    bool                _bold            = false;
+    bool                _faint           = false;
+    bool                _italic          = false;
+    bool                _underline       = false;
+    bool                _strikeout       = false;
+    bool                _reversed        = false;
+    bool                _hidden          = false;
+    bool                _slowBlink       = false;
+    bool                _fastBlink       = false;
+    bool                _useDefaultFg    = false;
+    bool                _useDefaultBg    = false;
 
-    uint32_t _foregroundColor = 0;
-    uint32_t _backgroundColor = 0;
+    std::array<bool, 9> _textAttributes  = { 0 };
+
+    uint32_t            _foregroundColor = 0;
+    uint32_t            _backgroundColor = 0;
 };
