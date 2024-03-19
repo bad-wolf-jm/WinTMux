@@ -2,7 +2,7 @@
 
 #include "Core/String.h"
 
-enum CharacterAttribute : uint32_t
+enum character_attribute : uint32_t
 {
     NORMAL        = 0,
     FAINT         = ( 1 << 0 ),
@@ -18,7 +18,7 @@ enum CharacterAttribute : uint32_t
     DEFAULT_FG    = ( 1 << 10 )
 };
 
-struct Glyph
+struct glyph_t
 {
     char_t   Character[4]  = { 0 };
     uint32_t CharacterSize = 1;

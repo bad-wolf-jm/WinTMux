@@ -26,6 +26,7 @@ class process_t
     void WaitForCompletion( int32_t timeout = 0 );
     void PipeListener();
 
+    void Resize(uint32_t rows, uint32_t columns);
     void OnKeyPress(keycode_t const& KeyCode, uint32_t modifiers);
 
   private:

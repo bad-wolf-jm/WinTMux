@@ -24,6 +24,7 @@ class console_t
     std::unique_ptr<pipe_t> &std_out();
 
     void *handle();
+    void Resize(uint32_t rows, uint32_t columns);
     void  write( char c );
 
     ringbuffer_t<uint8_t> &read();

@@ -23,6 +23,9 @@ void UI::Stop()
 
 void UI::Resize( uint32_t columns, uint32_t rows )
 {
+    if( _bgTerminal != nullptr )
+        _bgTerminal->Resize( rows, columns );
+
     _framebuffer.Resize( rows, columns );
     _bgTerminalBuffer.Resize( rows, columns );
 
@@ -38,6 +41,9 @@ void UI::Resize( uint32_t columns, uint32_t rows )
         _fgTerminalHeight++;
 
     // Reduce the size of the terminal framebuffer to allow space for the frame
+    if( _fgTerminal != nullptr )
+        _fgTerminal->Resize( _fgTerminalHeight - 2, _fgTerminalWidth - 2 );
+
     _fgTerminalBuffer.Resize( _fgTerminalHeight - 2, _fgTerminalWidth - 2 );
 }
 

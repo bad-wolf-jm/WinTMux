@@ -62,7 +62,7 @@ void framebuffer_t::Cursor( uint32_t &x, uint32_t &y )
 
 size_t framebuffer_t::ByteSize()
 {
-    return _data.size() * sizeof( Glyph );
+    return _data.size() * sizeof( glyph_t );
 }
 
 std::vector<line_t> const &framebuffer_t::Lines() const
@@ -70,19 +70,19 @@ std::vector<line_t> const &framebuffer_t::Lines() const
     return _lines;
 }
 
-std::vector<Glyph> const &framebuffer_t::Data() const
+std::vector<glyph_t> const &framebuffer_t::Data() const
 {
     return _data;
 }
 
-std::vector<Glyph> &framebuffer_t::DataNC()
+std::vector<glyph_t> &framebuffer_t::DataNC()
 {
     return _data;
 }
 
 void framebuffer_t::BeginFrame()
 {
-    uint64_t characterAttributes = CharacterAttribute::DEFAULT_BG | CharacterAttribute::DEFAULT_FG;
+    uint64_t characterAttributes = character_attribute::DEFAULT_BG | character_attribute::DEFAULT_FG;
     for( auto &g : _data )
     {
         g.Character[0]  = ' ';
@@ -126,17 +126,17 @@ void framebuffer_t::EndFrame()
 void framebuffer_t::SetTextAttributes( bool bold, bool italic, bool underline, bool strikeThrough, bool faint, bool reversed,
                                        bool hidden, bool slowBlink, bool fastBlink )
 {
-    _attributes = _attributes & ( CharacterAttribute::DEFAULT_BG | CharacterAttribute::DEFAULT_FG );
+    _attributes = _attributes & ( character_attribute::DEFAULT_BG | character_attribute::DEFAULT_FG );
 
-    _attributes |= bold ? CharacterAttribute::BOLD : 0;
-    _attributes |= italic ? CharacterAttribute::ITALIC : 0;
-    _attributes |= underline ? CharacterAttribute::UNDERLINE : 0;
-    _attributes |= strikeThrough ? CharacterAttribute::STRIKETHROUGH : 0;
-    _attributes |= faint ? CharacterAttribute::FAINT : 0;
-    _attributes |= reversed ? CharacterAttribute::REVERSED : 0;
-    _attributes |= hidden ? CharacterAttribute::HIDDEN : 0;
-    _attributes |= slowBlink ? CharacterAttribute::SLOW_BLINK : 0;
-    _attributes |= fastBlink ? CharacterAttribute::FAST_BLINK : 0;
+    _attributes |= bold ? character_attribute::BOLD : 0;
+    _attributes |= italic ? character_attribute::ITALIC : 0;
+    _attributes |= underline ? character_attribute::UNDERLINE : 0;
+    _attributes |= strikeThrough ? character_attribute::STRIKETHROUGH : 0;
+    _attributes |= faint ? character_attribute::FAINT : 0;
+    _attributes |= reversed ? character_attribute::REVERSED : 0;
+    _attributes |= hidden ? character_attribute::HIDDEN : 0;
+    _attributes |= slowBlink ? character_attribute::SLOW_BLINK : 0;
+    _attributes |= fastBlink ? character_attribute::FAST_BLINK : 0;
 
     //     std::cout << "SetTextAttributes( "
     //               << "Attr = " << std::bitset<16>( _attributes ) << "; "
@@ -154,7 +154,7 @@ void framebuffer_t::SetBackground( uint8_t r, uint8_t g, uint8_t b )
     // std::cout << "SET_BACKGROUND"
     //           << " "
     //           << "0x" << std::setw( 8 ) << std::setfill( '0' ) << std::hex << (uint32_t)_background << std::endl;
-    _attributes &= ~( (uint16_t)CharacterAttribute::DEFAULT_BG );
+    _attributes &= ~( (uint16_t)character_attribute::DEFAULT_BG );
 }
 
 void framebuffer_t::SetBackground( uint32_t color )
@@ -162,9 +162,9 @@ void framebuffer_t::SetBackground( uint32_t color )
     _background = color & 0x00ffffff;
 
     if( color == 0u )
-        _attributes |= ( (uint16_t)CharacterAttribute::DEFAULT_BG );
+        _attributes |= ( (uint16_t)character_attribute::DEFAULT_BG );
     else
-        _attributes &= ~( (uint16_t)CharacterAttribute::DEFAULT_BG );
+        _attributes &= ~( (uint16_t)character_attribute::DEFAULT_BG );
 
     // std::cout << "SET_BACKGROUND"
     //           << " "
@@ -177,7 +177,7 @@ void framebuffer_t::SetForeground( uint8_t r, uint8_t g, uint8_t b )
     // std::cout << "SET_FOREGROUND"
     //           << " "
     //           << "0x" << std::setw( 8 ) << std::setfill( '0' ) << std::hex << (uint32_t)_foreground << std::endl;
-    _attributes &= ~( (uint16_t)CharacterAttribute::DEFAULT_FG );
+    _attributes &= ~( (uint16_t)character_attribute::DEFAULT_FG );
 }
 
 void framebuffer_t::SetForeground( uint32_t color )
@@ -185,9 +185,9 @@ void framebuffer_t::SetForeground( uint32_t color )
     _foreground = color & 0x00ffffff;
 
     if( color == 0u )
-        _attributes |= ( (uint16_t)CharacterAttribute::DEFAULT_FG );
+        _attributes |= ( (uint16_t)character_attribute::DEFAULT_FG );
     else
-        _attributes &= ~( (uint16_t)CharacterAttribute::DEFAULT_FG );
+        _attributes &= ~( (uint16_t)character_attribute::DEFAULT_FG );
 
     // std::cout << "SET_FOREGROUND"
     //           << " "
@@ -296,7 +296,7 @@ void framebuffer_t::TextLine( uint32_t x, uint32_t y, string_t text )
     }
 }
 
-void framebuffer_t::putc( Glyph ch )
+void framebuffer_t::putc( glyph_t ch )
 {
     //     std::cout << "putc( " << std::hex << (uint32_t)ch << std::dec << "; " << std::hex << (uint32_t)_foreground << " " <<
     //     std::hex
@@ -316,6 +316,7 @@ void framebuffer_t::putc( Glyph ch )
         _background | ( static_cast<uint64_t>( _foreground ) << 24 ) | ( static_cast<uint64_t>( _attributes ) << 48 );
 
     _data[position] = ch; //.Character[0]  = ( ch );
+    _data[position].Attributes = attributes;
     //_data[position].CharacterSize = 1;
     // if( ch == '\n' )
     // {
@@ -325,7 +326,6 @@ void framebuffer_t::putc( Glyph ch )
     //     _cursorY++;
     //     _cursorY = std::min( _cursorY, _rows - 1 );
     // }
-    _data[position].Attributes = attributes;
     // _data[position].Attributes   = ;
 
     _cursorX += 1;
@@ -355,7 +355,7 @@ void framebuffer_t::putc( char ch )
     uint64_t attributes =
         _background | ( static_cast<uint64_t>( _foreground ) << 24 ) | ( static_cast<uint64_t>( _attributes ) << 48 );
 
-    Glyph gl{};
+    glyph_t gl{};
     gl.Character[0]  = ch;
     gl.CharacterSize = 1;
     gl.Attributes    = attributes;
@@ -393,7 +393,7 @@ void framebuffer_t::ClearCurrentLine()
 {
     uint32_t startPos            = _cursorY * _columns;
     uint32_t endPos              = startPos + _columns;
-    uint64_t characterAttributes = CharacterAttribute::DEFAULT_BG | CharacterAttribute::DEFAULT_FG;
+    uint64_t characterAttributes = character_attribute::DEFAULT_BG | character_attribute::DEFAULT_FG;
 
     for( uint32_t i = startPos; i < endPos; i++ )
     {

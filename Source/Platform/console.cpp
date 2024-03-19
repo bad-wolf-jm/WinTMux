@@ -1,7 +1,9 @@
 #include "console.h"
+#include <consoleapi.h>
+#include <handleapi.h>
 
 console_t::console_t( int16_t columns, int16_t lines )
-    : _stdoutBuffer(1024)
+    : _stdoutBuffer( 1024 )
 {
     _stdin  = std::make_unique<pipe_t>();
     _stdout = std::make_unique<pipe_t>();
@@ -41,14 +43,24 @@ void *console_t::handle()
     return _console;
 }
 
-void console_t::write(char c)
+void console_t::write( char c )
 {
-    _stdin->write(c);
+    _stdin->write( c );
 }
 
 ringbuffer_t<uint8_t> &console_t::read()
 {
-    _stdout->read(_stdoutBuffer);
+    _stdout->read( _stdoutBuffer );
 
     return _stdoutBuffer;
+}
+
+void console_t::Resize( uint32_t rows, uint32_t columns )
+{
+    if( _console == INVALID_HANDLE_VALUE )
+        return;
+
+    COORD consoleSize{ static_cast<SHORT>( columns ), static_cast<SHORT>( rows ) };
+
+    ResizePseudoConsole( _console, consoleSize );
 }

@@ -19,10 +19,10 @@ class stdout_t
 
     void write( string_t buffer );
     void write( string_t::const_iterator begin, string_t::const_iterator end );
-    void write( std::vector<Glyph>::const_iterator begin, std::vector<Glyph>::const_iterator end );
-    void write( uint32_t attributes, uint32_t bg, uint32_t fg, std::vector<Glyph>::const_iterator begin,
-                std::vector<Glyph>::const_iterator end );
-    void write( character_range_t const &range, std::vector<Glyph> const &buffer );
+    void write( std::vector<glyph_t>::const_iterator begin, std::vector<glyph_t>::const_iterator end );
+    void write( uint32_t attributes, uint32_t bg, uint32_t fg, std::vector<glyph_t>::const_iterator begin,
+                std::vector<glyph_t>::const_iterator end );
+    void write( character_range_t const &range, std::vector<glyph_t> const &buffer );
     void write( framebuffer_t const &frameBuffer );
 
     uint32_t Columns() {return _columns;}

@@ -32,7 +32,7 @@ class framebuffer_t
     void EndFrame();
 
     void putc( char ch );
-    void putc( Glyph gl );
+    void putc( glyph_t gl );
     void ClearCurrentLine();
 
     void SetTextAttributes( bool bold, bool italic, bool underline, bool strikeThrough, bool faint, bool reversed, bool hidden,
@@ -53,8 +53,8 @@ class framebuffer_t
 
     size_t                     ByteSize();
     std::vector<line_t> const &Lines() const;
-    std::vector<Glyph> const  &Data() const;
-    std::vector<Glyph>        &DataNC();
+    std::vector<glyph_t> const  &Data() const;
+    std::vector<glyph_t>        &DataNC();
 
     uint32_t Rows()
     {
@@ -72,13 +72,13 @@ class framebuffer_t
   private:
     uint32_t _background{ 0 };
     uint32_t _foreground{ 0 };
-    uint16_t _attributes{ CharacterAttribute::DEFAULT_BG | CharacterAttribute::DEFAULT_FG };
+    uint16_t _attributes{ character_attribute::DEFAULT_BG | character_attribute::DEFAULT_FG };
 
   private:
     uint32_t _rows{ 0 };
     uint32_t _columns{ 0 };
 
-    std::vector<Glyph>  _data{};
+    std::vector<glyph_t>  _data{};
     std::vector<line_t> _lines{};
 
     uint32_t _cursorX = 0;

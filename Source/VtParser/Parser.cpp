@@ -875,12 +875,12 @@ void vtparser_t::parse( framebuffer_t &framebuffer, ringbuffer_t<uint8_t> &input
 
             // decode the byte and print it
 
-            Glyph gl{};
+            glyph_t gl{};
             gl.CharacterSize = utf8Bytes;
             for(int j=0; j < utf8Bytes; j++)
                 gl.Character[j] = inputBuffer[j];
-            framebuffer.putc(gl);
 
+            framebuffer.putc(gl);
         }
 
         inputBuffer.take(utf8Bytes);

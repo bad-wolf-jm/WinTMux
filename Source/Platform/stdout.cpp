@@ -46,13 +46,13 @@ void stdout_t::write( string_t::const_iterator begin, string_t::const_iterator e
     write( string_t( begin, end ) );
 }
 
-void stdout_t::write( std::vector<Glyph>::const_iterator begin, std::vector<Glyph>::const_iterator end )
+void stdout_t::write( std::vector<glyph_t>::const_iterator begin, std::vector<glyph_t>::const_iterator end )
 {
     string_t renderedLine;
     renderedLine.resize( std::distance( begin, end ) * 4 );
 
     int position = 0;
-    for( std::vector<Glyph>::const_iterator gl = begin; gl < end; gl++ )
+    for( std::vector<glyph_t>::const_iterator gl = begin; gl < end; gl++ )
     {
         auto const *character     = ( *gl ).Character;
         if(character[0] == '\0')
@@ -67,10 +67,10 @@ void stdout_t::write( std::vector<Glyph>::const_iterator begin, std::vector<Glyp
     write( renderedLine );
 }
 
-void stdout_t::write( uint32_t attributes, uint32_t bg, uint32_t fg, std::vector<Glyph>::const_iterator begin,
-                      std::vector<Glyph>::const_iterator end )
+void stdout_t::write( uint32_t attributes, uint32_t bg, uint32_t fg, std::vector<glyph_t>::const_iterator begin,
+                      std::vector<glyph_t>::const_iterator end )
 {
-    if( !( attributes & CharacterAttribute::DEFAULT_BG ) )
+    if( !( attributes & character_attribute::DEFAULT_BG ) )
     {
         uint8_t r = ( bg >> 16 ) & 0xFF;
         uint8_t g = ( bg >> 8 ) & 0xFF;
@@ -79,7 +79,7 @@ void stdout_t::write( uint32_t attributes, uint32_t bg, uint32_t fg, std::vector
         write( fmt::sprintf( "\x1b[48;2;%d;%d;%dm", r, g, b ) );
     }
 
-    if( !( attributes & CharacterAttribute::DEFAULT_FG ) )
+    if( !( attributes & character_attribute::DEFAULT_FG ) )
     {
         uint8_t r = ( fg >> 16 ) & 0xFF;
         uint8_t g = ( fg >> 8 ) & 0xFF;
@@ -88,38 +88,38 @@ void stdout_t::write( uint32_t attributes, uint32_t bg, uint32_t fg, std::vector
         write( fmt::sprintf( "\x1b[38;2;%d;%d;%dm", r, g, b ) );
     }
 
-    if( attributes & CharacterAttribute::BOLD )
+    if( attributes & character_attribute::BOLD )
         write( "\x1B[1m" );
 
-    if( attributes & CharacterAttribute::FAINT )
+    if( attributes & character_attribute::FAINT )
         write( "\x1B[2m" );
 
-    if( attributes & CharacterAttribute::ITALIC )
+    if( attributes & character_attribute::ITALIC )
         write( "\x1B[3m" );
 
-    if( attributes & CharacterAttribute::UNDERLINE )
+    if( attributes & character_attribute::UNDERLINE )
         write( "\x1B[4m" );
 
-    if( attributes & CharacterAttribute::SLOW_BLINK )
+    if( attributes & character_attribute::SLOW_BLINK )
         write( "\x1B[5m" );
 
-    if( attributes & CharacterAttribute::FAST_BLINK )
+    if( attributes & character_attribute::FAST_BLINK )
         write( "\x1B[6m" );
 
-    if( attributes & CharacterAttribute::REVERSED )
+    if( attributes & character_attribute::REVERSED )
         write( "\x1B[7m" );
 
-    if( attributes & CharacterAttribute::HIDDEN )
+    if( attributes & character_attribute::HIDDEN )
         write( "\x1B[8m" );
 
-    if( attributes & CharacterAttribute::STRIKETHROUGH )
+    if( attributes & character_attribute::STRIKETHROUGH )
         write( "\x1B[9m" );
 
     write( begin, end );
     write( "\x1b[0m" );
 }
 
-void stdout_t::write( character_range_t const &range, std::vector<Glyph> const &buffer )
+void stdout_t::write( character_range_t const &range, std::vector<glyph_t> const &buffer )
 {
     uint32_t attributes = range.CharacterAttributes();
     uint32_t foreground = range.Foreground();
