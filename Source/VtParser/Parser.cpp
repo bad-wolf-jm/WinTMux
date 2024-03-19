@@ -1,12 +1,12 @@
 #include "Parser.h"
 #include "Console/FrameBuffer.h"
+#include "Core/Glyph.h"
 #include "Core/ringbuffer.h"
 #include "States.h"
 #include "VtParser/csi_commands.h"
+#include "fmt/format.h"
 
 #include <cstdint>
-#include <iomanip>
-#include <iostream>
 
 vtparser_t::vtparser_t()
 {
@@ -839,5 +839,51 @@ void vtparser_t::parse( framebuffer_t &framebuffer, unsigned char *data, int len
 
 void vtparser_t::parse( framebuffer_t &framebuffer, ringbuffer_t<uint8_t> &inputBuffer )
 {
-  // Iterate through the input buffer, convert unicode characters if necessary. 
+    int processedBytes = 0;
+    int bytesToProcess = inputBuffer.size();
+
+    while(bytesToProcess > 0)
+    // for(int i=0; i < bytesToProcess; i++)
+    {
+        uint8_t byte = inputBuffer.front();
+        // std::cout << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint32_t)byte  << " " << ((uint32_t)byte & 0xF0) << " " << std::endl;
+        uint8_t utf8Bytes = 1;
+        if ((byte & 0xF0) == 0xF0)
+            utf8Bytes = 4;
+        else if ((byte & 0xE0) == 0xE0)
+            utf8Bytes = 3;
+        else if((byte & 0xC0) == 0xC0)
+            utf8Bytes = 2;
+
+        if(utf8Bytes == 1)
+        {
+            // This is an ASCII character. We send it to the state machine for processing.
+            char ch = byte;
+            state_transition_t change = _stateTransitions[(uint8_t)state][ch];
+            // std::cout << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint32_t)ch << " ";
+            do_state_change( framebuffer, change.TransitionTo, change.Action, ch );
+        }
+        else
+        {
+             // std::cout << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint32_t)ch << " ";
+              //std::cout << "utf8Bytes=" << (uint32_t)utf8Bytes << std::endl;
+
+            // If there aren't enough bytes in the buffer to decode the current character,
+            // we have to wait for more input to become available.
+            if(bytesToProcess < utf8Bytes)
+                return;
+
+            // decode the byte and print it
+
+            Glyph gl{};
+            gl.CharacterSize = utf8Bytes;
+            for(int j=0; j < utf8Bytes; j++)
+                gl.Character[j] = inputBuffer[j];
+            framebuffer.putc(gl);
+
+        }
+
+        inputBuffer.take(utf8Bytes);
+        bytesToProcess = inputBuffer.size(); 
+    }
 }

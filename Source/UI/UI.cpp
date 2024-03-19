@@ -9,7 +9,8 @@ UI::UI()
 
 void UI::Start()
 {
-    _bgTerminal = std::make_shared<process_t>( "py \"C:\\GitLab\\WinTMux\\Scripts\\test_terminal.py\"", _bgTerminalBuffer );
+    //_bgTerminal = std::make_shared<process_t>( "py \"C:\\GitLab\\WinTMux\\Scripts\\test_terminal.py\"", _bgTerminalBuffer );
+    _bgTerminal = std::make_shared<process_t>( "py -m rich", _bgTerminalBuffer );
     _fgTerminal = std::make_shared<process_t>( "powershell", _fgTerminalBuffer );
     _bgTerminalBuffer.BeginFrame();
     _fgTerminalBuffer.BeginFrame();

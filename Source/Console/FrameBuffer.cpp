@@ -296,7 +296,7 @@ void framebuffer_t::TextLine( uint32_t x, uint32_t y, string_t text )
     }
 }
 
-void framebuffer_t::putc( char ch )
+void framebuffer_t::putc( Glyph ch )
 {
     //     std::cout << "putc( " << std::hex << (uint32_t)ch << std::dec << "; " << std::hex << (uint32_t)_foreground << " " <<
     //     std::hex
@@ -315,8 +315,8 @@ void framebuffer_t::putc( char ch )
     uint64_t attributes =
         _background | ( static_cast<uint64_t>( _foreground ) << 24 ) | ( static_cast<uint64_t>( _attributes ) << 48 );
 
-    _data[position].Character[0]  = ( ch );
-    _data[position].CharacterSize = 1;
+    _data[position] = ch; //.Character[0]  = ( ch );
+    //_data[position].CharacterSize = 1;
     // if( ch == '\n' )
     // {
     //     _data[position].Character[0] = 0;
@@ -338,6 +338,55 @@ void framebuffer_t::putc( char ch )
 
         _cursorY = std::min( _cursorY, _rows - 1 );
     }
+}
+void framebuffer_t::putc( char ch )
+{
+    //     std::cout << "putc( " << std::hex << (uint32_t)ch << std::dec << "; " << std::hex << (uint32_t)_foreground << " " <<
+    //     std::hex
+    //               << (uint32_t)_background << std::dec << "; " << _cursorX << ", " << _cursorY << "; "
+    //               << "Attr = " << std::bitset<16>( _attributes ) << "; "
+    //               << "Faint = " << ( _attributes & CharacterAttribute::FAINT ) << "; "
+    //               << "Italic = " << ( _attributes & CharacterAttribute::ITALIC ) << "; "
+    //               << "Strike = " << ( _attributes & CharacterAttribute::STRIKETHROUGH ) << "; "
+    //               << "Bold = " << ( _attributes & CharacterAttribute::BOLD ) << "; "
+    //               << "Underline = " << ( _attributes & CharacterAttribute::UNDERLINE ) << "; "
+    //               << "w=" << _columns << "; "
+    //               << "h=" << _rows << " )" << std::endl;
+    uint64_t attributes =
+        _background | ( static_cast<uint64_t>( _foreground ) << 24 ) | ( static_cast<uint64_t>( _attributes ) << 48 );
+
+    Glyph gl{};
+    gl.Character[0]  = ch;
+    gl.CharacterSize = 1;
+    gl.Attributes    = attributes;
+
+    putc( gl );
+    // uint32_t position = _cursorY * _columns + _cursorX;
+    // // _attributes       |= CharacterAttribute::DEFAULT_BG | CharacterAttribute::DEFAULT_FG;
+
+    // _data[position].Character[0]  = ( ch );
+    // _data[position].CharacterSize = 1;
+    // // if( ch == '\n' )
+    // // {
+    // //     _data[position].Character[0] = 0;
+
+    // //     _cursorX = 0;
+    // //     _cursorY++;
+    // //     _cursorY = std::min( _cursorY, _rows - 1 );
+    // // }
+    // _data[position].Attributes = attributes;
+    // // _data[position].Attributes   = ;
+
+    // _cursorX += 1;
+
+    // if( _cursorX >= _columns )
+    // {
+    //     // std::cout << "NEWLINE_IMPLIED" << std::endl;
+    //     _cursorX = 0;
+    //     _cursorY++;
+
+    //     _cursorY = std::min( _cursorY, _rows - 1 );
+    // }
 }
 
 void framebuffer_t::ClearCurrentLine()

@@ -24,7 +24,9 @@ class console_t
     std::unique_ptr<pipe_t> &std_out();
 
     void *handle();
-    void write(char c);
+    void  write( char c );
+
+    ringbuffer_t<uint8_t> &read();
 
   private:
     int16_t _columns{ 0 };
@@ -34,4 +36,6 @@ class console_t
 
     std::unique_ptr<pipe_t> _stdin;  // Console stdin
     std::unique_ptr<pipe_t> _stdout; // Console stdout
+
+    ringbuffer_t<uint8_t> _stdoutBuffer;
 };

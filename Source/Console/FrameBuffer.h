@@ -32,6 +32,7 @@ class framebuffer_t
     void EndFrame();
 
     void putc( char ch );
+    void putc( Glyph gl );
     void ClearCurrentLine();
 
     void SetTextAttributes( bool bold, bool italic, bool underline, bool strikeThrough, bool faint, bool reversed, bool hidden,

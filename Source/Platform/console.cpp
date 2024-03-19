@@ -1,6 +1,7 @@
 #include "console.h"
 
 console_t::console_t( int16_t columns, int16_t lines )
+    : _stdoutBuffer(1024)
 {
     _stdin  = std::make_unique<pipe_t>();
     _stdout = std::make_unique<pipe_t>();
@@ -16,6 +17,8 @@ console_t::console_t( int16_t columns, int16_t lines )
     // when the ConPTY is destroyed.
     _stdin->close_read();
     _stdout->close_write();
+
+    //_stdinBuffer = ringbuffer_t<uint8_t>(1024);
 }
 
 console_t::~console_t()
@@ -38,8 +41,14 @@ void *console_t::handle()
     return _console;
 }
 
-
 void console_t::write(char c)
 {
     _stdin->write(c);
+}
+
+ringbuffer_t<uint8_t> &console_t::read()
+{
+    _stdout->read(_stdoutBuffer);
+
+    return _stdoutBuffer;
 }

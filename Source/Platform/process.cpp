@@ -100,29 +100,29 @@ void process_t::StartProcess()
 
 void __cdecl process_t::PipeListener()
 {
-    HANDLE hPipe{ _console->std_out()->read_end() };
-    // HANDLE hConsole{ GetStdHandle( STD_OUTPUT_HANDLE ) };
-
-    const DWORD BUFF_SIZE{ 512 };
-    char        szBuffer[BUFF_SIZE]{};
-
-    // DWORD dwBytesWritten{};
-    DWORD dwBytesRead{};
-    BOOL  fRead{ FALSE };
-
-    PeekNamedPipe( hPipe, NULL, 0, NULL, &dwBytesRead, NULL );
-
-    if( dwBytesRead == 0 )
-        return;
-
-    fRead = ReadFile( hPipe, szBuffer, BUFF_SIZE, &dwBytesRead, NULL );
-
-    _parser.parse( _framebuffer, (unsigned char *)szBuffer, dwBytesRead );
+    //    HANDLE hPipe{ _console->std_out()->read_end() };
+    //    // HANDLE hConsole{ GetStdHandle( STD_OUTPUT_HANDLE ) };
+    //
+    //    const DWORD BUFF_SIZE{ 512 };
+    //    char        szBuffer[BUFF_SIZE]{};
+    //
+    //    // DWORD dwBytesWritten{};
+    //    DWORD dwBytesRead{};
+    //    BOOL  fRead{ FALSE };
+    //
+    //    PeekNamedPipe( hPipe, NULL, 0, NULL, &dwBytesRead, NULL );
+    //
+    //    if( dwBytesRead == 0 )
+    //        return;
+    //
+    //    fRead = ReadFile( hPipe, szBuffer, BUFF_SIZE, &dwBytesRead, NULL );
+    // console->read();
+    _parser.parse( _framebuffer, _console->read() ); //(unsigned char *)szBuffer, dwBytesRead );
+    //_parser.parse( _framebuffer, (unsigned char *)szBuffer, dwBytesRead );
 }
 
-void process_t::OnKeyPress(keycode_t const& keyCode, uint32_t modifiers)
+void process_t::OnKeyPress( keycode_t const &keyCode, uint32_t modifiers )
 {
-    char c = (modifiers & (uint32_t)modifiers::SHIFT) ? keyCode.ShiftedSymbol : keyCode.Symbol;
-    _console->write(c);
+    char c = ( modifiers & (uint32_t)modifiers::SHIFT ) ? keyCode.ShiftedSymbol : keyCode.Symbol;
+    _console->write( c );
 }
-

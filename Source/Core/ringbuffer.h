@@ -192,6 +192,11 @@ class ringbuffer_t
         assert( _array_size > 1 && "size must be greater than 1" );
     }
 
+    ringbuffer_t( const ringbuffer_t & )            = delete;
+    ringbuffer_t( ringbuffer_t && )                 = delete;
+    ringbuffer_t &operator=( const ringbuffer_t & ) = delete;
+    ringbuffer_t &operator=( ringbuffer_t && )      = delete;
+
     size_type available_size()
     {
         return _array_size - _contents_size;
@@ -263,6 +268,9 @@ class ringbuffer_t
     const_iterator cend() const;
     iterator       rend();
     const_iterator rend() const;
+
+    void take();
+    void take( size_t count );
 
   private:
     void increment_tail();
@@ -462,4 +470,21 @@ void ringbuffer_t<T>::increment_head()
     --_contents_size;
     if( _head == _array_size )
         _head = 0;
+}
+
+template <class T>
+void ringbuffer_t<T>::take()
+{
+    increment_head();
+}
+
+template <class T>
+void ringbuffer_t<T>::take( size_t count )
+{
+    if( _contents_size == 0 )
+        return;
+
+    _head += count;
+    _head = _head % _array_size;
+    _contents_size -= count;
 }
