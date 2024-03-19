@@ -11,7 +11,7 @@ add_executable(wtmux
     Core/KeyCodes.Console.cpp
     Core/control_sequences.cpp
     
-    VtParser/Parser.cpp
+    VtParser/vtparser.cpp
     VtParser/utf8.cpp
 
     Launch/ConsoleMain.cpp

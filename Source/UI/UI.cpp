@@ -9,8 +9,9 @@ UI::UI()
 
 void UI::Start()
 {
-    //_bgTerminal = std::make_shared<process_t>( "py \"C:\\GitLab\\WinTMux\\Scripts\\test_terminal.py\"", _bgTerminalBuffer );
+    // _bgTerminal = std::make_shared<process_t>( "py \"C:\\GitLab\\WinTMux\\Scripts\\test_terminal.py\"", _bgTerminalBuffer );
     _bgTerminal = std::make_shared<process_t>( "py -m rich", _bgTerminalBuffer );
+    // _bgTerminal = std::make_shared<process_t>( "nvim", _bgTerminalBuffer );
     _fgTerminal = std::make_shared<process_t>( "powershell", _fgTerminalBuffer );
     _bgTerminalBuffer.BeginFrame();
     _fgTerminalBuffer.BeginFrame();
@@ -23,6 +24,7 @@ void UI::Stop()
 
 void UI::Resize( uint32_t columns, uint32_t rows )
 {
+    std::cout << "TTT Rows=" << rows << ", Columns=" << columns << std::endl;
     if( _bgTerminal != nullptr )
         _bgTerminal->Resize( rows, columns );
 

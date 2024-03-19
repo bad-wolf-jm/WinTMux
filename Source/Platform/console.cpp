@@ -3,7 +3,7 @@
 #include <handleapi.h>
 
 console_t::console_t( int16_t columns, int16_t lines )
-    : _stdoutBuffer( 1024 )
+    : _stdoutBuffer( 1024 * 1024 )
 {
     _stdin  = std::make_unique<pipe_t>();
     _stdout = std::make_unique<pipe_t>();
@@ -57,10 +57,13 @@ ringbuffer_t<uint8_t> &console_t::read()
 
 void console_t::Resize( uint32_t rows, uint32_t columns )
 {
+    std::cout << "UUU Rows=" << rows << ", Columns=" << columns << std::endl;
     if( _console == INVALID_HANDLE_VALUE )
         return;
 
-    COORD consoleSize{ static_cast<SHORT>( columns ), static_cast<SHORT>( rows ) };
+    COORD consoleSize{};
+    consoleSize.X = static_cast<SHORT>( columns );
+    consoleSize.Y = static_cast<SHORT>( rows );
 
     ResizePseudoConsole( _console, consoleSize );
 }

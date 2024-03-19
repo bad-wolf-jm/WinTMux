@@ -38,6 +38,7 @@ uint32_t character_range_t::CharacterAttributes() const
 
 void framebuffer_t::Resize( uint32_t rows, uint32_t columns )
 {
+    //std::cout << "Rows=" << rows << ", Columns=" << columns << std::endl;
     _rows    = rows;
     _columns = columns;
 
@@ -329,15 +330,16 @@ void framebuffer_t::putc( glyph_t ch )
     // _data[position].Attributes   = ;
 
     _cursorX += 1;
+    _cursorY = std::min( _cursorY, _rows - 1 );
+    _cursorX = std::min( _cursorX, _columns - 1 );
+    // if( _cursorX >= _columns )
+    // {
+    //     // std::cout << "NEWLINE_IMPLIED" << std::endl;
+    //     _cursorX = 0;
+    //     _cursorY++;
 
-    if( _cursorX >= _columns )
-    {
-        // std::cout << "NEWLINE_IMPLIED" << std::endl;
-        _cursorX = 0;
-        _cursorY++;
-
-        _cursorY = std::min( _cursorY, _rows - 1 );
-    }
+    //     _cursorY = std::min( _cursorY, _rows - 1 );
+    // }
 }
 void framebuffer_t::putc( char ch )
 {

@@ -15,7 +15,7 @@
 #include "Core/String.h"
 #include "Core/KeyCodes.h"
 #include "Platform/console.h"
-#include "VtParser/Parser.h"
+#include "VtParser/vtparser.h"
 
 class process_t
 {

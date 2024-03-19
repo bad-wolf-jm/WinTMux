@@ -85,7 +85,6 @@ void process_t::WaitForCompletion( int32_t timeout )
 
 void process_t::StartProcess()
 {
-    SetEnvironmentVariable( TEXT( "TERM" ), TEXT( "dumb" ) );
     CreateProcessA( NULL,                                       // No module name - use Command Line
                     reinterpret_cast<LPSTR>( _command.data() ), // Command Line
                     NULL,                                       // Process handle not inheritable
