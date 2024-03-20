@@ -19,7 +19,10 @@ class pipe_t
     size_t chars_ready();
     void   read( ringbuffer_t<uint8_t> &buffer );
 
+    uint32_t read( std::vector<char> &inputBuffer );
+
   private:
     void *_wstream{ (void *)-1 };
     void *_rstream{ (void *)-1 };
+    //std::vector<char>
 };

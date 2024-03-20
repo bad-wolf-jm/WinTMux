@@ -86,3 +86,30 @@ void pipe_t::read( ringbuffer_t<uint8_t> &buffer )
         availableInPipe = chars_ready();
     }
 }
+uint32_t pipe_t::read( std::vector<char> &inputBuffer )
+{
+    size_t availableInPipe  = chars_ready();
+    size_t positionInBuffer = 0;
+    size_t inputBufferSize  = inputBuffer.size();
+
+    while( availableInPipe > 0 && positionInBuffer < inputBufferSize )
+    {
+        // const size_t readBufferSize = 1024;
+        // char  readBuffer[readBufferSize] = {};
+        DWORD bytesToRead = static_cast<DWORD>( inputBufferSize - positionInBuffer );
+        BOOL  readSuccess = FALSE;
+        DWORD bytesRead   = 0;
+
+        readSuccess = ReadFile( _rstream, inputBuffer.data() + positionInBuffer, bytesToRead, &bytesRead, NULL );
+
+        positionInBuffer += bytesRead; // l //  / sizeof( _Ty );
+        //std::cout << "bytesRead=" << bytesRead << std::endl;
+        // for( int i = 0; i < bytesRead; i++ )
+        //     buffer.push_back( readBuffer[i] );
+
+        availableInPipe = chars_ready();
+    }
+
+        //std::cout << "positionInBuffer=" << positionInBuffer << std::endl;
+    return positionInBuffer;
+}

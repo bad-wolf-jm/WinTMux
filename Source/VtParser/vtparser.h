@@ -30,6 +30,7 @@ class vtparser_t
 
     void parse( framebuffer_t &framebuffer, unsigned char *data, int len );
     void parse( framebuffer_t &framebuffer, ringbuffer_t<uint8_t> &inputBuffer );
+    void parse( framebuffer_t &framebuffer, std::vector<char> &inputBuffer, size_t bytesToProcess );
 
   private:
     void OnEvent( Range range, vtparser_action action );

@@ -878,12 +878,70 @@ void vtparser_t::parse( framebuffer_t &framebuffer, ringbuffer_t<uint8_t> &input
             glyph_t gl{};
             gl.CharacterSize = utf8Bytes;
             for(int j=0; j < utf8Bytes; j++)
+            {
                 gl.Character[j] = inputBuffer[j];
+            }
 
             framebuffer.putc(gl);
         }
 
         inputBuffer.take(utf8Bytes);
         bytesToProcess = inputBuffer.size(); 
+    }
+}
+
+void vtparser_t::parse( framebuffer_t &framebuffer, std::vector<char> &inputBuffer, size_t bytesToProcess )
+{
+    int processedBytes = 0;
+    int currentByte = 0;
+
+    while(currentByte < bytesToProcess)
+    // for(int i=0; i < bytesToProcess; i++)
+    {
+        char byte = inputBuffer[currentByte];
+        // std::cout << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint32_t)byte  << " " << ((uint32_t)byte & 0xF0) << " " << std::endl;
+        int utf8Bytes = 1;
+        if ((byte & 0xF0) == 0xF0)
+            utf8Bytes = 4;
+        else if ((byte & 0xE0) == 0xE0)
+            utf8Bytes = 3;
+        else if((byte & 0xC0) == 0xC0)
+            utf8Bytes = 2;
+
+        if(utf8Bytes == 1)
+        {
+            // This is an ASCII character. We send it to the state machine for processing.
+            char ch = byte;
+            state_transition_t change = _stateTransitions[(uint8_t)state][ch];
+            // std::cout << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint32_t)ch << " ";
+            do_state_change( framebuffer, change.TransitionTo, change.Action, ch );
+        }
+        else
+        {
+             // std::cout << std::setw( 2 ) << std::setfill( '0' ) << std::hex << (uint32_t)ch << " ";
+              //std::cout << "utf8Bytes=" << (uint32_t)utf8Bytes << std::endl;
+
+            // If there aren't enough bytes in the buffer to decode the current character,
+            // we have to wait for more input to become available.
+            if(bytesToProcess - currentByte < utf8Bytes)
+                return;
+
+            // decode the byte and print it
+
+            glyph_t gl{};
+            gl.CharacterSize = utf8Bytes;
+            for(int j=0; j < utf8Bytes; j++)
+            {
+                //std::cout << "j=" << j << "  " << "currentByte="<< currentByte /*<< "  " << "utf8Bytes=" << (uint32_t)utf8Bytes*/ << std::endl;
+                //std::cout << "j=" << j << "  " << "utf8Bytes=" << (uint32_t)utf8Bytes << std::endl;
+                gl.Character[j] = inputBuffer[currentByte + j];
+            }
+
+            framebuffer.putc(gl);
+        }
+        
+        currentByte += utf8Bytes;
+        //inputBuffer.take(utf8Bytes);
+        //bytesToProcess = inputBuffer.size(); 
     }
 }

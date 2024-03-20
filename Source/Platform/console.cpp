@@ -55,6 +55,11 @@ ringbuffer_t<uint8_t> &console_t::read()
     return _stdoutBuffer;
 }
 
+uint32_t console_t::read( std::vector<char> &inputBuffer )
+{
+    return _stdout->read( inputBuffer );
+}
+
 void console_t::Resize( uint32_t rows, uint32_t columns )
 {
     std::cout << "UUU Rows=" << rows << ", Columns=" << columns << std::endl;

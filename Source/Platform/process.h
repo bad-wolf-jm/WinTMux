@@ -42,6 +42,7 @@ class process_t
 
     bool        _processIsActive = true;
     std::thread _pipeListenerThread;
+    std::vector<char> _inputBuffer;
 
   private:
     void StartProcess();

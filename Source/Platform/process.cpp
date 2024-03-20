@@ -11,7 +11,8 @@ process_t::process_t( string_t command, framebuffer_t &framebuffer )
 {
     _startupInfo.StartupInfo.cb = sizeof( STARTUPINFOEXA );
 
-    _console = std::make_unique<console_t>( _columns, _lines );
+    _console     = std::make_unique<console_t>( _columns, _lines );
+    _inputBuffer = std::vector<char>( 1024 );
 
     size_t attributeListSize = 0;
     InitializeProcThreadAttributeList( NULL, 1, 0, &attributeListSize );
@@ -102,11 +103,11 @@ void __cdecl process_t::PipeListener()
     //    HANDLE hPipe{ _console->std_out()->read_end() };
     //    // HANDLE hConsole{ GetStdHandle( STD_OUTPUT_HANDLE ) };
     //
-    //    const DWORD BUFF_SIZE{ 512 };
-    //    char        szBuffer[BUFF_SIZE]{};
+    //constexpr uint32_t           bufferSize = 512;
+    //std::array<char, bufferSize> inputBuffer;
+    //uint32_t                     bytesRead = 0;
     //
     //    // DWORD dwBytesWritten{};
-    //    DWORD dwBytesRead{};
     //    BOOL  fRead{ FALSE };
     //
     //    PeekNamedPipe( hPipe, NULL, 0, NULL, &dwBytesRead, NULL );
@@ -115,8 +116,10 @@ void __cdecl process_t::PipeListener()
     //        return;
     //
     //    fRead = ReadFile( hPipe, szBuffer, BUFF_SIZE, &dwBytesRead, NULL );
-    // console->read();
-    _parser.parse( _framebuffer, _console->read() ); //(unsigned char *)szBuffer, dwBytesRead );
+    size_t bytesRead = _console->read( _inputBuffer );
+    //std::cout << bytesRead << std::endl;
+    _parser.parse( _framebuffer, _inputBuffer, bytesRead );
+    // _parser.parse( _framebuffer, _console->read() ); //(unsigned char *)szBuffer, dwBytesRead );
     //_parser.parse( _framebuffer, (unsigned char *)szBuffer, dwBytesRead );
 }
 
